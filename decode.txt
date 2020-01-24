@@ -9,3 +9,11 @@ http://goldencrystal.free.fr/M68kOpcodes-v2.3.pdf
   FROM 111 000 Absolute SHORT (xxx).W
   To   111 100 Immediate      #imm
 
+   S  Xn  M   M   Xn
+00 10 011 100 000 000   MOVE
+
+
+???
+
+      D     S M   Xn
+0100 100 01 1 111 000   MOVEM?

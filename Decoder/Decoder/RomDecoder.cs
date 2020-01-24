@@ -144,8 +144,13 @@ namespace Decoder
 
             switch (opcodeRegister)
             {
+                case 0x2700:
                 case 0x31FC:
                     opcode_MOVE();
+                    break;
+
+                case 0x48F8:
+                    opcode_MOVEM();
                     break;
 
                 case 0x6000:
@@ -296,6 +301,77 @@ namespace Decoder
                 Console.WriteLine("0x{0:X4}", d);
             }
 
+            // TODO: do the move
+        }
+
+        private void opcode_MOVEM()
+        {
+            Console.Write("MOVE");
+
+            // 00SS XXX MMM MMM XXX
+
+            Size size;
+            switch ((opcodeRegister >> 6) & 0x0001)
+            {
+                case 0x0000:
+                    Console.WriteLine(".w\t(WORD)");
+                    size = Size.Word;
+                    break;
+                case 0x0001:
+                    Console.WriteLine(".l\t(LONG)");
+                    size = Size.Long;
+                    break;
+                default:
+                    throw new Exception();
+            }
+
+            // decode effective address
+
+            AddressingMode src;
+            switch ((opcodeRegister >> 10) & 0x0001)
+            {
+                case 0x0000:
+                    src = AddressingMode.DataRegister;
+                    break;
+                case 0x0001:
+                    src = AddressingMode.Address_PreDecrement;
+                    break;
+                default:
+                    throw new Exception();
+            }
+
+            ushort mask = readWordFromData();
+            Console.WriteLine("Mask\t{0:X4}", mask);
+
+            Console.WriteLine("src");
+            Console.WriteLine("EAddr\t{0}", src);
+            //if ((int)src < 7)
+            //{
+            //    Console.WriteLine("Reg\t{0}", srcXn);
+            //}
+            //else
+            //{
+            //    uint s = readAddressFromData(src, size);
+            //    Console.WriteLine("0x{0:X4}", s);
+            //}
+
+            ushort dstM = (ushort)((opcodeRegister >> 3) & 0x0007);
+            ushort dstXn = (ushort)((opcodeRegister >> 0) & 0x0007);
+            var dst = effectiveAddress(dstM, dstXn);
+
+            Console.WriteLine("dst");
+            Console.WriteLine("EAddr\t{0}", dst);
+            if ((int)dst < 7)
+            {
+                Console.WriteLine("Reg\t{0}", dstXn);
+            }
+            else
+            {
+                uint d = readAddressFromData(dst, size);
+                Console.WriteLine("0x{0:X4}", d);
+            }
+
+            throw new NotImplementedException();
             // TODO: do the move
         }
     }

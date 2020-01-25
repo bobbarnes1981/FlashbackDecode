@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Decoder
+﻿namespace Decoder
 {
     class Program
     {
@@ -27,7 +25,7 @@ namespace Decoder
             //    .ascii  "JUE             "                                      /* Country Support (16) */
 
             // TODO: decode header data
-            new RomDecoder(File.ReadAllBytes(@"C:\Users\robertb\Downloads\Flashback (Europe) (Rev A).md")).Decode(0x0200);
+            new RomDecoder(new Data(@"C:\Users\robert\Downloads\Flashback (Europe) (Rev A).md")).Decode(0x0200);
         }
     }
 }

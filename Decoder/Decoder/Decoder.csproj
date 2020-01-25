@@ -43,9 +43,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data.cs" />
+    <Compile Include="Enums\Direction.cs" />
+    <Compile Include="Enums\EffectiveAddressMode.cs" />
+    <Compile Include="Enums\AddressRegister.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="OpCodeDecoder.cs" />
+    <Compile Include="OpCodes\Bcc.cs" />
+    <Compile Include="OpCodes\BRA.cs" />
+    <Compile Include="OpCodes\BSR.cs" />
+    <Compile Include="OpCodes\EXT.cs" />
+    <Compile Include="OpCodes\Invalid.cs" />
+    <Compile Include="OpCodes\LEA.cs" />
+    <Compile Include="OpCodes\MOVE.cs" />
+    <Compile Include="OpCodes\MOVEA.cs" />
+    <Compile Include="OpCodes\MOVEM.cs" />
+    <Compile Include="OpCodes\OpCode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RomDecoder.cs" />
+    <Compile Include="Enums\Size.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

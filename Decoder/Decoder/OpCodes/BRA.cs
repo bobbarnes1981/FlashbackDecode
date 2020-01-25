@@ -13,8 +13,9 @@ namespace Decoder.OpCodes
             if (Size == Size.Word)
             {
                 EA = readEA(EffectiveAddressMode.Immediate, 0x00);
+                PCDisplacement -= 2; // remove auto increment
             }
-            PCDisplacement += 2 + EA;
+            PCDisplacement += EA;
         }
 
         public override string Operation()

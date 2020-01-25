@@ -53,12 +53,12 @@ namespace Decoder
             // big endian ordering of bytes in memory (https://en.wikipedia.org/wiki/Endianness)
             // 0x1234 stored as 12 34
 
-            ushort l = 0x00;
+            uint l = 0x00;
             
-            l |= (ushort)(data[address + 0] << 24);
-            l |= (ushort)(data[address + 1] << 16);
-            l |= (ushort)(data[address + 2] << 8);
-            l |= (ushort)(data[address + 3] << 0);
+            l |= (uint)(data[address + 0] << 24);
+            l |= (uint)(data[address + 1] << 16);
+            l |= (uint)(data[address + 2] << 8);
+            l |= (uint)(data[address + 3] << 0);
 
             return l;
         }

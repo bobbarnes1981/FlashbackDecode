@@ -122,6 +122,17 @@ namespace Decoder
                         return new MOVEM(data, address, opcode);
                     }
 
+                // xxxx 011x xxxx xxxx
+                case 0x0003:
+                    var b = opcode.GetBits(6, 10);
+                    if (opcode.GetBits(6, 10) == 0x011B)
+                    {
+                        // 0100 0110 11xx xxxx
+                        return new MOVEtoSR(data, address, opcode);
+                    }
+
+                    throw new NotImplementedException();
+
                 default:
                     throw new NotImplementedException();
             }

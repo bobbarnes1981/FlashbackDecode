@@ -90,6 +90,9 @@
                 case EffectiveAddressMode.Address:
                     return string.Format("0x{0:X4} (A{1})", ea, xn);
 
+                case EffectiveAddressMode.DataRegister:
+                    return string.Format("0x{0:X4} (D{1})", ea, xn);
+
                 default:
                     throw new System.NotImplementedException(mode.ToString());
             }

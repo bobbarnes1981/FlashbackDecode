@@ -17,6 +17,7 @@ namespace Decoder
 
         public static ushort GetBits(this ushort s, int offset, int length)
         {
+            // TODO: validate values
             ushort lengthMask = 0x0000;
             ushort count = 1;
             for (int i = 1; i <= length; i++)

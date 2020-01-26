@@ -247,7 +247,56 @@ namespace Decoder
 
         private OpCode decode_E000(Data data, int address, ushort opcode)
         {
-            throw new NotImplementedException();
+            switch(opcode.GetBits(6, 2))
+            {
+                case 0x3:
+                    return decode_E0C0(data, address, opcode);
+
+                default:
+                    return decode_E0X0(data, address, opcode);
+            }
+        }
+
+        private OpCode decode_E0C0(Data data, int address, ushort opcode)
+        {
+            switch (opcode.GetBits(9, 3))
+            {
+                case 0x0:
+                    throw new NotImplementedException("ASd");
+
+                case 0x1:
+                    throw new NotImplementedException("LSd");
+
+                case 0x2:
+                    throw new NotImplementedException("ROXd");
+
+                case 0x3:
+                    throw new NotImplementedException("ROd");
+
+                default:
+                    throw new Exception();
+            }
+        }
+
+        private OpCode decode_E0X0(Data data, int address, ushort opcode)
+        {
+            switch (opcode.GetBits(3, 2))
+            {
+                case 0x0:
+                    throw new NotImplementedException("ASd");
+
+                case 0x1:
+                    throw new NotImplementedException("LSd");
+
+                case 0x2:
+                    throw new NotImplementedException("ROXd");
+
+                case 0x3:
+                    throw new NotImplementedException("ROd");
+
+                default:
+                    throw new Exception();
+            }
         }
     }
 }

@@ -19,6 +19,7 @@ namespace Decoder.OpCodes
         public ADDA(Data data, int address, ushort code)
             : base(data, address, code)
         {
+            EA = readEA(decodeEA());
         }
 
         protected override Size getSize()

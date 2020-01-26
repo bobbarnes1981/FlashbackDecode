@@ -82,7 +82,7 @@ namespace Decoder.OpCodes
 
             if (offset == -1 || length == -1)
             {
-                throw new Exception(string.Format("{0} not defined",c ));
+                throw new Exception(string.Format("{0} not defined", c));
             }
 
             return new Tuple<int, int>(offset, length);
@@ -96,27 +96,32 @@ namespace Decoder.OpCodes
 
         protected AddressRegister getAn()
         {
-            return (AddressRegister)getBits('a');
+            return (AddressRegister)getBits('a'); // Address register 'An'
         }
 
         protected DataRegister getDn()
         {
-            return (DataRegister)getBits('d');
+            return (DataRegister)getBits('d'); // Data register 'Dn'
         }
 
         protected ushort getImmediate()
         {
-            return getBits('b');
+            return getBits('b'); // Immediate data (in opcode)
+        }
+
+        protected uint readImmediate()
+        {
+            return (uint)readData(Size);
         }
 
         protected byte getM()
         {
-            return (byte)getBits('m');
+            return (byte)getBits('m'); // Mode 'M'
         }
 
         protected byte getXn()
         {
-            return (byte)getBits('x');
+            return (byte)getBits('x'); // Reg number 'Xn' 
         }
 
         protected EffectiveAddressMode decodeEA()

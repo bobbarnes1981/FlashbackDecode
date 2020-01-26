@@ -52,6 +52,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="MachineState.cs" />
     <Compile Include="OpCodeDecoder.cs" />
+    <Compile Include="OpCodes\ADDI.cs" />
     <Compile Include="OpCodes\ADDA.cs" />
     <Compile Include="OpCodes\Bcc.cs" />
     <Compile Include="OpCodes\BRA.cs" />

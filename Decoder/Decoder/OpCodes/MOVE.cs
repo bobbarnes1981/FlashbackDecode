@@ -7,7 +7,7 @@ namespace Decoder.OpCodes
     /// </summary>
     class MOVE : OpCode
     {
-        protected override string definition => "00SS______mmmxxx";
+        protected override string definition => "00ss______mmmxxx";
 
         public override string Name => "MOVE";
 

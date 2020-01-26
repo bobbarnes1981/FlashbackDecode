@@ -69,7 +69,14 @@ namespace Decoder
 
         private OpCode decode_0000(Data data, int address, ushort opcode)
         {
-            throw new NotImplementedException();
+            switch (opcode.GetBits(8, 4))
+            {
+                case 0x0006:
+                    return new ADDI(data, address, opcode);
+
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         private OpCode decode_X000(Data data, int address, ushort opcode)
@@ -152,7 +159,19 @@ namespace Decoder
                 case 0x1:
                 case 0x2:
                     // ADDQ or SUBQ
-                    throw new NotImplementedException();
+                    switch (opcode.GetBits(8, 1))
+                    {
+                        case 0x0:
+                            //ADDQ
+                            throw new NotImplementedException("ADDQ");
+
+                        case 0x1:
+                            //SUBQ
+                            throw new NotImplementedException("SUBQ");
+
+                        default:
+                            throw new NotImplementedException();
+                    }
 
                 default:
                     throw new Exception();

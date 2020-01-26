@@ -4,7 +4,7 @@ namespace Decoder.OpCodes
 {
     class MOVEA : OpCode
     {
-        protected override string definition => "00SSaaa001mmmxxx";
+        protected override string definition => "00ssaaa001mmmxxx";
 
         public override string Name => "MOVEA";
 
@@ -19,6 +19,7 @@ namespace Decoder.OpCodes
         public MOVEA(Data data, int address, ushort code)
             : base(data, address, code)
         {
+            EA = readEA(decodeEA());
         }
 
         protected override Size getSize()

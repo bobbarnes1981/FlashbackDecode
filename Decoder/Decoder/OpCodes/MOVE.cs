@@ -39,14 +39,9 @@ namespace Decoder.OpCodes
             DstAddress = readEA(decodeEA(getDstM(), getDstXn()), getDstXn());
         }
 
-        protected override byte getM()
-        {
-            throw new NotImplementedException();
-        }
-
         protected byte getSrcM()
         {
-            return (byte)code.GetBits(3, 3);
+            return getM();
         }
 
         protected byte getDstM()
@@ -72,14 +67,9 @@ namespace Decoder.OpCodes
             }
         }
 
-        protected override byte getXn()
-        {
-            throw new NotImplementedException();
-        }
-
         protected byte getSrcXn()
         {
-            return (byte)code.GetBits(0, 3);
+            return getXn();
         }
 
         protected byte getDstXn()

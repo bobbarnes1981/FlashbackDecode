@@ -21,19 +21,9 @@ namespace Decoder.OpCodes
         {
         }
 
-        protected override byte getM()
-        {
-            return (byte)code.GetBits(3, 3);
-        }
-
         protected override Size getSize()
         {
             return getSizeFromBits1(8);
-        }
-
-        protected override byte getXn()
-        {
-            return (byte)code.GetBits(0, 3);
         }
     }
 }

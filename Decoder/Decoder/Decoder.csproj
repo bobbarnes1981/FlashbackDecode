@@ -63,6 +63,7 @@
     <Compile Include="OpCodes\MOVE.cs" />
     <Compile Include="OpCodes\MOVEA.cs" />
     <Compile Include="OpCodes\MOVEM.cs" />
+    <Compile Include="OpCodes\MOVEQ.cs" />
     <Compile Include="OpCodes\MOVEtoSR.cs" />
     <Compile Include="OpCodes\OpCode.cs" />
     <Compile Include="Program.cs" />

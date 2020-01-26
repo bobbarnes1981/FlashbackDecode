@@ -80,32 +80,44 @@ namespace Decoder.OpCodes
                 }
             }
 
+            if (offset == -1 || length == -1)
+            {
+                throw new Exception(string.Format("{0} not defined",c ));
+            }
+
             return new Tuple<int, int>(offset, length);
+        }
+
+        protected ushort getBits(char c)
+        {
+            var vals = getValues(c);
+            return code.GetBits(vals.Item1, vals.Item2);
         }
 
         protected AddressRegister getAn()
         {
-            var vals = getValues('a');
-            if (vals.Item1 == -1 || vals.Item2 == -1)
-            {
-                throw new Exception("An not defined");
-            }
-            return (AddressRegister)code.GetBits(vals.Item1, vals.Item2);
+            return (AddressRegister)getBits('a');
         }
 
         protected DataRegister getDn()
         {
-            var vals = getValues('d');
-            if (vals.Item1 == -1 || vals.Item2 == -1)
-            {
-                throw new Exception("Dn not defined");
-            }
-            return (DataRegister)code.GetBits(vals.Item1, vals.Item2);
+            return (DataRegister)getBits('d');
         }
 
-        protected abstract byte getM();
+        protected ushort getImmediate()
+        {
+            return getBits('b');
+        }
 
-        protected abstract byte getXn();
+        protected byte getM()
+        {
+            return (byte)getBits('m');
+        }
+
+        protected byte getXn()
+        {
+            return (byte)getBits('x');
+        }
 
         protected EffectiveAddressMode decodeEA()
         {
@@ -200,7 +212,7 @@ namespace Decoder.OpCodes
 
         private ushort readAReg(byte register)
         {
-            System.Console.WriteLine("WARNING: register An reading not implemented");
+            Console.WriteLine("WARNING: register An {0} reading not implemented", register);
             return 0x00;
         }
 
@@ -219,7 +231,7 @@ namespace Decoder.OpCodes
                     return (int)w;
 
                 default:
-                    throw new System.Exception();
+                    throw new Exception();
             }
         }
     }

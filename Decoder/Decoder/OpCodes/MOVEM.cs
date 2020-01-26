@@ -43,11 +43,6 @@ namespace Decoder.OpCodes
             EA = readEA(decodeEA());
         }
 
-        protected override byte getM()
-        {
-            return (byte)code.GetBits(3, 3);
-        }
-
         protected override Size getSize()
         {
             return getSizeFromBits1(6);
@@ -55,12 +50,7 @@ namespace Decoder.OpCodes
 
         protected Direction getDirection()
         {
-            return (Direction)code.GetBits(9, 1);
-        }
-
-        protected override byte getXn()
-        {
-            return (Byte)code.GetBits(0, 3);
+            return (Direction)getBits('D');
         }
     }
 }

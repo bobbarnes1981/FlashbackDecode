@@ -21,17 +21,7 @@ namespace Decoder.OpCodes
         {
         }
 
-        protected override byte getM()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override Size getSize()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override byte getXn()
         {
             throw new NotImplementedException();
         }

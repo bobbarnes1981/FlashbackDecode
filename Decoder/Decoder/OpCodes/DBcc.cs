@@ -26,22 +26,12 @@ namespace Decoder.OpCodes
 
         protected Condition getCondition()
         {
-            return (Condition)code.GetBits(8, 4);
-        }
-
-        protected override byte getM()
-        {
-            throw new NotImplementedException();
+            return (Condition)getSizeFromBits1('c');
         }
 
         protected override Size getSize()
         {
             return Size.Word;
-        }
-
-        protected override byte getXn()
-        {
-            throw new NotImplementedException();
         }
     }
 }

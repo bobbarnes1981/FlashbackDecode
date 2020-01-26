@@ -41,14 +41,9 @@ namespace Decoder.OpCodes
             PCDisplacement += EA;
         }
 
-        protected override byte getM()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override Size getSize()
         {
-            byte displacement = (byte)code.GetBits(8, 0);
+            byte displacement = (byte)code.GetBits(0, 8);
 
             if (displacement == 0x00)
             {
@@ -59,11 +54,6 @@ namespace Decoder.OpCodes
                 EA = (sbyte)displacement;
                 return Size.Byte;
             }
-        }
-
-        protected override byte getXn()
-        {
-            throw new NotImplementedException();
         }
     }
 }

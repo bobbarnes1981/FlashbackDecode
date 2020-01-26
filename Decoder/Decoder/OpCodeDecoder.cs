@@ -153,7 +153,6 @@ namespace Decoder
                 case 0x2:
                     // ADDQ or SUBQ
                     throw new NotImplementedException();
-                    break;
 
                 default:
                     throw new Exception();
@@ -171,8 +170,6 @@ namespace Decoder
                 // xxxx xxxx xx?? ?xxx
                 default:
                     throw new NotImplementedException();
-                    break;
-
             }
         }
 
@@ -193,7 +190,7 @@ namespace Decoder
 
         private OpCode decode_7000(Data data, int address, ushort opcode)
         {
-            throw new NotImplementedException();
+            return new MOVEQ(data, address, opcode);
         }
 
         private OpCode decode_8000(Data data, int address, ushort opcode)

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
     class MOVEtoSR : OpCode
     {
@@ -22,19 +20,9 @@ namespace Decoder.OpCodes
             EA = readEA(decodeEA());
         }
 
-        protected override byte getM()
-        {
-            return (byte)code.GetBits(3, 3);
-        }
-
         protected override Size getSize()
         {
             return Size.Word;
-        }
-
-        protected override byte getXn()
-        {
-            return (byte)code.GetBits(0, 3);
         }
     }
 }

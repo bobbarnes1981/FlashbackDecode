@@ -2,7 +2,7 @@
 {
     enum Direction
     {
-        RegisterToMemory,
-        MemoryToRegister
+        Right,
+        Left
     }
 }

@@ -22,10 +22,10 @@ namespace Decoder.OpCodes
             {
                 switch (getDirection())
                 {
-                    case Direction.MemoryToRegister:
+                    case CopyDirection.MemoryToRegister:
                         return string.Format("{0} {1}, {2}", Name, getEAString(decodeEA(), EA), mask.ToBinary());
 
-                    case Direction.RegisterToMemory:
+                    case CopyDirection.RegisterToMemory:
                         return string.Format("{0} {2}, {1}", Name, getEAString(decodeEA(), EA), mask.ToBinary());
 
                     default:
@@ -48,9 +48,9 @@ namespace Decoder.OpCodes
             return getSizeFromBits1(6);
         }
 
-        protected Direction getDirection()
+        protected CopyDirection getDirection()
         {
-            return (Direction)getBits('D');
+            return (CopyDirection)getBits('D');
         }
     }
 }

@@ -228,7 +228,15 @@ namespace Decoder
 
         private OpCode decode_C000(Data data, int address, ushort opcode)
         {
-            throw new NotImplementedException();
+            switch (opcode.GetBits(6, 3))
+            {
+                // 1100 xxx0 11xx xxxx
+                case 0x3:
+                    throw new NotImplementedException("MULU");
+
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         private OpCode decode_D000(Data data, int address, ushort opcode)
@@ -292,7 +300,7 @@ namespace Decoder
                     throw new NotImplementedException("ROXd");
 
                 case 0x3:
-                    throw new NotImplementedException("ROd");
+                    return new ROd(data, address, opcode);
 
                 default:
                     throw new Exception();

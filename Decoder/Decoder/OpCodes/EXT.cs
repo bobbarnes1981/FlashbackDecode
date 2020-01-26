@@ -4,6 +4,8 @@ namespace Decoder.OpCodes
 {
     class EXT : OpCode
     {
+        protected override string definition => "010010001s000ddd";
+
         public override string Name => "EXT";
 
         public override string Description => "Sign Extend";
@@ -17,16 +19,6 @@ namespace Decoder.OpCodes
         public EXT(Data data, int address, ushort code)
             : base(data, address, code)
         {
-        }
-
-        protected override AddressRegister getAn()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override DataRegister getDn()
-        {
-            throw new NotImplementedException();
         }
 
         protected override byte getM()

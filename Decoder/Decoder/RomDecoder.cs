@@ -29,37 +29,30 @@ namespace Decoder
         {
             programCounter = origin;
 
-            try
+            do
             {
-                do
+                Console.WriteLine("Addr\t0x{0:X4} ({0})", programCounter);
+
+                opcodeRegister = data.ReadWord(programCounter);
+
+                Console.WriteLine("OpCode\t0x{0:X4}", opcodeRegister);
+
+                Console.WriteLine(opcodeRegister.ToBinary());
+
+                OpCode opcode = new OpCodeDecoder().Decode(data, programCounter, opcodeRegister);
+
+                if (opcode is Invalid)
                 {
-                    Console.WriteLine("Addr\t0x{0:X4} ({0})", programCounter);
+                    throw new Exception("invalid opcode");
+                }
 
-                    opcodeRegister = data.ReadWord(programCounter);
+                disassembly.Add(programCounter, opcode);
 
-                    Console.WriteLine("OpCode\t0x{0:X4}", opcodeRegister);
+                programCounter += opcode.PCDisplacement;
 
-                    Console.WriteLine(opcodeRegister.ToBinary());
+                displayOpCode(opcode);
 
-                    OpCode opcode = new OpCodeDecoder().Decode(data, programCounter, opcodeRegister);
-
-                    if (opcode is Invalid)
-                    {
-                        throw new Exception("invalid opcode");
-                    }
-
-                    disassembly.Add(programCounter, opcode);
-
-                    programCounter += opcode.PCDisplacement;
-
-                    displayOpCode(opcode);
-
-                } while (running);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-            }
+            } while (running);
 
             StringBuilder builder = new StringBuilder();
             for (int addr = 0x0000; addr < 0xFFFF; addr++)

@@ -1,7 +1,11 @@
-﻿namespace Decoder.OpCodes
+﻿using System;
+
+namespace Decoder.OpCodes
 {
     abstract class OpCode
     {
+        protected abstract string definition { get; }
+
         protected readonly Data data;
         protected readonly int address;
         protected readonly ushort code;
@@ -46,9 +50,58 @@
 
         protected abstract Size getSize();
 
-        protected abstract AddressRegister getAn();
+        protected Size getSizeFromBits1(int offset)
+        {
+            switch (code.GetBits(offset, 1))
+            {
+                case 0x0000:
+                    return Size.Word;
+                case 0x0001:
+                    return Size.Long;
+                default:
+                    throw new Exception();
+            }
+        }
 
-        protected abstract DataRegister getDn();
+        private Tuple<int, int> getValues(char c)
+        {
+            int offset = -1;
+            int length = -1;
+            for (int i = 0; i < 16; i++)
+            {
+                if (definition[15-i] == c)
+                {
+                    if (offset == -1)
+                    {
+                        offset = i;
+                        length = 0;
+                    }
+                    length++;
+                }
+            }
+
+            return new Tuple<int, int>(offset, length);
+        }
+
+        protected AddressRegister getAn()
+        {
+            var vals = getValues('a');
+            if (vals.Item1 == -1 || vals.Item2 == -1)
+            {
+                throw new Exception("An not defined");
+            }
+            return (AddressRegister)code.GetBits(vals.Item1, vals.Item2);
+        }
+
+        protected DataRegister getDn()
+        {
+            var vals = getValues('d');
+            if (vals.Item1 == -1 || vals.Item2 == -1)
+            {
+                throw new Exception("Dn not defined");
+            }
+            return (DataRegister)code.GetBits(vals.Item1, vals.Item2);
+        }
 
         protected abstract byte getM();
 

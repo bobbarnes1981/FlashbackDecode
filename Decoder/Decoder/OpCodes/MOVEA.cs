@@ -4,6 +4,8 @@ namespace Decoder.OpCodes
 {
     class MOVEA : OpCode
     {
+        protected override string definition => "00SSaaa001mmmxxx";
+
         public override string Name => "MOVEA";
 
         public override string Description => "Move Address";
@@ -17,16 +19,6 @@ namespace Decoder.OpCodes
         public MOVEA(Data data, int address, ushort code)
             : base(data, address, code)
         {
-        }
-
-        protected override AddressRegister getAn()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override DataRegister getDn()
-        {
-            throw new NotImplementedException();
         }
 
         protected override byte getM()

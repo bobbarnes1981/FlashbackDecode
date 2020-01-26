@@ -4,6 +4,8 @@ namespace Decoder.OpCodes
 {
     class BSR : OpCode
     {
+        protected override string definition => "01100001bbbbbbbb";
+
         public override string Name => "BSR";
 
         public override string Description => "Branch to Subroutine";
@@ -17,16 +19,6 @@ namespace Decoder.OpCodes
         public BSR(Data data, int address, ushort code)
             : base(data, address, code)
         {
-        }
-
-        protected override AddressRegister getAn()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override DataRegister getDn()
-        {
-            throw new NotImplementedException();
         }
 
         protected override byte getM()

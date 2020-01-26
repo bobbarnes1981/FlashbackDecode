@@ -2,11 +2,10 @@
 
 namespace Decoder.OpCodes
 {
-    /// <summary>
-    /// 0110 0000 DDDD DDDD
-    /// </summary>
     class BRA : OpCode
     {
+        protected override string definition => "01100000bbbbbbbb";
+
         public override string Name => "BRA";
 
         public override string Description => "Branch Always";
@@ -40,16 +39,6 @@ namespace Decoder.OpCodes
                 PCDisplacement -= 2; // remove auto increment
             }
             PCDisplacement += EA;
-        }
-
-        protected override AddressRegister getAn()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override DataRegister getDn()
-        {
-            throw new NotImplementedException();
         }
 
         protected override byte getM()

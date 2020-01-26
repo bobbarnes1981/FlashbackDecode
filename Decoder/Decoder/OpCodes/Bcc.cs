@@ -4,6 +4,8 @@ namespace Decoder.OpCodes
 {
     class Bcc : OpCode
     {
+        protected override string definition => "0110ccccbbbbbbbb";
+
         public override string Name => "Bcc";
 
         public override string Description => "Branch Conditionally";
@@ -17,16 +19,6 @@ namespace Decoder.OpCodes
         public Bcc(Data data, int address, ushort code)
             : base(data, address, code)
         {
-        }
-
-        protected override AddressRegister getAn()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override DataRegister getDn()
-        {
-            throw new NotImplementedException();
         }
 
         protected override byte getM()

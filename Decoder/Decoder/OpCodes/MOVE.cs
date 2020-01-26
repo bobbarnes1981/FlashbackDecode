@@ -7,6 +7,8 @@ namespace Decoder.OpCodes
     /// </summary>
     class MOVE : OpCode
     {
+        protected override string definition => "00SS______mmmxxx";
+
         public override string Name => "MOVE";
 
         public override string Description => "Move Data from Source to Destination";
@@ -35,16 +37,6 @@ namespace Decoder.OpCodes
         {
             SrcAddress = readEA(decodeEA(getSrcM(), getSrcXn()), getSrcXn());
             DstAddress = readEA(decodeEA(getDstM(), getDstXn()), getDstXn());
-        }
-
-        protected override AddressRegister getAn()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override DataRegister getDn()
-        {
-            throw new NotImplementedException();
         }
 
         protected override byte getM()

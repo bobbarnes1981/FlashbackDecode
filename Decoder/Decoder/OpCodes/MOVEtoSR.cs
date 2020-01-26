@@ -4,6 +4,8 @@ namespace Decoder.OpCodes
 {
     class MOVEtoSR : OpCode
     {
+        protected override string definition => "0100011011mmmxxx";
+
         public override string Name => "MOVE";
 
         public override string Description => "Move to Status Register";
@@ -18,16 +20,6 @@ namespace Decoder.OpCodes
             : base(data, address, code)
         {
             EA = readEA(decodeEA());
-        }
-
-        protected override AddressRegister getAn()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override DataRegister getDn()
-        {
-            throw new NotImplementedException();
         }
 
         protected override byte getM()

@@ -2,11 +2,10 @@
 
 namespace Decoder.OpCodes
 {
-    /// <summary>
-    /// 0100 1D00 1Smm mnnn
-    /// </summary>
     class MOVEM : OpCode
     {
+        protected override string definition => "01001D001smmmxxx";
+
         private ushort mask;
 
         public override string Name => "MOVEM";
@@ -44,16 +43,6 @@ namespace Decoder.OpCodes
             EA = readEA(decodeEA());
         }
 
-        protected override AddressRegister getAn()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override DataRegister getDn()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override byte getM()
         {
             return (byte)code.GetBits(3, 3);
@@ -61,15 +50,7 @@ namespace Decoder.OpCodes
 
         protected override Size getSize()
         {
-            switch (code.GetBits(6, 1))
-            {
-                case 0x0000:
-                    return Size.Word;
-                case 0x0001:
-                    return Size.Long;
-                default:
-                    throw new Exception();
-            }
+            return getSizeFromBits1(6);
         }
 
         protected Direction getDirection()

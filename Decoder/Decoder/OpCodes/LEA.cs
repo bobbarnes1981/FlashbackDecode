@@ -2,11 +2,10 @@
 
 namespace Decoder.OpCodes
 {
-    /// <summary>
-    /// 0100 rrr1 11mm mxxx
-    /// </summary>
     class LEA : OpCode
     {
+        protected override string definition => "0100aaa111mmmxxx";
+
         public override string Name => "LEA";
 
         public override string Description => "Load Effective Address";
@@ -21,16 +20,6 @@ namespace Decoder.OpCodes
             : base(data, address, code)
         {
             EA = readEA(decodeEA());
-        }
-
-        protected override AddressRegister getAn()
-        {
-            return (AddressRegister)code.GetBits(9, 3);
-        }
-
-        protected override DataRegister getDn()
-        {
-            throw new NotImplementedException();
         }
 
         protected override byte getM()

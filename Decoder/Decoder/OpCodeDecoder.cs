@@ -218,7 +218,16 @@ namespace Decoder
 
         private OpCode decode_D000(Data data, int address, ushort opcode)
         {
-            throw new NotImplementedException();
+            // ADD, ADDX, ADDA
+
+            switch (opcode.GetBits(6, 2))
+            {
+                case 0x3:
+                    return new ADDA(data, address, opcode);
+
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         private OpCode decode_E000(Data data, int address, ushort opcode)

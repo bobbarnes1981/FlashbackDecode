@@ -4,6 +4,8 @@ namespace Decoder.OpCodes
 {
     class DBcc : OpCode
     {
+        protected override string definition => "0101cccc11001ddd";
+
         private short displacement;
 
         public override string Name => "DBcc";
@@ -25,16 +27,6 @@ namespace Decoder.OpCodes
         protected Condition getCondition()
         {
             return (Condition)code.GetBits(8, 4);
-        }
-
-        protected override AddressRegister getAn()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override DataRegister getDn()
-        {
-            return (DataRegister)code.GetBits(0, 3);
         }
 
         protected override byte getM()

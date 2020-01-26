@@ -7,8 +7,32 @@ namespace Decoder.OpCodes
     /// </summary>
     class BRA : OpCode
     {
+        public override string Name => "BRA";
+
+        public override string Description => "Branch Always";
+
+        public override string Operation => "PC + dn -> PC";
+
+        public override string Syntax => string.Format("{0} <label>", Name);
+
+        public override string Assembly
+        {
+            get
+            {
+                switch (Size)
+                {
+                    case Size.Byte:
+                        return string.Format("{0} {1}", FullName, (sbyte)EA);
+                    case Size.Word:
+                        return string.Format("{0} {1}", FullName, (short)EA);
+                    default:
+                        throw new Exception();
+                }
+            }
+        }
+
         public BRA(Data data, int address, ushort code)
-            : base(data, address, code, "BRA", "Branch Always PC + dn -> PC")
+            : base(data, address, code)
         {
             if (Size == Size.Word)
             {
@@ -18,20 +42,12 @@ namespace Decoder.OpCodes
             PCDisplacement += EA;
         }
 
-        public override string Operation()
+        protected override AddressRegister getAn()
         {
-            switch(Size)
-            {
-                case Size.Byte:
-                    return string.Format("PC + {0} -> PC", (sbyte)EA);
-                case Size.Word:
-                    return string.Format("PC + {0} -> PC", (short)EA);
-                default:
-                    throw new Exception();
-            }
+            throw new NotImplementedException();
         }
 
-        protected override AddressRegister getAn()
+        protected override DataRegister getDn()
         {
             throw new NotImplementedException();
         }

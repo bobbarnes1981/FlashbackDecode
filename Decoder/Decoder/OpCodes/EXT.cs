@@ -4,17 +4,27 @@ namespace Decoder.OpCodes
 {
     class EXT : OpCode
     {
+        public override string Name => "EXT";
+
+        public override string Description => "Sign Extend";
+
+        public override string Operation => throw new NotImplementedException();
+
+        public override string Syntax => throw new NotImplementedException();
+
+        public override string Assembly => throw new NotImplementedException();
+
         public EXT(Data data, int address, ushort code)
-            : base(data, address, code, "EXT", "Sign Extend")
+            : base(data, address, code)
         {
         }
 
-        public override string Operation()
+        protected override AddressRegister getAn()
         {
             throw new NotImplementedException();
         }
 
-        protected override AddressRegister getAn()
+        protected override DataRegister getDn()
         {
             throw new NotImplementedException();
         }

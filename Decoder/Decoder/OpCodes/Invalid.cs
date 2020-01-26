@@ -4,17 +4,27 @@ namespace Decoder.OpCodes
 {
     class Invalid : OpCode
     {
+        public override string Name => "INVALID";
+
+        public override string Description => throw new NotImplementedException();
+
+        public override string Operation => throw new NotImplementedException();
+
+        public override string Syntax => throw new NotImplementedException();
+
+        public override string Assembly => throw new NotImplementedException();
+
         public Invalid(Data data, int address, ushort code)
-            : base(data, address, code, "INVALID", "INVALID OPCODE")
+            : base(data, address, code)
         {
         }
 
-        public override string Operation()
+        protected override AddressRegister getAn()
         {
             throw new NotImplementedException();
         }
 
-        protected override AddressRegister getAn()
+        protected override DataRegister getDn()
         {
             throw new NotImplementedException();
         }

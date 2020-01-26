@@ -6,14 +6,22 @@
         protected readonly int address;
         protected readonly ushort code;
 
-        public readonly string Name;
+        public abstract string Name { get; }
 
-        public readonly string Description;
+        public abstract string Description { get; }
+
+        public abstract string Operation { get; }
+
+        public abstract string Syntax { get; }
+
+        public abstract string Assembly { get; }
 
         public readonly Size Size;
 
         // TODO: int?
         public int EA { get; protected set; }
+
+        // TODO: add operation length so we can skip addresses in disassembly
 
         public int PCDisplacement { get; protected set; }
 
@@ -25,14 +33,11 @@
             }
         }
 
-        public OpCode(Data data, int address, ushort code, string name, string description)
+        public OpCode(Data data, int address, ushort code)
         {
             this.data = data;
             this.address = address;
             this.code = code;
-
-            this.Name = name;
-            this.Description = description;
 
             this.Size = getSize();
 
@@ -42,6 +47,8 @@
         protected abstract Size getSize();
 
         protected abstract AddressRegister getAn();
+
+        protected abstract DataRegister getDn();
 
         protected abstract byte getM();
 
@@ -85,13 +92,16 @@
                     return string.Format("0x{0:X8}", ea);
 
                 case EffectiveAddressMode.AddressWithDisplacement:
-                    return string.Format("0x{0:X4} (d16, A{1})", ea, xn);
+                    return string.Format("(d16, A{0})", xn);
 
                 case EffectiveAddressMode.Address:
-                    return string.Format("0x{0:X4} (A{1})", ea, xn);
+                    return string.Format("(A{0})", xn);
+
+                case EffectiveAddressMode.Address_PostIncremenet:
+                    return string.Format("(A{0}+)", xn);
 
                 case EffectiveAddressMode.DataRegister:
-                    return string.Format("0x{0:X4} (D{1})", ea, xn);
+                    return string.Format("(D{0})", xn);
 
                 default:
                     throw new System.NotImplementedException(mode.ToString());
@@ -127,6 +137,9 @@
                 case EffectiveAddressMode.Address:
                     return readAReg(Xn);
 
+                case EffectiveAddressMode.Address_PostIncremenet:
+                    return readAReg(Xn);
+
                 default:
                     throw new System.NotImplementedException(ea.ToString());
             }
@@ -156,7 +169,5 @@
                     throw new System.Exception();
             }
         }
-
-        public abstract string Operation();
     }
 }

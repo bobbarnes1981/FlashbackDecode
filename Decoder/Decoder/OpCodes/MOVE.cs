@@ -7,25 +7,42 @@ namespace Decoder.OpCodes
     /// </summary>
     class MOVE : OpCode
     {
+        public override string Name => "MOVE";
+
+        public override string Description => "Move Data from Source to Destination";
+
+        public override string Operation => "<ea> -> <ea>";
+
+        public override string Syntax => string.Format("{0} <ea>, <ea>", Name);
+
+        public override string Assembly
+        {
+            get
+            {
+                return string.Format("{0} {1}, {2}",
+                    FullName,
+                    getEAString(decodeEA(getSrcM(), getSrcXn()), SrcAddress, getSrcXn()),
+                    getEAString(decodeEA(getDstM(), getDstXn()), DstAddress, getDstXn())
+                );
+            }
+        }
+
         public int SrcAddress { get; protected set; }
         public int DstAddress { get; protected set; }
 
         public MOVE(Data data, int address, ushort code)
-            : base(data, address, code, "MOVE", "Move Data from Source to Destination <ea> -> <ea>")
+            : base(data, address, code)
         {
             SrcAddress = readEA(decodeEA(getSrcM(), getSrcXn()), getSrcXn());
             DstAddress = readEA(decodeEA(getDstM(), getDstXn()), getDstXn());
         }
 
-        public override string Operation()
+        protected override AddressRegister getAn()
         {
-            return string.Format("{0} -> {1}",
-                getEAString(decodeEA(getSrcM(), getSrcXn()), SrcAddress, getSrcXn()),
-                getEAString(decodeEA(getDstM(), getDstXn()), DstAddress, getDstXn())
-            );
+            throw new NotImplementedException();
         }
 
-        protected override AddressRegister getAn()
+        protected override DataRegister getDn()
         {
             throw new NotImplementedException();
         }

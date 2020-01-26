@@ -140,7 +140,40 @@ namespace Decoder
 
         private OpCode decode_5000(Data data, int address, ushort opcode)
         {
-            throw new NotImplementedException();
+            switch (opcode.GetBits(6, 2))
+            {
+                // 0101 xxxx 11xx xxxx
+                case 0x3:
+                    // Scc or DBcc
+                    return decode_50X0(data, address, opcode);
+
+                // 0101 xxxx ??xx xxxx
+                case 0x0:
+                case 0x1:
+                case 0x2:
+                    // ADDQ or SUBQ
+                    throw new NotImplementedException();
+                    break;
+
+                default:
+                    throw new Exception();
+            }
+        }
+
+        private OpCode decode_50X0(Data data, int address, ushort opcode)
+        {
+            switch (opcode.GetBits(3, 3))
+            {
+                // xxxx xxxx xx00 1xxx
+                case 0x1:
+                    return new DBcc(data, address, opcode);
+
+                // xxxx xxxx xx?? ?xxx
+                default:
+                    throw new NotImplementedException();
+                    break;
+
+            }
         }
 
         private OpCode decode_6000(Data data, int address, ushort opcode)

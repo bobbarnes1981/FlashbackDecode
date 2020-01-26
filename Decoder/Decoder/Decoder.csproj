@@ -44,14 +44,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data.cs" />
+    <Compile Include="Enums\Condition.cs" />
+    <Compile Include="Enums\DataRegister.cs" />
     <Compile Include="Enums\Direction.cs" />
     <Compile Include="Enums\EffectiveAddressMode.cs" />
     <Compile Include="Enums\AddressRegister.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="MachineState.cs" />
     <Compile Include="OpCodeDecoder.cs" />
     <Compile Include="OpCodes\Bcc.cs" />
     <Compile Include="OpCodes\BRA.cs" />
     <Compile Include="OpCodes\BSR.cs" />
+    <Compile Include="OpCodes\DBcc.cs" />
     <Compile Include="OpCodes\EXT.cs" />
     <Compile Include="OpCodes\Invalid.cs" />
     <Compile Include="OpCodes\LEA.cs" />

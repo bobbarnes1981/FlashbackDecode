@@ -4,18 +4,28 @@ namespace Decoder.OpCodes
 {
     class MOVEtoSR : OpCode
     {
+        public override string Name => "MOVE";
+
+        public override string Description => "Move to Status Register";
+
+        public override string Operation => "<ea> -> SR";
+
+        public override string Syntax => string.Format("{0} <ea>, SR", Name);
+
+        public override string Assembly => string.Format("{0} {1}, SR", Name, getEAString(decodeEA(), EA));
+
         public MOVEtoSR(Data data, int address, ushort code)
-            : base(data, address, code, "MOVE", "Move to Status Register <ea> -> SR")
+            : base(data, address, code)
         {
             EA = readEA(decodeEA());
         }
 
-        public override string Operation()
+        protected override AddressRegister getAn()
         {
-            return string.Format("{0} -> SR", getEAString(decodeEA(), EA));
+            throw new NotImplementedException();
         }
 
-        protected override AddressRegister getAn()
+        protected override DataRegister getDn()
         {
             throw new NotImplementedException();
         }

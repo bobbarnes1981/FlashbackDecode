@@ -43,7 +43,7 @@ namespace Decoder.OpCodes
 
         protected override Size getSize()
         {
-            byte displacement = (byte)code.GetBits(0, 8);
+            byte displacement = (byte)getImmediate();
 
             if (displacement == 0x00)
             {

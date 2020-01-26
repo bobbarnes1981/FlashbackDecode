@@ -162,8 +162,7 @@ namespace Decoder
                     switch (opcode.GetBits(8, 1))
                     {
                         case 0x0:
-                            //ADDQ
-                            throw new NotImplementedException("ADDQ");
+                            return new ADDQ(data, address, opcode);
 
                         case 0x1:
                             //SUBQ

@@ -171,7 +171,10 @@ namespace Decoder.OpCodes
                     return string.Format("(A{0}+)", xn);
 
                 case EffectiveAddressMode.DataRegister:
-                    return string.Format("(D{0})", xn);
+                    return string.Format("D{0}", xn);
+
+                case EffectiveAddressMode.AddressRegister:
+                    return string.Format("A{0}", xn);
 
                 default:
                     throw new System.NotImplementedException(mode.ToString());
@@ -185,7 +188,6 @@ namespace Decoder.OpCodes
 
         protected int readEA(EffectiveAddressMode ea, byte Xn)
         {
-            // TODO: return value? register? ??!?!
             switch (ea)
             {
                 case EffectiveAddressMode.Immediate:
@@ -207,11 +209,16 @@ namespace Decoder.OpCodes
                 case EffectiveAddressMode.Address:
                     return readAReg(Xn);
 
+                case EffectiveAddressMode.AddressRegister:
+                    return Xn;
+
                 case EffectiveAddressMode.Address_PostIncremenet:
-                    return readAReg(Xn);
+                    ushort api = readAReg(Xn);
+                    writeAReg(Xn, (ushort)(api + 1));
+                    return api;
 
                 default:
-                    throw new System.NotImplementedException(ea.ToString());
+                    throw new NotImplementedException(ea.ToString());
             }
         }
 
@@ -219,6 +226,11 @@ namespace Decoder.OpCodes
         {
             Console.WriteLine("WARNING: register An {0} reading not implemented", register);
             return 0x00;
+        }
+
+        private void writeAReg(byte register, ushort data)
+        {
+            Console.WriteLine("WARNING: register An {0} writing not implemented", register);
         }
 
         protected int readData(Size size)

@@ -8,7 +8,7 @@ namespace Decoder.OpCodes
 
         protected readonly MachineState state;
 
-        public readonly int Address;
+        public readonly uint Address;
 
         public abstract string Name { get; }
 
@@ -23,7 +23,7 @@ namespace Decoder.OpCodes
         public readonly Size Size;
 
         // TODO: int?
-        public int EA { get; protected set; }
+        public uint EA { get; protected set; }
 
         // TODO: add operation length so we can skip addresses in disassembly
 
@@ -69,7 +69,7 @@ namespace Decoder.OpCodes
             }
             else
             {
-                EA = (sbyte)displacement;
+                EA = displacement;
                 return Size.Byte;
             }
         }
@@ -154,12 +154,12 @@ namespace Decoder.OpCodes
             }
         }
 
-        protected string getEAString(EffectiveAddressMode mode, int ea)
+        protected string getEAString(EffectiveAddressMode mode, uint ea)
         {
             return getEAString(mode, ea, getXn());
         }
 
-        protected string getEAString(EffectiveAddressMode mode, int ea, byte xn)
+        protected string getEAString(EffectiveAddressMode mode, uint ea, byte xn)
         {
             switch (mode)
             {
@@ -192,23 +192,23 @@ namespace Decoder.OpCodes
             }
         }
 
-        protected uint getEAValue(EffectiveAddressMode mode, int ea)
+        protected uint getEAValue(EffectiveAddressMode mode, uint ea)
         {
             return getEAValue(mode, ea, getXn());
         }
 
-        protected uint getEAValue(EffectiveAddressMode mode, int ea, byte xn)
+        protected uint getEAValue(EffectiveAddressMode mode, uint ea, byte xn)
         {
             switch (mode)
             {
                 case EffectiveAddressMode.Immediate:
-                    return (uint)ea;
+                    return ea;
 
                 case EffectiveAddressMode.Address_PostIncremenet:
-                    return (uint)ea;
+                    return ea;
 
                 case EffectiveAddressMode.AbsoluteWord:
-                    return (uint)ea;
+                    return ea;
 
                 case EffectiveAddressMode.DataRegister:
                     return state.ReadDReg((byte)ea);
@@ -226,7 +226,7 @@ namespace Decoder.OpCodes
             setEAValue(ea, getXn(), value);
         }
 
-        protected void setEAValue(EffectiveAddressMode ea, int Xn, uint value)
+        protected void setEAValue(EffectiveAddressMode ea, uint Xn, uint value)
         {
             switch (ea)
             {
@@ -240,8 +240,8 @@ namespace Decoder.OpCodes
 
                     // TODO: check Size????
 
-                    state.Write((int)addr + 0, (byte)((value >> 0) & 0xFF));
-                    state.Write((int)addr + 1, (byte)((value >> 8) & 0xFF));
+                    state.Write(addr + 0, (byte)((value >> 0) & 0xFF));
+                    state.Write(addr + 1, (byte)((value >> 8) & 0xFF));
 
                     break;
 
@@ -253,38 +253,46 @@ namespace Decoder.OpCodes
 
                     break;
 
+                case EffectiveAddressMode.AddressRegister:
+
+                    // TODO: write all 32 bits
+
+                    state.WriteAReg((byte)Xn, value);
+
+                    break;
+
                 default:
                     throw new NotImplementedException(ea.ToString());
             }
         }
 
-        protected int readEA(EffectiveAddressMode ea)
+        protected uint readEA(EffectiveAddressMode ea)
         {
             return readEA(ea, getXn());
         }
 
-        protected int readEA(EffectiveAddressMode ea, byte Xn)
+        protected uint readEA(EffectiveAddressMode ea, byte Xn)
         {
             switch (ea)
             {
                 case EffectiveAddressMode.Immediate:
-                    return readData(Size);
+                    return (uint)readData(Size);
 
                 case EffectiveAddressMode.AbsoluteWord:
-                    return readData(Size.Word);
+                    return (uint)readData(Size.Word);
 
                 case EffectiveAddressMode.AbsoluteLong:
-                    return readData(Size.Long);
+                    return (uint)readData(Size.Long);
 
                 case EffectiveAddressMode.DataRegister:
                     return Xn;
 
                 case EffectiveAddressMode.AddressWithDisplacement:
                     short displacement = (short)readData(Size.Word);
-                    return (int)(state.ReadAReg(Xn) + displacement);
+                    return (uint)(state.ReadAReg(Xn) + displacement);
 
                 case EffectiveAddressMode.Address:
-                    return (int)state.ReadAReg(Xn);
+                    return state.ReadAReg(Xn);
 
                 case EffectiveAddressMode.AddressRegister:
                     return Xn;
@@ -292,7 +300,7 @@ namespace Decoder.OpCodes
                 case EffectiveAddressMode.Address_PostIncremenet:
                     uint api = state.ReadAReg(Xn);
                     state.WriteAReg(Xn, (byte)((api + 1) & 0xFF));
-                    return (int)api;
+                    return api;
 
                 default:
                     throw new NotImplementedException(ea.ToString());

@@ -12,13 +12,13 @@ namespace Decoder
 
         private MachineState state;
 
-        private Dictionary<int, OpCode> disassembly;
+        private Dictionary<uint, OpCode> disassembly;
 
-        public RomDecoder(Data data, int origin)
+        public RomDecoder(Data data, uint origin)
         {
             state = new MachineState(data, origin);
 
-            disassembly = new Dictionary<int, OpCode>();
+            disassembly = new Dictionary<uint, OpCode>();
         }
 
         public void Decode()
@@ -47,7 +47,7 @@ namespace Decoder
             } while (running);
 
             StringBuilder builder = new StringBuilder();
-            for (int addr = 0x0000; addr < 0xFFFF; addr++)
+            for (uint addr = 0x0000; addr < 0xFFFF; addr++)
             {
                 builder.AppendFormat("0x{0:X4}", addr);
                 if (disassembly.ContainsKey(addr))

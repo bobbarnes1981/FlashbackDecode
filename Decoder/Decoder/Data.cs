@@ -20,7 +20,7 @@ namespace Decoder
         /// Read 1 byte
         /// </summary>
         /// <returns></returns>
-        public byte ReadByte(int address)
+        public byte ReadByte(uint address)
         {
             // big endian ordering of bytes in memory (https://en.wikipedia.org/wiki/Endianness)
             // 0x1234 stored as 12 34
@@ -36,7 +36,7 @@ namespace Decoder
         /// Read 2 bytes
         /// </summary>
         /// <returns></returns>
-        public ushort ReadWord(int address)
+        public ushort ReadWord(uint address)
         {
             // big endian ordering of bytes in memory (https://en.wikipedia.org/wiki/Endianness)
             // 0x1234 stored as 12 34
@@ -53,7 +53,7 @@ namespace Decoder
         /// Read 4 bytes
         /// </summary>
         /// <returns></returns>
-        public uint ReadLong(int address)
+        public uint ReadLong(uint address)
         {
             // big endian ordering of bytes in memory (https://en.wikipedia.org/wiki/Endianness)
             // 0x1234 stored as 12 34
@@ -68,7 +68,7 @@ namespace Decoder
             return l;
         }
 
-        public void WriteByte(int address, byte b)
+        public void WriteByte(uint address, byte b)
         {
             data[address + 0] = b;
         }

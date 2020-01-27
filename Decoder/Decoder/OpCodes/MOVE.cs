@@ -29,8 +29,8 @@ namespace Decoder.OpCodes
             }
         }
 
-        public int SrcEA { get; protected set; }
-        public int DstEA { get; protected set; }
+        public uint SrcEA { get; protected set; }
+        public uint DstEA { get; protected set; }
 
         public MOVE(MachineState state)
             : base(state)

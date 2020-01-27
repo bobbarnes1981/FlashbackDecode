@@ -55,7 +55,7 @@
             }
             else
             {
-                EA = (sbyte)displacement;
+                EA = displacement;
                 return Size.Byte;
             }
         }

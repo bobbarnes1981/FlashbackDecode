@@ -10,11 +10,11 @@
 
         private uint[] DataRegisters;
 
-        private int USP;
+        private uint USP;
 
-        private int SSP;
+        private uint SSP;
 
-        public int SP
+        public uint SP
         {
             get
             {
@@ -28,14 +28,14 @@
             }
         }
 
-        public int PC;
+        public uint PC;
 
         public ushort OpCode { get; private set; }
 
-        public MachineState(Data rom, int origin)
+        public MachineState(Data rom, uint origin)
         {
             this.rom = rom;
-            memory = new Data(new byte[0xFFFF]);
+            memory = new Data(new byte[0x10000]);
             PC = origin;
 
             AddressRegisters = new uint[]
@@ -68,27 +68,27 @@
             PC += 2;
         }
 
-        public byte ReadByte(int address)
+        public byte ReadByte(uint address)
         {
             return rom.ReadByte(address);
         }
 
-        public ushort ReadWord(int address)
+        public ushort ReadWord(uint address)
         {
             return rom.ReadWord(address);
         }
 
-        public uint ReadLong(int address)
+        public uint ReadLong(uint address)
         {
             return rom.ReadLong(address);
         }
 
-        public byte Read(int address)
+        public byte Read(uint address)
         {
             return memory.ReadByte(address);
         }
 
-        public void Write(int address, byte data)
+        public void Write(uint address, byte data)
         {
             memory.WriteByte(address, data);
         }
@@ -119,7 +119,7 @@
 
             if (register == 0x07)
             {
-                SP = (int)data;
+                SP = data;
             }
             else
             {

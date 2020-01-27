@@ -30,8 +30,8 @@ namespace Decoder.OpCodes
             }
         }
 
-        public Bcc(Data data, int address, ushort code)
-            : base(data, address, code)
+        public Bcc(MachineState state)
+            : base(state)
         {
             if (Size == Size.Word)
             {

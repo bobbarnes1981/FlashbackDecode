@@ -30,15 +30,15 @@ namespace Decoder.OpCodes
             }
         }
 
-        public BRA(Data data, int address, ushort code)
-            : base(data, address, code)
+        public BRA(MachineState state)
+            : base(state)
         {
             if (Size == Size.Word)
             {
                 EA = readEA(EffectiveAddressMode.Immediate, 0x00);
-                PCDisplacement -= 2; // remove auto increment
+                state.PC -= 2; // remove auto increment
             }
-            PCDisplacement += EA;
+            state.PC += EA;
         }
 
         protected override Size getSize()

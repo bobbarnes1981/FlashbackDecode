@@ -25,7 +25,7 @@
             //    .ascii  "JUE             "                                      /* Country Support (16) */
 
             // TODO: decode header data
-            new RomDecoder(new Data(@"ROM\Flashback (Europe) (Rev A).md")).Decode(0x0200);
+            new RomDecoder(new Data(@"ROM\Flashback (Europe) (Rev A).md"), 0x0200).Decode();
         }
     }
 }

@@ -14,8 +14,8 @@
 
         public override string Assembly => string.Format("{0} {1}, SR", Name, getEAString(decodeEA(), EA));
 
-        public MOVEtoSR(Data data, int address, ushort code)
-            : base(data, address, code)
+        public MOVEtoSR(MachineState state)
+            : base(state)
         {
             EA = readEA(decodeEA());
         }

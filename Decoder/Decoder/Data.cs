@@ -15,7 +15,7 @@ namespace Decoder
         /// Read 1 byte
         /// </summary>
         /// <returns></returns>
-        public ushort ReadByte(int address)
+        public byte ReadByte(int address)
         {
             // big endian ordering of bytes in memory (https://en.wikipedia.org/wiki/Endianness)
             // 0x1234 stored as 12 34

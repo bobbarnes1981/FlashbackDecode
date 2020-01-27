@@ -16,8 +16,8 @@
 
         public override string Assembly => string.Format("{0} #{1}, {2}", FullName, immediate, getEAString(decodeEA(), EA));
 
-        public ADDI(Data data, int address, ushort code)
-            : base(data, address, code)
+        public ADDI(MachineState state)
+            : base(state)
         {
             immediate = readImmediate();
             EA = readEA(decodeEA());

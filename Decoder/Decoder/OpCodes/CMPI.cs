@@ -16,8 +16,8 @@
 
         protected override string definition => "00001100ssmmmxxx";
 
-        public CMPI(Data data, int address, ushort opcode)
-            : base(data, address, opcode)
+        public CMPI(MachineState state)
+            : base(state)
         {
             immediate = readImmediate();
             EA = readEA(decodeEA());

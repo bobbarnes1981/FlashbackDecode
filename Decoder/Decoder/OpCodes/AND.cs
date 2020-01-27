@@ -32,8 +32,8 @@ namespace Decoder.OpCodes
 
         protected override string definition => "1100dddDssmmmxxx";
 
-        public AND(Data data, int address, ushort opcode)
-            :base(data, address, opcode)
+        public AND(MachineState state)
+            : base(state)
         {
             EA = readEA(decodeEA());
         }

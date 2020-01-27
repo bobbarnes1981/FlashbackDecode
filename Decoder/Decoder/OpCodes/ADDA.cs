@@ -16,8 +16,8 @@ namespace Decoder.OpCodes
 
         public override string Assembly => string.Format("{0} {1}, {2}", FullName, getEAString(decodeEA(), EA), getAn());
 
-        public ADDA(Data data, int address, ushort code)
-            : base(data, address, code)
+        public ADDA(MachineState state)
+            : base(state)
         {
             EA = readEA(decodeEA());
         }

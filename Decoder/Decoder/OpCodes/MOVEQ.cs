@@ -14,8 +14,8 @@
 
         protected override string definition => "0111ddd0bbbbbbbb";
 
-        public MOVEQ(Data data, int address, ushort code)
-            : base(data, address, code)
+        public MOVEQ(MachineState state)
+            : base(state)
         {
         }
 

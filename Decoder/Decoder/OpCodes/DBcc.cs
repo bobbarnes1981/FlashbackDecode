@@ -18,8 +18,8 @@ namespace Decoder.OpCodes
 
         public override string Assembly => string.Format("{0}.{1} {2}, 0x{3:X4}", FullName, getCondition(), getDn(), displacement);
 
-        public DBcc(Data data, int address, ushort code)
-            : base(data, address, code)
+        public DBcc(MachineState state)
+            : base(state)
         {
             displacement = (short)readData(Size); // always WORD
         }

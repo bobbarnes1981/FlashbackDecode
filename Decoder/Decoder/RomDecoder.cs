@@ -8,47 +8,39 @@ namespace Decoder
 {
     class RomDecoder
     {
-        bool running = true;
+        private bool running = true;
 
-        private Data data;
-
-        private int programCounter;
-
-        private ushort opcodeRegister;
+        private MachineState state;
 
         private Dictionary<int, OpCode> disassembly;
 
-        public RomDecoder(Data data)
+        public RomDecoder(Data data, int origin)
         {
-            this.data = data;
+            state = new MachineState(data, origin);
 
             disassembly = new Dictionary<int, OpCode>();
         }
 
-        public void Decode(int origin)
+        public void Decode()
         {
-            programCounter = origin;
-
             do
             {
-                Console.WriteLine("Addr\t0x{0:X4} ({0})", programCounter);
+                Console.WriteLine("Addr\t0x{0:X4} ({0})", state.PC);
 
-                opcodeRegister = data.ReadWord(programCounter);
+                state.FetchOpCode();
 
-                Console.WriteLine("OpCode\t0x{0:X4}", opcodeRegister);
+                Console.WriteLine("OpCode\t0x{0:X4}", state.OpCode);
 
-                Console.WriteLine(opcodeRegister.ToBinary());
+                Console.WriteLine(state.OpCode.ToBinary());
 
-                OpCode opcode = new OpCodeDecoder().Decode(data, programCounter, opcodeRegister);
+                OpCode opcode = new OpCodeDecoder().Decode(state);
 
                 if (opcode is Invalid)
                 {
                     throw new Exception("invalid opcode");
                 }
 
-                disassembly.Add(programCounter, opcode);
-
-                programCounter += opcode.PCDisplacement;
+                disassembly.Add(opcode.Address, opcode);
 
                 displayOpCode(opcode);
 

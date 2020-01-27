@@ -6,9 +6,9 @@ namespace Decoder.OpCodes
     {
         protected abstract string definition { get; }
 
-        protected readonly Data data;
-        protected readonly int address;
-        protected readonly ushort code;
+        protected readonly MachineState state;
+
+        public readonly int Address;
 
         public abstract string Name { get; }
 
@@ -27,8 +27,6 @@ namespace Decoder.OpCodes
 
         // TODO: add operation length so we can skip addresses in disassembly
 
-        public int PCDisplacement { get; protected set; }
-
         public string FullName
         {
             get
@@ -37,22 +35,20 @@ namespace Decoder.OpCodes
             }
         }
 
-        public OpCode(Data data, int address, ushort code)
+        public OpCode(MachineState state)
         {
-            this.data = data;
-            this.address = address;
-            this.code = code;
+            this.state = state;
 
-            this.Size = getSize();
+            Address = state.PC;
 
-            PCDisplacement = 2;
+            Size = getSize();
         }
 
         protected abstract Size getSize();
 
         protected Size getSizeFromBits1(int offset)
         {
-            switch (code.GetBits(offset, 1))
+            switch (state.OpCode.GetBits(offset, 1))
             {
                 case 0x0000:
                     return Size.Word;
@@ -106,7 +102,7 @@ namespace Decoder.OpCodes
         protected ushort getBits(char c)
         {
             var vals = getValues(c);
-            return code.GetBits(vals.Item1, vals.Item2);
+            return state.OpCode.GetBits(vals.Item1, vals.Item2);
         }
 
         protected AddressRegister getAn()
@@ -253,21 +249,21 @@ namespace Decoder.OpCodes
             switch (size)
             {
                 case Size.Long:
-                    uint l = data.ReadLong(address + PCDisplacement);
-                    PCDisplacement += 4;
+                    uint l = state.ReadLong(state.PC);
+                    state.PC += 4;
                     return (int)l;
 
                 case Size.Word:
-                    ushort w = data.ReadWord(address + PCDisplacement);
-                    PCDisplacement += 2;
+                    ushort w = state.ReadWord(state.PC);
+                    state.PC += 2;
                     return (int)w;
 
                 case Size.Byte:
                     // discard first byte
-                    data.ReadByte(address + PCDisplacement);
-                    PCDisplacement += 1;
-                    byte b = (byte)data.ReadByte(address + PCDisplacement);
-                    PCDisplacement += 1;
+                    state.ReadByte(state.PC);
+                    state.PC += 1;
+                    byte b = (byte)state.ReadByte(state.PC);
+                    state.PC += 1;
                     return (int)b;
 
                 default:

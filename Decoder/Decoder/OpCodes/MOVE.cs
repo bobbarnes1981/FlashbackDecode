@@ -32,8 +32,8 @@ namespace Decoder.OpCodes
         public int SrcAddress { get; protected set; }
         public int DstAddress { get; protected set; }
 
-        public MOVE(Data data, int address, ushort code)
-            : base(data, address, code)
+        public MOVE(MachineState state)
+            : base(state)
         {
             SrcAddress = readEA(decodeEA(getSrcM(), getSrcXn()), getSrcXn());
             DstAddress = readEA(decodeEA(getDstM(), getDstXn()), getDstXn());
@@ -46,12 +46,12 @@ namespace Decoder.OpCodes
 
         protected byte getDstM()
         {
-            return (byte)code.GetBits(6, 3);
+            return (byte)state.OpCode.GetBits(6, 3);
         }
 
         protected override Size getSize()
         {
-            switch (code.GetBits(12, 2))
+            switch (state.OpCode.GetBits(12, 2))
             {
                 case 0x0001:
                     return Size.Byte;
@@ -74,7 +74,7 @@ namespace Decoder.OpCodes
 
         protected byte getDstXn()
         {
-            return (byte)code.GetBits(9, 3);
+            return (byte)state.OpCode.GetBits(9, 3);
         }
     }
 }

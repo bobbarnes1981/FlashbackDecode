@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
     class ADDQ : OpCode
     {
@@ -16,8 +14,8 @@ namespace Decoder.OpCodes
 
         public override string Assembly => string.Format("{0} {1}, {2}", FullName, getImmediate(), getEAString(decodeEA(), EA));
 
-        public ADDQ(Data data, int address, ushort code)
-            : base(data, address, code)
+        public ADDQ(MachineState state)
+            : base(state)
         {
             EA = readEA(decodeEA());
         }

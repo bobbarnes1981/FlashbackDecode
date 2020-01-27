@@ -14,8 +14,8 @@
 
         public override string Assembly => string.Format("{0} {1}, {2}", Name, getEAString(decodeEA(), EA), getAn());
 
-        public LEA(Data data, int address, ushort code)
-            : base(data, address, code)
+        public LEA(MachineState state)
+            : base(state)
         {
             EA = readEA(decodeEA());
         }

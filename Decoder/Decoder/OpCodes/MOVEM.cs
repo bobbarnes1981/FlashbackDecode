@@ -34,11 +34,11 @@ namespace Decoder.OpCodes
             }
         }
 
-        public MOVEM(Data data, int address, ushort code)
-            : base(data, address, code)
+        public MOVEM(MachineState state)
+            : base(state)
         {
-            mask = data.ReadWord(address + PCDisplacement);
-            PCDisplacement += 2;
+            mask = state.ReadWord(state.PC);
+            state.PC += 2;
 
             EA = readEA(decodeEA());
         }

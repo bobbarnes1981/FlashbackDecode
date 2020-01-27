@@ -16,8 +16,8 @@ namespace Decoder.OpCodes
 
         public override string Assembly => throw new NotImplementedException();
 
-        public EXT(Data data, int address, ushort code)
-            : base(data, address, code)
+        public EXT(MachineState state)
+            : base(state)
         {
         }
 

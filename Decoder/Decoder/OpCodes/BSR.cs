@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
     class BSR : OpCode
     {
@@ -30,15 +28,18 @@ namespace Decoder.OpCodes
             }
         }
 
-        public BSR(Data data, int address, ushort code)
-            : base(data, address, code)
+        public BSR(MachineState state)
+            : base(state)
         {
             if (Size == Size.Word)
             {
                 EA = readEA(EffectiveAddressMode.Immediate, 0x00);
-                PCDisplacement -= 2; // remove auto increment
+                state.PC -= 2; // remove auto increment
             }
-            PCDisplacement += EA;
+
+            state.PC += EA;
+
+            throw new System.NotImplementedException();
         }
 
         protected override Size getSize()

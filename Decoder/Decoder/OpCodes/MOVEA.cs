@@ -16,8 +16,8 @@ namespace Decoder.OpCodes
 
         public override string Assembly => throw new NotImplementedException();
 
-        public MOVEA(Data data, int address, ushort code)
-            : base(data, address, code)
+        public MOVEA(MachineState state)
+            : base(state)
         {
             EA = readEA(decodeEA());
         }

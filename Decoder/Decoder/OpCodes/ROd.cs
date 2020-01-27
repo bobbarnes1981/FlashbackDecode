@@ -15,8 +15,8 @@
 
         protected override string definition => "1110rrrDssM11ddd";
 
-        public ROd(Data data, int address, ushort code)
-            :base(data, address, code)
+        public ROd(MachineState state)
+            : base(state)
         {
         }
 

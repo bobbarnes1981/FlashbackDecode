@@ -59,7 +59,7 @@ namespace Decoder.OpCodes
                 case 0x0001:
                     return Size.Long;
                 default:
-                    throw new Exception();
+                    throw new InvalidStateException();
             }
         }
 
@@ -248,7 +248,7 @@ namespace Decoder.OpCodes
                     return (int)w;
 
                 default:
-                    throw new Exception();
+                    throw new InvalidStateException();
             }
         }
     }

@@ -25,7 +25,7 @@ namespace Decoder.OpCodes
                     case Size.Word:
                         return string.Format("{0} {1}", FullName, (short)EA);
                     default:
-                        throw new Exception();
+                        throw new InvalidStateException();
                 }
             }
         }

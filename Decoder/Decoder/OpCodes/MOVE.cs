@@ -63,7 +63,7 @@ namespace Decoder.OpCodes
                     return Size.Word;
 
                 default:
-                    throw new Exception();
+                    throw new InvalidStateException();
             }
         }
 

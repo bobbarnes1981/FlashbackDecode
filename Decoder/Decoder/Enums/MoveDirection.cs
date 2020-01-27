@@ -1,6 +1,6 @@
 ﻿namespace Decoder
 {
-    enum CopyDirection
+    enum MoveDirection
     {
         RegisterToMemory,
         MemoryToRegister

@@ -74,6 +74,10 @@ namespace Decoder
                 case 0x0006:
                     return new ADDI(data, address, opcode);
 
+                // 0000 1100 xxxx xxxx
+                case 0x000C:
+                    throw new NotImplementedException("CMPI");
+
                 default:
                     throw new NotImplementedException();
             }
@@ -173,7 +177,7 @@ namespace Decoder
                     }
 
                 default:
-                    throw new Exception();
+                    throw new InvalidStateException();
             }
         }
 
@@ -228,6 +232,13 @@ namespace Decoder
 
         private OpCode decode_C000(Data data, int address, ushort opcode)
         {
+            switch (opcode)
+            {
+                // 1100 0100 0000 0000
+                case 0xC400:
+                    return new AND(data, address, opcode);
+            }
+
             switch (opcode.GetBits(6, 3))
             {
                 // 1100 xxx0 11xx xxxx
@@ -282,7 +293,7 @@ namespace Decoder
                     throw new NotImplementedException("ROd");
 
                 default:
-                    throw new Exception();
+                    throw new InvalidStateException();
             }
         }
 
@@ -303,7 +314,7 @@ namespace Decoder
                     return new ROd(data, address, opcode);
 
                 default:
-                    throw new Exception();
+                    throw new InvalidStateException();
             }
         }
     }

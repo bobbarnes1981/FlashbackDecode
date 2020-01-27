@@ -2,7 +2,7 @@
 
 namespace Decoder.OpCodes
 {
-    class BRA : OpCode
+    public class BRA : OpCode
     {
         protected override string definition => "01100000bbbbbbbb";
 

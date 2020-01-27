@@ -22,8 +22,6 @@ namespace Decoder.UnitTests.OpCodes
             code |= (ushort)(dTo << 9);
             code |= (ushort)(dFrom << 0);
 
-            var x = code.ToBinary();
-
             MachineState state = new MachineState(new Data(new byte[] { (byte)((code >> 8) & 0xFF), (byte)(code >> 0 & 0xFF) }), 0x0000);
             state.FetchOpCode();
 
@@ -36,6 +34,7 @@ namespace Decoder.UnitTests.OpCodes
             byte actualVal = (byte)state.ReadDReg(dTo);
 
             Assert.That(actualVal, Is.EqualTo(expectedVal));
+            Assert.That(state.PC, Is.EqualTo(0x2));
         }
     }
 }

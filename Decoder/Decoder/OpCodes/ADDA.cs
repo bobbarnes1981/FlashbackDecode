@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
     class ADDA : OpCode
     {

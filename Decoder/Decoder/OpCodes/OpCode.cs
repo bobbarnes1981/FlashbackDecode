@@ -192,7 +192,22 @@ namespace Decoder.OpCodes
             }
         }
 
-        // TODO: writeEA() ?
+        protected uint getEAValue(EffectiveAddressMode mode, int ea)
+        {
+            return getEAValue(mode, ea, getXn());
+        }
+
+        protected uint getEAValue(EffectiveAddressMode mode, int ea, byte xn)
+        {
+            switch (mode)
+            {
+                case EffectiveAddressMode.Immediate:
+                    return (uint)ea;
+
+                default:
+                    throw new NotImplementedException(mode.ToString());
+            }
+        }
 
         protected int readEA(EffectiveAddressMode ea)
         {
@@ -229,6 +244,29 @@ namespace Decoder.OpCodes
                     uint api = state.ReadAReg(Xn);
                     state.WriteAReg(Xn, (byte)((api + 1) & 0xFF));
                     return (int)api;
+
+                default:
+                    throw new NotImplementedException(ea.ToString());
+            }
+        }
+
+        protected void writeEA(EffectiveAddressMode ea, uint data)
+        {
+            writeEA(ea, getXn(), data);
+        }
+
+        protected void writeEA(EffectiveAddressMode ea, int Xn, uint data)
+        {
+            switch (ea)
+            {
+                case EffectiveAddressMode.AbsoluteWord:
+                    state.Write(Xn + 0, (byte)((data >> 0) & 0xFF));
+                    state.Write(Xn + 1, (byte)((data >> 8) & 0xFF));
+                    break;
+
+                case EffectiveAddressMode.Address:
+                    state.WriteAReg(Xn, data);
+                    throw new NotImplementedException();
 
                 default:
                     throw new NotImplementedException(ea.ToString());

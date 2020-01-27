@@ -7,8 +7,13 @@ namespace Decoder
         private byte[] data;
 
         public Data(string path)
+            : this(File.ReadAllBytes(path))
         {
-            data = File.ReadAllBytes(path);
+        }
+
+        public Data(byte[] data)
+        {
+            this.data = data;
         }
 
         /// <summary>
@@ -61,6 +66,11 @@ namespace Decoder
             l |= (uint)(data[address + 3] << 0);
 
             return l;
+        }
+
+        public void WriteByte(int address, byte b)
+        {
+            data[address + 0] = b;
         }
     }
 }

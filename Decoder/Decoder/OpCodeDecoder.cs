@@ -101,7 +101,7 @@ namespace Decoder
             {
                 // 0100 1110 0111 0101
                 case 0x4E75:
-                    throw new NotImplementedException("RTS");
+                    return new RTS(state);
             }
 
             // xxxx xxx? ??xx xxxx

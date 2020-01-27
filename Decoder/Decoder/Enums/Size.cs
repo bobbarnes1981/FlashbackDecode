@@ -15,6 +15,8 @@
         /// <summary>
         /// 32 bits
         /// </summary>
-        Long
+        Long,
+
+        None
     }
 }

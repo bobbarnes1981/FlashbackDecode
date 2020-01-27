@@ -37,6 +37,11 @@ namespace Decoder.OpCodes
         {
             SrcAddress = readEA(decodeEA(getSrcM(), getSrcXn()), getSrcXn());
             DstAddress = readEA(decodeEA(getDstM(), getDstXn()), getDstXn());
+
+            // TODO: flags
+
+            var srcVal = getEAValue(decodeEA(getSrcM(), getSrcXn()), SrcAddress);
+            writeEA(decodeEA(getDstM(), getDstXn()), DstAddress, srcVal);
         }
 
         protected byte getSrcM()

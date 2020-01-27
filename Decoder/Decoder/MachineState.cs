@@ -2,7 +2,9 @@
 {
     class MachineState
     {
-        private Data data;
+        private Data rom;
+
+        private Data memory;
 
         private uint[] AddressRegisters;
 
@@ -30,9 +32,10 @@
 
         public ushort OpCode { get; private set; }
 
-        public MachineState(Data data, int origin)
+        public MachineState(Data rom, int origin)
         {
-            this.data = data;
+            this.rom = rom;
+            memory = new Data(new byte[0xFFFF]);
             PC = origin;
 
             AddressRegisters = new uint[]
@@ -61,28 +64,33 @@
 
         public void FetchOpCode()
         {
-            OpCode = data.ReadWord(PC);
+            OpCode = rom.ReadWord(PC);
             PC += 2;
         }
 
         public byte ReadByte(int address)
         {
-            return data.ReadByte(address);
+            return rom.ReadByte(address);
         }
 
         public ushort ReadWord(int address)
         {
-            return data.ReadWord(address);
+            return rom.ReadWord(address);
         }
 
         public uint ReadLong(int address)
         {
-            return data.ReadLong(address);
+            return rom.ReadLong(address);
         }
 
-        public void Write(int address, ushort data)
+        public byte Read(int address)
         {
-            System.Console.WriteLine("WARNING: memory write not implemented");
+            return memory.ReadByte(address);
+        }
+
+        public void Write(int address, byte data)
+        {
+            memory.WriteByte(address, data);
         }
 
         public uint ReadAReg(byte register)

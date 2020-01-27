@@ -37,9 +37,12 @@
                 state.PC -= 2; // remove auto increment
             }
 
+            state.SP -= 4;
+            state.Write(state.SP + 0, (ushort)((state.PC >> 0) & 0xFF));
+            state.Write(state.SP + 1, (ushort)((state.PC >> 8) & 0xFF));
+            state.Write(state.SP + 2, (ushort)((state.PC >> 16) & 0xFF));
+            state.Write(state.SP + 3, (ushort)((state.PC >> 24) & 0xFF));
             state.PC += EA;
-
-            throw new System.NotImplementedException();
         }
 
         protected override Size getSize()

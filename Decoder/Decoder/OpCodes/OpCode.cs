@@ -192,6 +192,8 @@ namespace Decoder.OpCodes
             }
         }
 
+        // TODO: writeEA() ?
+
         protected int readEA(EffectiveAddressMode ea)
         {
             return readEA(ea, getXn());
@@ -215,33 +217,22 @@ namespace Decoder.OpCodes
 
                 case EffectiveAddressMode.AddressWithDisplacement:
                     short displacement = (short)readData(Size.Word);
-                    return readAReg(Xn) + displacement;
+                    return (int)(state.ReadAReg(Xn) + displacement);
 
                 case EffectiveAddressMode.Address:
-                    return readAReg(Xn);
+                    return (int)state.ReadAReg(Xn);
 
                 case EffectiveAddressMode.AddressRegister:
                     return Xn;
 
                 case EffectiveAddressMode.Address_PostIncremenet:
-                    ushort api = readAReg(Xn);
-                    writeAReg(Xn, (ushort)(api + 1));
-                    return api;
+                    uint api = state.ReadAReg(Xn);
+                    state.WriteAReg(Xn, (byte)((api + 1) & 0xFF));
+                    return (int)api;
 
                 default:
                     throw new NotImplementedException(ea.ToString());
             }
-        }
-
-        private ushort readAReg(byte register)
-        {
-            Console.WriteLine("WARNING: register An {0} reading not implemented", register);
-            return 0x00;
-        }
-
-        private void writeAReg(byte register, ushort data)
-        {
-            Console.WriteLine("WARNING: register An {0} writing not implemented", register);
         }
 
         protected int readData(Size size)

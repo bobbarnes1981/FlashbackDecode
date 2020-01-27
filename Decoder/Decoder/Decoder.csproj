@@ -63,6 +63,7 @@
     <Compile Include="OpCodes\Bcc.cs" />
     <Compile Include="OpCodes\BRA.cs" />
     <Compile Include="OpCodes\BSR.cs" />
+    <Compile Include="OpCodes\CMPI.cs" />
     <Compile Include="OpCodes\DBcc.cs" />
     <Compile Include="OpCodes\EXT.cs" />
     <Compile Include="OpCodes\Invalid.cs" />
@@ -80,6 +81,10 @@
     <Compile Include="Enums\Size.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\ROM\Flashback %28Europe%29 %28Rev A%29.md">
+      <Link>ROM\Flashback %28Europe%29 %28Rev A%29.md</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

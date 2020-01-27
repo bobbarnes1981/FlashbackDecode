@@ -43,17 +43,7 @@ namespace Decoder.OpCodes
 
         protected override Size getSize()
         {
-            byte displacement = (byte)getImmediate();
-
-            if (displacement == 0x00)
-            {
-                return Size.Word;
-            }
-            else
-            {
-                EA = (sbyte)displacement;
-                return Size.Byte;
-            }
+            return getSizeFrom8BitImmediate();
         }
     }
 }

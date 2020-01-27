@@ -76,7 +76,7 @@ namespace Decoder
 
                 // 0000 1100 xxxx xxxx
                 case 0x000C:
-                    throw new NotImplementedException("CMPI");
+                    return new CMPI(data, address, opcode);
 
                 default:
                     throw new NotImplementedException();
@@ -97,6 +97,13 @@ namespace Decoder
 
         private OpCode decode_4000(Data data, int address, ushort opcode)
         {
+            switch(opcode)
+            {
+                // 0100 1110 0111 0101
+                case 0x4E75:
+                    throw new NotImplementedException("RTS");
+            }
+
             // xxxx xxx? ??xx xxxx
             switch (opcode.GetBits(6, 3))
             {

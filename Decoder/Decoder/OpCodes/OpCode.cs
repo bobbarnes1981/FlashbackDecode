@@ -63,6 +63,21 @@ namespace Decoder.OpCodes
             }
         }
 
+        protected Size getSizeFrom8BitImmediate()
+        {
+            byte displacement = (byte)getImmediate();
+
+            if (displacement == 0x00)
+            {
+                return Size.Word;
+            }
+            else
+            {
+                EA = (sbyte)displacement;
+                return Size.Byte;
+            }
+        }
+
         private Tuple<int, int> getValues(char c)
         {
             int offset = -1;
@@ -246,6 +261,14 @@ namespace Decoder.OpCodes
                     ushort w = data.ReadWord(address + PCDisplacement);
                     PCDisplacement += 2;
                     return (int)w;
+
+                case Size.Byte:
+                    // discard first byte
+                    data.ReadByte(address + PCDisplacement);
+                    PCDisplacement += 1;
+                    byte b = (byte)data.ReadByte(address + PCDisplacement);
+                    PCDisplacement += 1;
+                    return (int)b;
 
                 default:
                     throw new InvalidStateException();

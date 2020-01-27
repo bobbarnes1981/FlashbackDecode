@@ -265,8 +265,14 @@ namespace Decoder.OpCodes
                     break;
 
                 case EffectiveAddressMode.Address:
-                    state.WriteAReg(Xn, data);
-                    throw new NotImplementedException();
+                    uint addr = state.ReadAReg((byte)Xn);
+
+                    // TODO: check Size????
+
+                    state.Write((int)addr + 0, (byte)((data >> 0) & 0xFF));
+                    state.Write((int)addr + 1, (byte)((data >> 8) & 0xFF));
+
+                    break;
 
                 default:
                     throw new NotImplementedException(ea.ToString());

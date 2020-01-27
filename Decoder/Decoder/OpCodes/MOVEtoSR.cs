@@ -12,12 +12,12 @@
 
         public override string Syntax => string.Format("{0} <ea>, SR", Name);
 
-        public override string Assembly => string.Format("{0} {1}, SR", Name, getEAString(decodeEA(), EA));
+        public override string Assembly => string.Format("{0} {1}, SR", Name, getEAString(decodeEAMode(), EA));
 
         public MOVEtoSR(MachineState state)
             : base(state)
         {
-            EA = readEA(decodeEA());
+            EA = readEA(decodeEAMode());
         }
 
         protected override Size getSize()

@@ -2,7 +2,7 @@
 
 namespace Decoder
 {
-    class Data
+    public class Data
     {
         private byte[] data;
 

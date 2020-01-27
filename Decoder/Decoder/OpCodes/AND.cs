@@ -19,10 +19,10 @@ namespace Decoder.OpCodes
                 switch (getDirection())
                 {
                     case LogicDirection.Dn_EA:
-                        return string.Format("{0} {1}, {2}", Name, getDn(), getEAString(decodeEA(), EA));
+                        return string.Format("{0} {1}, {2}", Name, getDn(), getEAString(decodeEAMode(), EA));
 
                     case LogicDirection.EA_Dn:
-                        return string.Format("{0} {2}, {1}", Name, getDn(), getEAString(decodeEA(), EA));
+                        return string.Format("{0} {2}, {1}", Name, getDn(), getEAString(decodeEAMode(), EA));
 
                     default:
                         throw new InvalidStateException();
@@ -35,7 +35,7 @@ namespace Decoder.OpCodes
         public AND(MachineState state)
             : base(state)
         {
-            EA = readEA(decodeEA());
+            EA = readEA(decodeEAMode());
         }
 
         protected LogicDirection getDirection()

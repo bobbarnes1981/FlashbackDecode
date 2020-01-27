@@ -2,7 +2,7 @@
 
 namespace Decoder.OpCodes
 {
-    abstract class OpCode
+    public abstract class OpCode
     {
         protected abstract string definition { get; }
 
@@ -135,12 +135,12 @@ namespace Decoder.OpCodes
             return (byte)getBits('x'); // Reg number 'Xn' 
         }
 
-        protected EffectiveAddressMode decodeEA()
+        protected EffectiveAddressMode decodeEAMode()
         {
-            return decodeEA(getM(), getXn());
+            return decodeEAMode(getM(), getXn());
         }
 
-        protected EffectiveAddressMode decodeEA(byte M, byte Xn)
+        protected EffectiveAddressMode decodeEAMode(byte M, byte Xn)
         {
             // TODO: validate allowed addressing modes
 
@@ -204,8 +204,57 @@ namespace Decoder.OpCodes
                 case EffectiveAddressMode.Immediate:
                     return (uint)ea;
 
+                case EffectiveAddressMode.Address_PostIncremenet:
+                    return (uint)ea;
+
+                case EffectiveAddressMode.AbsoluteWord:
+                    return (uint)ea;
+
+                case EffectiveAddressMode.DataRegister:
+                    return state.ReadDReg((byte)ea);
+
+                case EffectiveAddressMode.AddressRegister:
+                    return state.ReadAReg((byte)ea);
+
                 default:
                     throw new NotImplementedException(mode.ToString());
+            }
+        }
+
+        protected void setEAValue(EffectiveAddressMode ea, uint value)
+        {
+            setEAValue(ea, getXn(), value);
+        }
+
+        protected void setEAValue(EffectiveAddressMode ea, int Xn, uint value)
+        {
+            switch (ea)
+            {
+                case EffectiveAddressMode.AbsoluteWord:
+                    state.Write(Xn + 0, (byte)((value >> 0) & 0xFF));
+                    state.Write(Xn + 1, (byte)((value >> 8) & 0xFF));
+                    break;
+
+                case EffectiveAddressMode.Address:
+                    uint addr = state.ReadAReg((byte)Xn);
+
+                    // TODO: check Size????
+
+                    state.Write((int)addr + 0, (byte)((value >> 0) & 0xFF));
+                    state.Write((int)addr + 1, (byte)((value >> 8) & 0xFF));
+
+                    break;
+
+                case EffectiveAddressMode.DataRegister:
+
+                    // TODO: write all 32 bits
+
+                    state.WriteDReg((byte)Xn, value);
+
+                    break;
+
+                default:
+                    throw new NotImplementedException(ea.ToString());
             }
         }
 
@@ -244,35 +293,6 @@ namespace Decoder.OpCodes
                     uint api = state.ReadAReg(Xn);
                     state.WriteAReg(Xn, (byte)((api + 1) & 0xFF));
                     return (int)api;
-
-                default:
-                    throw new NotImplementedException(ea.ToString());
-            }
-        }
-
-        protected void writeEA(EffectiveAddressMode ea, uint data)
-        {
-            writeEA(ea, getXn(), data);
-        }
-
-        protected void writeEA(EffectiveAddressMode ea, int Xn, uint data)
-        {
-            switch (ea)
-            {
-                case EffectiveAddressMode.AbsoluteWord:
-                    state.Write(Xn + 0, (byte)((data >> 0) & 0xFF));
-                    state.Write(Xn + 1, (byte)((data >> 8) & 0xFF));
-                    break;
-
-                case EffectiveAddressMode.Address:
-                    uint addr = state.ReadAReg((byte)Xn);
-
-                    // TODO: check Size????
-
-                    state.Write((int)addr + 0, (byte)((data >> 0) & 0xFF));
-                    state.Write((int)addr + 1, (byte)((data >> 8) & 0xFF));
-
-                    break;
 
                 default:
                     throw new NotImplementedException(ea.ToString());

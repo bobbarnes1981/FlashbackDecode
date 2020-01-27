@@ -23,10 +23,10 @@ namespace Decoder.OpCodes
                 switch (getDirection())
                 {
                     case MoveDirection.MemoryToRegister:
-                        return string.Format("{0} {1}, {2}", Name, getEAString(decodeEA(), EA), mask.ToBinary());
+                        return string.Format("{0} {1}, {2}", Name, getEAString(decodeEAMode(), EA), mask.ToBinary());
 
                     case MoveDirection.RegisterToMemory:
-                        return string.Format("{0} {2}, {1}", Name, getEAString(decodeEA(), EA), mask.ToBinary());
+                        return string.Format("{0} {2}, {1}", Name, getEAString(decodeEAMode(), EA), mask.ToBinary());
 
                     default:
                         throw new InvalidStateException();
@@ -40,7 +40,7 @@ namespace Decoder.OpCodes
             mask = state.ReadWord(state.PC);
             state.PC += 2;
 
-            EA = readEA(decodeEA());
+            EA = readEA(decodeEAMode());
         }
 
         protected override Size getSize()

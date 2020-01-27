@@ -2,7 +2,7 @@
 
 namespace Decoder
 {
-    static class Extensions
+    public static class Extensions
     {
         public static string ToBinary(this ushort s)
         {

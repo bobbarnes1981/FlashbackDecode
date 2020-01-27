@@ -1,6 +1,6 @@
 ﻿namespace Decoder
 {
-    enum Size
+    public enum Size
     {
         /// <summary>
         /// 8 bits

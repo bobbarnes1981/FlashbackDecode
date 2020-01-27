@@ -1,6 +1,6 @@
 ﻿namespace Decoder
 {
-    class MachineState
+    public class MachineState
     {
         private Data rom;
 
@@ -110,7 +110,7 @@
             }
         }
 
-        public void WriteAReg(byte register, byte data)
+        public void WriteAReg(byte register, uint data)
         {
             if (register > 0x07)
             {
@@ -119,12 +119,22 @@
 
             if (register == 0x07)
             {
-                SP = data;
+                SP = (int)data;
             }
             else
             {
                 AddressRegisters[register] = data;
             }
+        }
+
+        public uint ReadDReg(byte register)
+        {
+            return DataRegisters[register];
+        }
+
+        public void WriteDReg(byte register, uint data)
+        {
+            DataRegisters[register] = data;
         }
     }
 }

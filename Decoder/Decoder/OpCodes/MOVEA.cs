@@ -19,7 +19,7 @@ namespace Decoder.OpCodes
         public MOVEA(MachineState state)
             : base(state)
         {
-            EA = readEA(decodeEA());
+            EA = readEA(decodeEAMode());
         }
 
         protected override Size getSize()

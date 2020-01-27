@@ -1,6 +1,6 @@
 ﻿namespace Decoder
 {
-    enum EffectiveAddressMode
+    public enum EffectiveAddressMode
     {
         DataRegister                = 0x00, // 0000 0000
         AddressRegister             = 0x08, // 0000 1000

@@ -5,7 +5,7 @@ namespace Decoder.OpCodes
     /// <summary>
     /// 00SS XXX MMM MMM XXX
     /// </summary>
-    class MOVE : OpCode
+    public class MOVE : OpCode
     {
         protected override string definition => "00ss______mmmxxx";
 
@@ -23,25 +23,23 @@ namespace Decoder.OpCodes
             {
                 return string.Format("{0} {1}, {2}",
                     FullName,
-                    getEAString(decodeEA(getSrcM(), getSrcXn()), SrcAddress, getSrcXn()),
-                    getEAString(decodeEA(getDstM(), getDstXn()), DstAddress, getDstXn())
+                    getEAString(decodeEAMode(getSrcM(), getSrcXn()), SrcEA, getSrcXn()),
+                    getEAString(decodeEAMode(getDstM(), getDstXn()), DstEA, getDstXn())
                 );
             }
         }
 
-        public int SrcAddress { get; protected set; }
-        public int DstAddress { get; protected set; }
+        public int SrcEA { get; protected set; }
+        public int DstEA { get; protected set; }
 
         public MOVE(MachineState state)
             : base(state)
         {
-            SrcAddress = readEA(decodeEA(getSrcM(), getSrcXn()), getSrcXn());
-            DstAddress = readEA(decodeEA(getDstM(), getDstXn()), getDstXn());
+            SrcEA = readEA(decodeEAMode(getSrcM(), getSrcXn()), getSrcXn());
+            DstEA = readEA(decodeEAMode(getDstM(), getDstXn()), getDstXn());
 
-            // TODO: flags
-
-            var srcVal = getEAValue(decodeEA(getSrcM(), getSrcXn()), SrcAddress);
-            writeEA(decodeEA(getDstM(), getDstXn()), DstAddress, srcVal);
+            var srcVal = getEAValue(decodeEAMode(getSrcM(), getSrcXn()), SrcEA);
+            setEAValue(decodeEAMode(getDstM(), getDstXn()), DstEA, srcVal);
         }
 
         protected byte getSrcM()

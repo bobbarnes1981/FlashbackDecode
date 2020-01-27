@@ -1,6 +1,6 @@
 ﻿namespace Decoder
 {
-    enum DataRegister
+    public enum DataRegister
     {
         D0,
         D1,

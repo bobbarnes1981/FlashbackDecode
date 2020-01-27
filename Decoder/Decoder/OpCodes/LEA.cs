@@ -12,12 +12,12 @@
 
         public override string Syntax => string.Format("{0} <ea>, An", Name);
 
-        public override string Assembly => string.Format("{0} {1}, {2}", Name, getEAString(decodeEA(), EA), getAn());
+        public override string Assembly => string.Format("{0} {1}, {2}", Name, getEAString(decodeEAMode(), EA), getAn());
 
         public LEA(MachineState state)
             : base(state)
         {
-            EA = readEA(decodeEA());
+            EA = readEA(decodeEAMode());
         }
 
         protected override Size getSize()

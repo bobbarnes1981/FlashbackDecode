@@ -14,13 +14,18 @@
 
         public override string Syntax => string.Format("{0} #<data>, <ea>", Name);
 
-        public override string Assembly => string.Format("{0} #{1}, {2}", FullName, immediate, getEAString(decodeEA(), EA));
+        public override string Assembly => string.Format("{0} #{1}, {2}", FullName, immediate, getEAString(decodeEAMode(), EA));
 
         public ADDI(MachineState state)
             : base(state)
         {
             immediate = readImmediate();
-            EA = readEA(decodeEA());
+            EA = readEA(decodeEAMode());
+
+            // TODO: flags
+
+            var dstVal = getEAValue(decodeEAMode(), EA);
+            setEAValue(decodeEAMode(), immediate + dstVal);
         }
 
         protected override Size getSize()

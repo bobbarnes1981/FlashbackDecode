@@ -1,6 +1,6 @@
 ﻿namespace Decoder
 {
-    enum AddressRegister
+    public enum AddressRegister
     {
         A0,
         A1,

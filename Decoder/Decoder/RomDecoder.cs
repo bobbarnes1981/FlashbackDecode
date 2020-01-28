@@ -23,6 +23,8 @@ namespace Decoder
 
         public void Decode()
         {
+            OpCodeDecoder decoder = new OpCodeDecoder();
+
             do
             {
                 Console.WriteLine("Addr\t0x{0:X4} ({0})", state.PC);
@@ -33,12 +35,14 @@ namespace Decoder
 
                 Console.WriteLine(state.OpCode.ToBinary());
 
-                OpCode opcode = new OpCodeDecoder().Decode(state);
+                OpCode opcode = decoder.Decode(state);
 
                 if (opcode is Invalid)
                 {
                     throw new Exception("invalid opcode");
                 }
+
+                opcode.Execute();
 
                 disassembly.Add(opcode.Address, opcode);
 

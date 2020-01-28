@@ -25,5 +25,10 @@ namespace Decoder.OpCodes
         {
             throw new NotImplementedException();
         }
+
+        public override void Execute()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

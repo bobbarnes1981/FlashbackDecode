@@ -72,11 +72,11 @@ namespace Decoder
             switch (state.OpCode.GetBits(8, 4))
             {
                 case 0x0006:
-                    return new ADDI(state);
+                    throw new NotImplementedException("ADDI");
 
                 // 0000 1100 xxxx xxxx
                 case 0x000C:
-                    return new CMPI(state);
+                    throw new NotImplementedException("CMPI");
 
                 default:
                     throw new NotImplementedException();
@@ -87,11 +87,11 @@ namespace Decoder
         {
             if (state.OpCode.GetBits(6, 3) == 0x0001)
             {
-                return new MOVEA(state);
+                throw new NotImplementedException("MOVEA");
             }
             else
             {
-                return new MOVE(state);
+                throw new NotImplementedException("MOVE");
             }
         }
 
@@ -101,7 +101,7 @@ namespace Decoder
             {
                 // 0100 1110 0111 0101
                 case 0x4E75:
-                    return new RTS(state);
+                    throw new NotImplementedException("RTS");
             }
 
             // 0100 ???? ???? ?xxx
@@ -112,10 +112,10 @@ namespace Decoder
                     if (state.OpCode.GetBits(3, 3) == 0x0000)
                     {
                         // 100 001 000
-                        return new SWAP(state);
+                        throw new NotImplementedException("SWAP");
                     }
                     // 100 001 xxx
-                    return new PEA(state);
+                    throw new NotImplementedException("PEA");
             }
 
             // xxxx xxx? ??xx xxxx
@@ -129,7 +129,7 @@ namespace Decoder
 
                 // xxxx xxx1 11xx xxxx
                 case 0x0007:
-                    return new LEA(state);
+                    throw new NotImplementedException("LEA");
 
                 default:
                     throw new NotImplementedException();
@@ -147,11 +147,11 @@ namespace Decoder
                     // xxxx xxxx xx00 0xxx
                     if (state.OpCode.GetBits(3, 3) == 0x0000)
                     {
-                        return new EXT(state);
+                        throw new NotImplementedException("EXT");
                     }
                     else
                     {
-                        return new MOVEM(state);
+                        throw new NotImplementedException("MOVEM");
                     }
 
                 // xxxx 011x xxxx xxxx
@@ -160,7 +160,7 @@ namespace Decoder
                     if (state.OpCode.GetBits(6, 10) == 0x011B)
                     {
                         // 0100 0110 11xx xxxx
-                        return new MOVEtoSR(state);
+                        throw new NotImplementedException("MOVEtoSR");
                     }
 
                     throw new NotImplementedException();
@@ -187,7 +187,7 @@ namespace Decoder
                     switch (state.OpCode.GetBits(8, 1))
                     {
                         case 0x0:
-                            return new ADDQ(state);
+                            throw new NotImplementedException("ADDQ");
 
                         case 0x1:
                             //SUBQ
@@ -208,7 +208,7 @@ namespace Decoder
             {
                 // xxxx xxxx xx00 1xxx
                 case 0x1:
-                    return new DBcc(state);
+                    throw new NotImplementedException("DBcc");
 
                 // xxxx xxxx xx?? ?xxx
                 default:
@@ -221,19 +221,19 @@ namespace Decoder
             switch (state.OpCode.GetBits(8, 4))
             {
                 case 0x0000:
-                    return new BRA(state);
+                    throw new NotImplementedException("BRA");
 
                 case 0x0001:
-                    return new BSR(state);
+                    throw new NotImplementedException("BSR");
 
                 default:
-                    return new Bcc(state);
+                    throw new NotImplementedException("Bcc");
             }
         }
 
         private OpCode decode_7000(MachineState state)
         {
-            return new MOVEQ(state);
+            throw new NotImplementedException("MOVEQ");
         }
 
         private OpCode decode_8000(MachineState state)
@@ -257,7 +257,7 @@ namespace Decoder
             {
                 // 1100 0100 0000 0000
                 case 0xC400:
-                    return new AND(state);
+                    throw new NotImplementedException("AND");
             }
 
             switch (state.OpCode.GetBits(6, 3))
@@ -278,7 +278,7 @@ namespace Decoder
             switch (state.OpCode.GetBits(6, 2))
             {
                 case 0x3:
-                    return new ADDA(state);
+                    throw new NotImplementedException("ADDA");
 
                 default:
                     throw new NotImplementedException();
@@ -332,7 +332,7 @@ namespace Decoder
                     throw new NotImplementedException("ROXd");
 
                 case 0x3:
-                    return new ROd(state);
+                    throw new NotImplementedException("ROd");
 
                 default:
                     throw new InvalidStateException();

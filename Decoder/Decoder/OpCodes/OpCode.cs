@@ -22,7 +22,6 @@ namespace Decoder.OpCodes
 
         public readonly Size Size;
 
-        // TODO: int?
         public uint EA { get; protected set; }
 
         // TODO: add operation length so we can skip addresses in disassembly
@@ -43,6 +42,8 @@ namespace Decoder.OpCodes
 
             Size = getSize();
         }
+
+        public abstract void Execute();
 
         protected abstract Size getSize();
 

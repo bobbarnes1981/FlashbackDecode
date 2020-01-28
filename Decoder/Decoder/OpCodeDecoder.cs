@@ -97,6 +97,13 @@ namespace Decoder
 
         private OpCode decode_4000(MachineState state)
         {
+            switch(state.OpCode.GetBits(8, 4))
+            {
+                // 01001010xxxxxxxx
+                case 0x000A:
+                    return new TST(state);
+            }
+
             switch(state.OpCode)
             {
                 // 0100 1110 0111 0101
@@ -129,7 +136,7 @@ namespace Decoder
 
                 // xxxx xxx1 11xx xxxx
                 case 0x0007:
-                    throw new NotImplementedException("LEA");
+                    return new LEA(state);
 
                 default:
                     throw new NotImplementedException();
@@ -227,7 +234,7 @@ namespace Decoder
                     throw new NotImplementedException("BSR");
 
                 default:
-                    throw new NotImplementedException("Bcc");
+                    return new Bcc(state);
             }
         }
 

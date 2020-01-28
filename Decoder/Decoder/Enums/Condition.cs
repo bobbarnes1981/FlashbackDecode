@@ -1,6 +1,6 @@
 ﻿namespace Decoder
 {
-    enum Condition
+    public enum Condition
     {
         T,
         F,

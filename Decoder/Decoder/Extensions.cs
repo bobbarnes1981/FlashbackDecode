@@ -19,6 +19,7 @@ namespace Decoder
         {
             // TODO: validate values
             ushort lengthMask = 0x0000;
+
             ushort count = 1;
             for (int i = 1; i <= length; i++)
             {
@@ -27,6 +28,35 @@ namespace Decoder
             }
 
             return (ushort)((s >> offset) & lengthMask);
+        }
+
+        // TODO: upgrade .NET and use ref extension?
+        public static ushort SetBits(this ushort s, int offset, int length, bool set)
+        {
+            // TODO: validate values
+            ushort setMask = 0x0000;
+
+            ushort count = 1;
+            for (int i = 0; i < 16; i++)
+            {
+                if (i >= offset && i < offset + length)
+                {
+                    setMask |= count;
+                }
+
+                count += count;
+            }
+
+            if (set)
+            {
+                s |= setMask;
+            }
+            else
+            {
+                s &= (ushort)~setMask;
+            }
+
+            return s;
         }
     }
 }

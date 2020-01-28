@@ -26,14 +26,6 @@ namespace Decoder.OpCodes
 
         // TODO: add operation length so we can skip addresses in disassembly
 
-        public string FullName
-        {
-            get
-            {
-                return string.Format("{0}.{1}", Name, Size.ToString().ToLower()[0]);
-            }
-        }
-
         public OpCode(MachineState state)
         {
             this.state = state;
@@ -42,8 +34,6 @@ namespace Decoder.OpCodes
 
             Size = getSize();
         }
-
-        public abstract void Execute();
 
         protected abstract Size getSize();
 
@@ -72,6 +62,23 @@ namespace Decoder.OpCodes
             {
                 EA = displacement;
                 return Size.Byte;
+            }
+        }
+
+        protected Condition getCondition()
+        {
+            return (Condition)getBits('c');
+        }
+
+        protected bool checkCondition(uint ea)
+        {
+            switch (getCondition())
+            {
+                case Condition.NE:
+                    return state.Condition_Z == false;
+
+                default:
+                    throw new InvalidStateException();
             }
         }
 
@@ -155,12 +162,12 @@ namespace Decoder.OpCodes
             }
         }
 
-        protected string getEAString(EffectiveAddressMode mode, uint ea)
+        protected string getEAAssemblyString()
         {
-            return getEAString(mode, ea, getXn());
+            return getEAAssemblyString(decodeEAMode(), EA, getXn());
         }
 
-        protected string getEAString(EffectiveAddressMode mode, uint ea, byte xn)
+        protected string getEAAssemblyString(EffectiveAddressMode mode, uint ea, byte xn)
         {
             switch (mode)
             {
@@ -182,7 +189,10 @@ namespace Decoder.OpCodes
                     return string.Format("0x{0:X8}", ea);
 
                 case EffectiveAddressMode.AddressWithDisplacement:
-                    return string.Format("(d16 [{0}], A{1})", ea, xn);
+                    return $"({(short)ea}, A{xn})";
+
+                case EffectiveAddressMode.ProgramCounter_Displacement:
+                    return $"({(short)ea}, PC)";
 
                 case EffectiveAddressMode.Address:
                     return string.Format("(A{0})", xn);
@@ -197,13 +207,62 @@ namespace Decoder.OpCodes
                     return string.Format("A{0}", xn);
 
                 default:
-                    throw new System.NotImplementedException(mode.ToString());
+                    throw new NotImplementedException(mode.ToString());
             }
         }
 
-        protected uint getEAValue(EffectiveAddressMode mode, uint ea)
+        protected string getEADescriptionString()
         {
-            return getEAValue(mode, ea, getXn());
+            return getEADescriptionString(decodeEAMode(), EA, getXn());
+        }
+
+        protected string getEADescriptionString(EffectiveAddressMode mode, uint ea, byte xn)
+        {
+            switch (mode)
+            {
+                case EffectiveAddressMode.Immediate:
+                    switch (Size)
+                    {
+                        case Size.Long:
+                            return string.Format("#{0}", (int)ea);
+                        case Size.Word:
+                            return string.Format("#{0}", (short)ea);
+                        default:
+                            throw new NotImplementedException();
+                    }
+
+                case EffectiveAddressMode.AbsoluteWord:
+                    return string.Format("0x{0:X4}", ea);
+
+                case EffectiveAddressMode.AbsoluteLong:
+                    return string.Format("0x{0:X8}", ea);
+
+                case EffectiveAddressMode.AddressWithDisplacement:
+                    return $"(d16, A{xn})";
+
+                case EffectiveAddressMode.ProgramCounter_Displacement:
+                    return $"(d16, PC)";
+
+                case EffectiveAddressMode.Address:
+                    return string.Format("(A{0})", xn);
+
+                case EffectiveAddressMode.Address_PostIncremenet:
+                    return string.Format("(A{0}+)", xn);
+
+                case EffectiveAddressMode.DataRegister:
+                    return string.Format("D{0}", xn);
+
+                case EffectiveAddressMode.AddressRegister:
+                    return string.Format("A{0}", xn);
+
+                default:
+                    throw new NotImplementedException(mode.ToString());
+            }
+        }
+
+        protected uint getEAValue()
+        {
+            return getEAValue(decodeEAMode(), EA, getXn());
         }
 
         protected uint getEAValue(EffectiveAddressMode mode, uint ea, byte xn)
@@ -213,14 +272,27 @@ namespace Decoder.OpCodes
                 case EffectiveAddressMode.Immediate:
                     return ea;
 
-                case EffectiveAddressMode.Address_PostIncremenet:
-                    return ea;
-
                 case EffectiveAddressMode.AbsoluteWord:
-                    return ea;
+                    switch (Size)
+                    {
+                        case Size.Long:
+                            return state.ReadLong(ea);
+                        case Size.Word:
+                            return state.ReadWord(ea);
+                        default:
+                            throw new NotImplementedException();
+                    }
 
                 case EffectiveAddressMode.AbsoluteLong:
-                    return ea;
+                    switch (Size)
+                    {
+                        case Size.Long:
+                            return state.ReadLong(ea);
+                        case Size.Word:
+                            return state.ReadWord(ea);
+                        default:
+                            throw new NotImplementedException();
+                    }
 
                 case EffectiveAddressMode.DataRegister:
                     return state.ReadDReg((byte)ea);
@@ -229,7 +301,12 @@ namespace Decoder.OpCodes
                     return state.ReadAReg((byte)ea);
 
                 case EffectiveAddressMode.Address:
-                    return state.Read(state.ReadAReg(xn));
+                    throw new NotImplementedException();
+                //return state.Read(state.ReadAReg(xn));
+
+                case EffectiveAddressMode.ProgramCounter_Displacement:
+                    // TODO: is -4 required?
+                    return (uint)(state.PC - 4 + (short)ea);
 
                 default:
                     throw new NotImplementedException(mode.ToString());
@@ -246,8 +323,9 @@ namespace Decoder.OpCodes
             switch (ea)
             {
                 case EffectiveAddressMode.AbsoluteWord:
-                    state.Write(Xn + 0, (byte)((value >> 0) & 0xFF));
-                    state.Write(Xn + 1, (byte)((value >> 8) & 0xFF));
+                    //                    state.Write(Xn + 0, (byte)((value >> 0) & 0xFF));
+                    //                    state.Write(Xn + 1, (byte)((value >> 8) & 0xFF));
+                    throw new NotImplementedException();
                     break;
 
                 case EffectiveAddressMode.Address:
@@ -255,8 +333,9 @@ namespace Decoder.OpCodes
 
                     // TODO: check Size????
 
-                    state.Write(addr + 0, (byte)((value >> 0) & 0xFF));
-                    state.Write(addr + 1, (byte)((value >> 8) & 0xFF));
+//                    state.Write(addr + 0, (byte)((value >> 0) & 0xFF));
+//                    state.Write(addr + 1, (byte)((value >> 8) & 0xFF));
+                    throw new NotImplementedException();
 
                     break;
 
@@ -281,6 +360,11 @@ namespace Decoder.OpCodes
             }
         }
 
+        protected uint readEA()
+        {
+            return readEA(decodeEAMode(), getXn());
+        }
+
         protected uint readEA(EffectiveAddressMode ea)
         {
             return readEA(ea, getXn());
@@ -303,8 +387,10 @@ namespace Decoder.OpCodes
                     return Xn;
 
                 case EffectiveAddressMode.AddressWithDisplacement:
-                    short displacement = (short)readData(Size.Word);
-                    return (uint)(state.ReadAReg(Xn) + displacement);
+                    return (uint)readData(Size.Word);
+
+                case EffectiveAddressMode.ProgramCounter_Displacement:
+                    return (uint)readData(Size.Word);
 
                 case EffectiveAddressMode.Address:
                     return state.ReadAReg(Xn);
@@ -344,6 +430,36 @@ namespace Decoder.OpCodes
                     state.PC += 1;
                     return (int)b;
 
+                default:
+                    throw new InvalidStateException();
+            }
+        }
+
+        protected bool isNegative(uint val)
+        {
+            switch (Size)
+            {
+                case Size.Byte:
+                    return ((sbyte)val) < 0;
+                case Size.Word:
+                    return ((short)val) < 0;
+                case Size.Long:
+                    return ((int)val) < 0;
+                default:
+                    throw new InvalidStateException();
+            }
+        }
+
+        protected bool isZero(uint val)
+        {
+            switch (Size)
+            {
+                case Size.Byte:
+                    return ((sbyte)val) == 0;
+                case Size.Word:
+                    return ((short)val) == 0;
+                case Size.Long:
+                    return ((int)val) == 0;
                 default:
                     throw new InvalidStateException();
             }

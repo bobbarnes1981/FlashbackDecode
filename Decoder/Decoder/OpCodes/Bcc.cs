@@ -1,49 +1,57 @@
-﻿using System;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
-    //class Bcc : OpCode
-    //{
-    //    protected override string definition => "0110ccccbbbbbbbb";
+    public class Bcc : OpCode
+    {
+        public override string Name => "B";
 
-    //    public override string Name => "Bcc";
+        public override string Description => "Branch Conditionally";
 
-    //    public override string Description => "Branch Conditionally";
+        public override string Operation => "If CONDITION TRUE PC+dn -> PC";
 
-    //    public override string Operation => "If CONDITION TRUE PC+dn -> PC";
+        public override string Syntax => $"{Name}{getCondition()} <label>";
 
-    //    public override string Syntax => string.Format("{0} <label>", Name);
+        public override string Assembly
+        {
+            get
+            {
+                switch (Size)
+                {
+                    case Size.Byte:
+                        return $"{Name}{getCondition()} {(sbyte)EA}";
+                    case Size.Word:
+                        return $"{Name}{getCondition()} {(short)EA}";
+                    default:
+                        throw new InvalidStateException();
+                }
+            }
+        }
 
-    //    public override string Assembly
-    //    {
-    //        get
-    //        {
-    //            switch (Size)
-    //            {
-    //                case Size.Byte:
-    //                    return string.Format("{0} {1}", Name, (sbyte)EA);
-    //                case Size.Word:
-    //                    return string.Format("{0} {1}", Name, (short)EA);
-    //                default:
-    //                    throw new InvalidStateException();
-    //            }
-    //        }
-    //    }
+        protected override string definition => "0110ccccbbbbbbbb";
 
-    //    public Bcc(MachineState state)
-    //        : base(state)
-    //    {
-    //        if (Size == Size.Word)
-    //        {
-    //            EA = readEA(EffectiveAddressMode.Immediate, 0x00);
-    //            //PCDisplacement -= 2; // remove auto increment
-    //        }
-    //        //PCDisplacement += EA;
-    //    }
+        public Bcc(MachineState state)
+            : base(state)
+        {
+            if (Size == Size.Word)
+            {
+                EA = readEA(EffectiveAddressMode.Immediate, 0x00);
+            }
 
-    //    protected override Size getSize()
-    //    {
-    //        return getSizeFrom8BitImmediate();
-    //    }
-    //}
+            if (checkCondition(EA))
+            {
+                if (Size == Size.Word)
+                {
+                    state.PC += EA - 2;
+                }
+                else
+                {
+                    state.PC += EA;
+                }
+            }
+        }
+
+        protected override Size getSize()
+            {
+                return getSizeFrom8BitImmediate();
+            }
+    }
 }

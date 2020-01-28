@@ -1,10 +1,12 @@
-﻿namespace Decoder
+﻿using System;
+
+namespace Decoder
 {
     public class MachineState
     {
         private Data rom;
 
-        private Data memory;
+        private Data ram68k;
 
         private uint[] AddressRegisters;
 
@@ -34,17 +36,21 @@
 
         public ushort SR { get; set; }
 
-        public MachineState(Data rom)
-        {
-            Header h = new Header(rom);
+        private uint ROM_MIN = 0x000000;
+        private uint ROM_MAX = 0x3FFFFF;
 
-            PC = h.Origin;
-            USP = h.SP;
+        private uint RAM_MIN = 0xFF0000;
+        private uint RAM_MAX = 0xFFFFFF;
+
+        public MachineState(Data rom, uint origin, uint sp)
+        {
+            PC = origin;
+            USP = sp;
 
             //TODO: ram and rom start/end
 
             this.rom = rom;
-            memory = new Data(new byte[0x10000]);
+            ram68k = new Data(new byte[0x10000]);
 
             AddressRegisters = new uint[]
             {
@@ -78,27 +84,65 @@
 
         public byte ReadByte(uint address)
         {
-            return rom.ReadByte(address);
+            if (address <= ROM_MAX)
+            {
+                return rom.ReadByte(address);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public void WriteByte(uint address, byte data)
+        {
+            if (address <= ROM_MAX)
+            {
+                throw new InvalidStateException();
+            }
+            else if (address >= RAM_MIN && address <= RAM_MAX)
+            {
+                ram68k.WriteByte(address - RAM_MIN, data);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public ushort ReadWord(uint address)
         {
-            return rom.ReadWord(address);
+            if (address <= ROM_MAX)
+            {
+                return rom.ReadWord(address);
+            }
+
+            if (address == 0x00A1000C)
+            {
+                Console.WriteLine("Reading Expansion Port Control");
+                return 0x0000;
+            }
+
+            throw new NotImplementedException($"{address:X8}");
         }
 
         public uint ReadLong(uint address)
         {
-            return rom.ReadLong(address);
-        }
+            if (address <= ROM_MAX)
+            {
+                return rom.ReadLong(address);
+            }
 
-        public byte Read(uint address)
-        {
-            return memory.ReadByte(address);
-        }
+            if (address == 0xA10008)
+            {
+                Console.WriteLine("Reading Controller 1 Control and Controller 2 Control");
+                return 0x00000000;
+            }
 
-        public void Write(uint address, byte data)
-        {
-            memory.WriteByte(address, data);
+            if (address >= RAM_MIN && address <= RAM_MAX)
+            {
+                return ram68k.ReadLong(address - RAM_MIN);
+            }
+
+            throw new NotImplementedException($"{address:X8}");
         }
 
         public uint ReadAReg(byte register)
@@ -143,6 +187,98 @@
         public void WriteDReg(byte register, uint data)
         {
             DataRegisters[register] = data;
+        }
+
+        private const int CONDITION_TRACE = 13;
+        private const int CONDITION_SUPERVISOR = 15;
+        private const int CONDITION_X = 4;
+        private const int CONDITION_NEGATIVE = 3;
+        private const int CONDITION_ZERO = 2;
+        private const int CONDITION_V = 1;
+        private const int CONDITION_CARRY = 0;
+
+        public bool Condition_X
+        {
+            get
+            {
+                return SR.GetBits(CONDITION_X, 1) == 0x1;
+            }
+            set
+            {
+                SR = SR.SetBits(CONDITION_X, 1, value);
+            }
+        }
+
+        public bool Condition_N
+        {
+            get
+            {
+                return SR.GetBits(CONDITION_NEGATIVE, 1) == 0x1;
+            }
+            set
+            {
+                SR = SR.SetBits(CONDITION_NEGATIVE, 1, value);
+            }
+        }
+
+        public bool Condition_Z
+        {
+            get
+            {
+                return SR.GetBits(CONDITION_ZERO, 1) == 0x1;
+            }
+            set
+            {
+                SR = SR.SetBits(CONDITION_ZERO, 1, value);
+            }
+        }
+
+        public bool Condition_V
+        {
+            get
+            {
+                return SR.GetBits(CONDITION_V, 1) == 0x1;
+            }
+            set
+            {
+                SR = SR.SetBits(CONDITION_V, 1, value);
+            }
+        }
+
+        public bool Condition_C
+        {
+            get
+            {
+                return SR.GetBits(CONDITION_CARRY, 1) == 0x1;
+            }
+            set
+            {
+                SR = SR.SetBits(CONDITION_CARRY, 1, value);
+            }
+        }
+
+        public bool Condition_Trace
+        {
+            get
+            {
+                return SR.GetBits(CONDITION_TRACE, 1) == 0x1;
+            }
+            set
+            {
+                SR = SR.SetBits(CONDITION_TRACE, 1, value);
+            }
+        }
+
+        public bool Condition_Supervisor
+        {
+            get
+            {
+                return SR.GetBits(CONDITION_SUPERVISOR, 1) == 0x1;
+            }
+            set
+            {
+                SR = SR.SetBits(CONDITION_SUPERVISOR, 1, value);
+            }
         }
     }
 }

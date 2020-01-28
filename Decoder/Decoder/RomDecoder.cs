@@ -14,9 +14,10 @@ namespace Decoder
 
         private Dictionary<uint, OpCode> disassembly;
 
-        public RomDecoder(Data data)
+        public RomDecoder(Data rom)
         {
-            state = new MachineState(data);
+            Header h = new Header(rom);
+            state = new MachineState(rom, h.Origin, h.SP);
 
             disassembly = new Dictionary<uint, OpCode>();
         }
@@ -41,8 +42,6 @@ namespace Decoder
                 {
                     throw new Exception("invalid opcode");
                 }
-
-                opcode.Execute();
 
                 disassembly.Add(opcode.Address, opcode);
 
@@ -69,11 +68,9 @@ namespace Decoder
 
         private void displayOpCode(OpCode opcode)
         {
-            Console.WriteLine(opcode.FullName);
-            Console.WriteLine(opcode.Description);
-
-            Console.WriteLine(opcode.Operation);
             Console.WriteLine(opcode.Syntax);
+            Console.WriteLine(opcode.Description);
+            Console.WriteLine(opcode.Operation);
             Console.WriteLine(opcode.Assembly);
 
             Console.WriteLine();

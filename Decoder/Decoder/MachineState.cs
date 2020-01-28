@@ -34,14 +34,17 @@
 
         public ushort SR { get; set; }
 
-        public MachineState(Data rom, uint origin)
+        public MachineState(Data rom)
         {
-            // hack to get stop SP wrapping
-            USP = 0x9999;
+            Header h = new Header(rom);
+
+            PC = h.Origin;
+            USP = h.SP;
+
+            //TODO: ram and rom start/end
 
             this.rom = rom;
             memory = new Data(new byte[0x10000]);
-            PC = origin;
 
             AddressRegisters = new uint[]
             {

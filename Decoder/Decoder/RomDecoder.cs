@@ -14,9 +14,9 @@ namespace Decoder
 
         private Dictionary<uint, OpCode> disassembly;
 
-        public RomDecoder(Data data, uint origin)
+        public RomDecoder(Data data)
         {
-            state = new MachineState(data, origin);
+            state = new MachineState(data);
 
             disassembly = new Dictionary<uint, OpCode>();
         }
@@ -43,6 +43,9 @@ namespace Decoder
                 disassembly.Add(opcode.Address, opcode);
 
                 displayOpCode(opcode);
+
+                Console.WriteLine("Enter to execute next instruction...");
+                Console.ReadLine();
 
             } while (running);
 

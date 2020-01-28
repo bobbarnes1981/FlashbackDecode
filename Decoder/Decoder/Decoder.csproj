@@ -76,6 +76,8 @@
     <Compile Include="OpCodes\OpCode.cs" />
     <Compile Include="OpCodes\ROd.cs" />
     <Compile Include="OpCodes\RTS.cs" />
+    <Compile Include="OpCodes\PEA.cs" />
+    <Compile Include="OpCodes\SWAP.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RomDecoder.cs" />

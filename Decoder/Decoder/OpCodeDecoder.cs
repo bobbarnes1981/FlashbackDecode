@@ -104,6 +104,20 @@ namespace Decoder
                     return new RTS(state);
             }
 
+            // 0100 ???? ???? ?xxx
+            switch (state.OpCode.GetBits(6, 6))
+            {
+                // 100 001
+                case 0x0021:
+                    if (state.OpCode.GetBits(3, 3) == 0x0000)
+                    {
+                        // 100 001 000
+                        return new SWAP(state);
+                    }
+                    // 100 001 xxx
+                    return new PEA(state);
+            }
+
             // xxxx xxx? ??xx xxxx
             switch (state.OpCode.GetBits(6, 3))
             {

@@ -34,6 +34,9 @@
 
         public MachineState(Data rom, uint origin)
         {
+            // hack to get stop SP wrapping
+            USP = 0x9999;
+
             this.rom = rom;
             memory = new Data(new byte[0x10000]);
             PC = origin;
@@ -85,12 +88,12 @@
 
         public byte Read(uint address)
         {
-            return memory.ReadByte(address & 0x0000ffff);
+            return memory.ReadByte(address);
         }
 
         public void Write(uint address, byte data)
         {
-            memory.WriteByte(address & 0x0000ffff, data);
+            memory.WriteByte(address, data);
         }
 
         public uint ReadAReg(byte register)

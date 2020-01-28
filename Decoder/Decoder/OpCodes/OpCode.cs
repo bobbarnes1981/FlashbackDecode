@@ -164,7 +164,15 @@ namespace Decoder.OpCodes
             switch (mode)
             {
                 case EffectiveAddressMode.Immediate:
-                    return string.Format("#{0}", ea);
+                    switch (Size)
+                    {
+                        case Size.Long:
+                            return string.Format("#{0}", (int)ea);
+                        case Size.Word:
+                            return string.Format("#{0}", (short)ea);
+                        default:
+                            throw new NotImplementedException();
+                    }
 
                 case EffectiveAddressMode.AbsoluteWord:
                     return string.Format("0x{0:X4}", ea);
@@ -173,7 +181,7 @@ namespace Decoder.OpCodes
                     return string.Format("0x{0:X8}", ea);
 
                 case EffectiveAddressMode.AddressWithDisplacement:
-                    return string.Format("(d16, A{0})", xn);
+                    return string.Format("(d16 [{0}], A{1})", ea, xn);
 
                 case EffectiveAddressMode.Address:
                     return string.Format("(A{0})", xn);
@@ -215,6 +223,9 @@ namespace Decoder.OpCodes
 
                 case EffectiveAddressMode.AddressRegister:
                     return state.ReadAReg((byte)ea);
+
+                case EffectiveAddressMode.Address:
+                    return state.Read(state.ReadAReg(xn));
 
                 default:
                     throw new NotImplementedException(mode.ToString());

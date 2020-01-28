@@ -19,15 +19,10 @@
         {
             state.PC = 0x00;
 
-            System.Console.WriteLine("{0:X8}", state.Read(state.SP + 0));
-            System.Console.WriteLine("{0:X8}", state.Read(state.SP + 1));
-            System.Console.WriteLine("{0:X8}", state.Read(state.SP + 2));
-            System.Console.WriteLine("{0:X8}", state.Read(state.SP + 3));
-
-            state.PC |= (byte)((state.Read(state.SP + 3) << 24) & 0xFF000000);
-            state.PC |= (byte)((state.Read(state.SP + 2) << 16) & 0x00FF0000);
-            state.PC |= (byte)((state.Read(state.SP + 1) << 8) & 0x0000FF00);
-            state.PC |= (byte)((state.Read(state.SP + 0) << 0) & 0x000000FF);
+            state.PC |= (uint)((state.Read(state.SP + 3) << 0) & 0x000000FF);
+            state.PC |= (uint)((state.Read(state.SP + 2) << 8) & 0x0000FF00);
+            state.PC |= (uint)((state.Read(state.SP + 1) << 16) & 0x00FF0000);
+            state.PC |= (uint)((state.Read(state.SP + 0) << 24) & 0xFF000000);
 
             state.SP += 4;
         }

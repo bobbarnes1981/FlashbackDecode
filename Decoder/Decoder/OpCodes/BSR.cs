@@ -34,7 +34,6 @@
             if (Size == Size.Word)
             {
                 EA = readEA(EffectiveAddressMode.Immediate, 0x00);
-                state.PC -= 2; // remove auto increment
             }
 
             state.SP -= 4;
@@ -42,7 +41,16 @@
             state.Write(state.SP + 1, (byte)((state.PC >> 16) & 0xFF));
             state.Write(state.SP + 2, (byte)((state.PC >> 8) & 0xFF));
             state.Write(state.SP + 3, (byte)((state.PC >> 0) & 0xFF));
-            state.PC += EA;
+
+            if (Size == Size.Word)
+            {
+                state.PC += EA - 2;
+
+            }
+            else
+            {
+                state.PC += EA;
+            }
         }
 
         protected override Size getSize()

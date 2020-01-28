@@ -22,9 +22,11 @@ namespace Decoder
         /// <returns></returns>
         public byte ReadByte(uint address)
         {
+            System.Console.WriteLine("{0:X8}", address);
+
             // big endian ordering of bytes in memory (https://en.wikipedia.org/wiki/Endianness)
             // 0x1234 stored as 12 34
-            
+
             byte b = 0x00;
 
             b |= (byte)(data[address + 0] << 0);
@@ -70,6 +72,7 @@ namespace Decoder
 
         public void WriteByte(uint address, byte b)
         {
+            System.Console.WriteLine("{0:X8} {1:X2}", address, b);
             data[address + 0] = b;
         }
     }

@@ -85,12 +85,12 @@
 
         public byte Read(uint address)
         {
-            return memory.ReadByte(address);
+            return memory.ReadByte(address & 0x0000ffff);
         }
 
         public void Write(uint address, byte data)
         {
-            memory.WriteByte(address, data);
+            memory.WriteByte(address & 0x0000ffff, data);
         }
 
         public uint ReadAReg(byte register)

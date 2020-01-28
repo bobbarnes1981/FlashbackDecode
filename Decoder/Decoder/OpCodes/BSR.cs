@@ -38,10 +38,10 @@
             }
 
             state.SP -= 4;
-            state.Write(state.SP + 0, (byte)((state.PC >> 0) & 0xFF));
-            state.Write(state.SP + 1, (byte)((state.PC >> 8) & 0xFF));
-            state.Write(state.SP + 2, (byte)((state.PC >> 16) & 0xFF));
-            state.Write(state.SP + 3, (byte)((state.PC >> 24) & 0xFF));
+            state.Write(state.SP + 0, (byte)((state.PC >> 24) & 0xFF));
+            state.Write(state.SP + 1, (byte)((state.PC >> 16) & 0xFF));
+            state.Write(state.SP + 2, (byte)((state.PC >> 8) & 0xFF));
+            state.Write(state.SP + 3, (byte)((state.PC >> 0) & 0xFF));
             state.PC += EA;
         }
 

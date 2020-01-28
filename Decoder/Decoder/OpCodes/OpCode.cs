@@ -218,6 +218,9 @@ namespace Decoder.OpCodes
                 case EffectiveAddressMode.AbsoluteWord:
                     return ea;
 
+                case EffectiveAddressMode.AbsoluteLong:
+                    return ea;
+
                 case EffectiveAddressMode.DataRegister:
                     return state.ReadDReg((byte)ea);
 

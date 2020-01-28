@@ -40,7 +40,33 @@
 
             EA = readEA(decodeEAMode());
 
-            throw new System.NotImplementedException();
+            //switch (Size)
+            //{
+            //    case Size.Word:
+            //        switch (getDirection())
+            //        {
+            //            case MoveDirection.MemoryToRegister:
+            //                throw new System.NotImplementedException();
+            //            case MoveDirection.RegisterToMemory:
+            //                throw new System.NotImplementedException();
+            //            default:
+            //                throw new InvalidStateException();
+            //        }
+
+            //    case Size.Long:
+            //        switch (getDirection())
+            //        {
+            //            case MoveDirection.MemoryToRegister:
+            //                throw new System.NotImplementedException();
+            //            case MoveDirection.RegisterToMemory:
+            //                throw new System.NotImplementedException();
+            //            default:
+            //                throw new InvalidStateException();
+            //        }
+
+            //    default:
+            //        throw new InvalidStateException();
+            //}
         }
 
         protected override Size getSize()

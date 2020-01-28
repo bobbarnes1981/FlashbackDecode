@@ -79,6 +79,8 @@ namespace Decoder.UnitTests.Flashback
             // 1111111111111111     0xFFFF
             // 1111010000011100     0xF41C
 
+            // move all registers to memory 0xF41C
+
             byte[] data = new byte[]
             {
                 0x48, 0xF8, 0xFF, 0xFF, 0xF4, 0x1C
@@ -107,7 +109,32 @@ namespace Decoder.UnitTests.Flashback
 
             Assert.That(state.PC, Is.EqualTo(0x0006));
 
-            Assert.Fail('not implemented');
+            Assert.Fail("not implemented");
+        }
+
+        [Test]
+        public void TEST_0x0378()
+        {
+            // 0100000111111001     0x41F9
+            // 0000000011000000     0x00C0
+            // 0000000000000000     0x0000
+
+            // Load 0x00C00000 to A0
+
+            byte[] data = new byte[]
+            {
+                0x41, 0xF9, 0x00, 0xC0, 0x00, 0x00
+            };
+
+            MachineState state = new MachineState(new Data(data), 0x0000);
+            state.FetchOpCode();
+
+            var opcode = new LEA(state);
+
+            var actualValue = state.ReadAReg(0x0);
+
+            Assert.That(state.PC, Is.EqualTo(0x0006));
+            Assert.That(actualValue, Is.EqualTo(0x00C00000));
         }
     }
 }

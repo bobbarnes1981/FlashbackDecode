@@ -1,6 +1,6 @@
 ﻿namespace Decoder.OpCodes
 {
-    class LEA : OpCode
+    public class LEA : OpCode
     {
         protected override string definition => "0100aaa111mmmxxx";
 
@@ -18,6 +18,9 @@
             : base(state)
         {
             EA = readEA(decodeEAMode());
+
+            var srcVal = getEAValue(decodeEAMode(), EA);
+            setEAValue(EffectiveAddressMode.AddressRegister, (uint)getAn(), srcVal);
         }
 
         protected override Size getSize()

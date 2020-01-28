@@ -36,9 +36,16 @@ namespace Decoder.OpCodes
             if (Size == Size.Word)
             {
                 EA = readEA(EffectiveAddressMode.Immediate, 0x00);
-                state.PC -= 2; // remove auto increment
             }
-            state.PC += EA;
+
+            if (Size == Size.Word)
+            {
+                state.PC += EA - 2;
+            }
+            else
+            {
+                state.PC += EA;
+            }
         }
 
         protected override Size getSize()

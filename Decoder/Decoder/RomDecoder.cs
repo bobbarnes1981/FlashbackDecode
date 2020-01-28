@@ -23,7 +23,6 @@ namespace Decoder
 
         public void Decode()
         {
-            
             do
             {
                 Console.WriteLine("Addr\t0x{0:X4} ({0})", state.PC);

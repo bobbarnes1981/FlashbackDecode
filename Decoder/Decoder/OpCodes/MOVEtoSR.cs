@@ -1,6 +1,6 @@
 ﻿namespace Decoder.OpCodes
 {
-    class MOVEtoSR : OpCode
+    public class MOVEtoSR : OpCode
     {
         protected override string definition => "0100011011mmmxxx";
 
@@ -18,6 +18,7 @@
             : base(state)
         {
             EA = readEA(decodeEAMode());
+            state.SR = (ushort)getEAValue(decodeEAMode(), EA);
         }
 
         protected override Size getSize()

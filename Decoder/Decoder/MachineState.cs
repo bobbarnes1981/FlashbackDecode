@@ -32,6 +32,8 @@
 
         public ushort OpCode { get; private set; }
 
+        public ushort SR { get; set; }
+
         public MachineState(Data rom, uint origin)
         {
             // hack to get stop SP wrapping

@@ -45,7 +45,6 @@
             if (Size == Size.Word)
             {
                 state.PC += EA - 2;
-
             }
             else
             {

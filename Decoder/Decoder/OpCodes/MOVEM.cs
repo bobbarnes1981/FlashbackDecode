@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
-    class MOVEM : OpCode
+    public class MOVEM : OpCode
     {
         protected override string definition => "01001D001smmmxxx";
 
@@ -41,6 +39,8 @@ namespace Decoder.OpCodes
             state.PC += 2;
 
             EA = readEA(decodeEAMode());
+
+            throw new System.NotImplementedException();
         }
 
         protected override Size getSize()

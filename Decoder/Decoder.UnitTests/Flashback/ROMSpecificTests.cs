@@ -7,7 +7,7 @@ namespace Decoder.UnitTests.Flashback
     public class ROMSpecificTests
     {
         [Test]
-        public void TEST_0x200()
+        public void TEST_0x0200()
         {
             // 0011000111111100     0x31FC
             // 0000000000010111     0x0017
@@ -32,12 +32,12 @@ namespace Decoder.UnitTests.Flashback
         }
 
         [Test]
-        public void TEST_0x206()
+        public void TEST_0x0206()
         {
             // 0110000000000000     0x6000
             // 0000000101100110     0x0166
 
-            // Branch Always (W) 358 to 0xF416
+            // Branch Always (W) 358 (+2)
 
             byte[] data = new byte[]
             {
@@ -50,6 +50,64 @@ namespace Decoder.UnitTests.Flashback
             var opcode = new BRA(state);
 
             Assert.That(state.PC, Is.EqualTo(360));
+        }
+
+        [Test]
+        public void TEST_0x036E()
+        {
+            // 0100011011111100     0x46FC
+            // 0010011100000000     0x2700
+
+            byte[] data = new byte[]
+            {
+                0x46, 0xFC, 0x27, 0x00
+            };
+
+            MachineState state = new MachineState(new Data(data), 0x0000);
+            state.FetchOpCode();
+
+            var opcode = new MOVEtoSR(state);
+
+            Assert.That(state.PC, Is.EqualTo(0x0004));
+            Assert.That(state.SR, Is.EqualTo(0x2700));
+        }
+
+        [Test]
+        public void TEST_0x0372()
+        {
+            // 0100100011111000     0x48F8
+            // 1111111111111111     0xFFFF
+            // 1111010000011100     0xF41C
+
+            byte[] data = new byte[]
+            {
+                0x48, 0xF8, 0xFF, 0xFF, 0xF4, 0x1C
+            };
+
+            MachineState state = new MachineState(new Data(data), 0x0000);
+            state.FetchOpCode();
+
+            state.WriteAReg(0x0, 0x1);
+            state.WriteAReg(0x1, 0x2);
+            state.WriteAReg(0x2, 0x3);
+            state.WriteAReg(0x3, 0x4);
+            state.WriteAReg(0x4, 0x5);
+            state.WriteAReg(0x5, 0x6);
+            state.WriteAReg(0x6, 0x7);
+
+            state.WriteDReg(0x0, 0x1);
+            state.WriteDReg(0x1, 0x2);
+            state.WriteDReg(0x2, 0x3);
+            state.WriteDReg(0x3, 0x4);
+            state.WriteDReg(0x4, 0x5);
+            state.WriteDReg(0x5, 0x6);
+            state.WriteDReg(0x6, 0x7);
+
+            var opcode = new MOVEM(state);
+
+            Assert.That(state.PC, Is.EqualTo(0x0006));
+
+            Assert.Fail('not implemented');
         }
     }
 }

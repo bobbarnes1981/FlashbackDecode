@@ -91,7 +91,7 @@ namespace Decoder
             }
             else
             {
-                throw new NotImplementedException("MOVE");
+                return new MOVE(state);
             }
         }
 

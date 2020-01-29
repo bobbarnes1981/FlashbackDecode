@@ -54,5 +54,54 @@ namespace Decoder.UnitTests.OpCodes
             Assert.That(state.PC, Is.EqualTo(0x00000004));
             Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x00FF0020));
         }
+
+        [Test]
+        public void CheckA5PostIncMoveLongToReg()
+        {
+            // MOVEM <ea>, <ea>
+            // 0100 1100 1101 1101  0x4CDD
+            // 0001 1111 0000 0000  0x1F00
+
+            // MOVEM (A5+), 0001 1111 0000 0000
+
+            byte[] data = new byte[]
+            {
+                0x4C, 0xDD, 0x1F, 0x00
+            };
+
+            MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
+            state.WriteAReg(0x5, 0xFF0000);
+            for (int i = 0; i < 64; i++)
+            {
+                state.WriteByte((uint)(0xFF0000 + i), (byte)(0x00 + i));
+            }
+            state.FetchOpCode();
+
+            var opcode = new MOVEM(state);
+
+            Assert.That(opcode.Size, Is.EqualTo(Size.Long));
+
+
+            Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x20212223));
+            Assert.That(state.ReadAReg(0x1), Is.EqualTo(0x24252627));
+            Assert.That(state.ReadAReg(0x2), Is.EqualTo(0x28292A2B));
+            Assert.That(state.ReadAReg(0x3), Is.EqualTo(0x2C2D2E2F));
+            Assert.That(state.ReadAReg(0x4), Is.EqualTo(0x30313233));
+            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x00FF0040));
+            Assert.That(state.ReadAReg(0x6), Is.EqualTo(0x0000));
+            Assert.That(state.ReadAReg(0x7), Is.EqualTo(0x0000));
+
+            Assert.That(state.ReadDReg(0x0), Is.EqualTo(0x0000));
+            Assert.That(state.ReadDReg(0x1), Is.EqualTo(0x0000));
+            Assert.That(state.ReadDReg(0x2), Is.EqualTo(0x0000));
+            Assert.That(state.ReadDReg(0x3), Is.EqualTo(0x0000));
+            Assert.That(state.ReadDReg(0x4), Is.EqualTo(0x0000));
+            Assert.That(state.ReadDReg(0x5), Is.EqualTo(0x0000));
+            Assert.That(state.ReadDReg(0x6), Is.EqualTo(0x0000));
+            Assert.That(state.ReadDReg(0x7), Is.EqualTo(0x0000));
+
+            Assert.That(state.PC, Is.EqualTo(0x00000004));
+            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x00FF0040));
+        }
     }
 }

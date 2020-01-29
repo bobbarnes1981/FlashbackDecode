@@ -30,44 +30,45 @@
             }
         }
 
-        protected override string definition => "01001D001smmmxxx";
-
         public MOVEM(MachineState state)
-            : base(state)
+            : base("01001D001smmmxxx", state)
         {
-            mask = state.ReadWord(state.PC);
+            this.mask = state.ReadWord(state.PC);
             state.PC += 2;
 
-            EffectiveAddress = readEA(DecodeEffectiveAddressMode());
+            this.EffectiveAddress = this.readEA(this.DecodeEffectiveAddressMode());
 
-            switch (Size)
+            // TODO: should the increment only include values that are beingset?
+            switch (this.Size)
             {
                 case Size.Word:
-                    switch (getDirection())
+                    switch (this.getDirection())
                     {
                         case MoveDirection.MemoryToRegister:
                             ushort maskCheck = 1;
                             for (int i = 0; i < 8; i++)
                             {
-                                uint d = state.ReadWord((uint)(EffectiveAddress + (i * 2)));
-                                if ((mask & maskCheck) == maskCheck)
+                                uint d = state.ReadWord((uint)(this.EffectiveAddress + (i * 2)));
+                                if ((this.mask & maskCheck) == maskCheck)
                                 {
                                     state.WriteDReg((byte)i, d);
                                 }
+
                                 maskCheck += maskCheck;
                             }
 
                             for (int i = 0; i < 8; i++)
                             {
-                                uint d = state.ReadWord((uint)(EffectiveAddress + (i * 2) + (i * 8)));
-                                if ((mask & maskCheck) == maskCheck)
+                                uint d = state.ReadWord((uint)(this.EffectiveAddress + (i * 2) + 16));
+                                if ((this.mask & maskCheck) == maskCheck)
                                 {
                                     state.WriteAReg((byte)i, d);
                                 }
+
                                 maskCheck += maskCheck;
                             }
 
-                            setEAValue(DecodeEffectiveAddressMode(), EffectiveAddress + (16 * 2));
+                            this.setEAValue(this.DecodeEffectiveAddressMode(), this.EffectiveAddress + (16 * 2));
 
                             break;
                         case MoveDirection.RegisterToMemory:
@@ -79,15 +80,42 @@
                     break;
 
                 case Size.Long:
-                    switch (getDirection())
+                    switch (this.getDirection())
                     {
                         case MoveDirection.MemoryToRegister:
-                            throw new System.NotImplementedException();
+                            ushort maskCheck = 1;
+                            for (int i = 0; i < 8; i++)
+                            {
+                                uint d = state.ReadLong((uint)(this.EffectiveAddress + (i * 4)));
+                                if ((this.mask & maskCheck) == maskCheck)
+                                {
+                                    state.WriteDReg((byte)i, d);
+                                }
+
+                                maskCheck += maskCheck;
+                            }
+
+                            for (int i = 0; i < 8; i++)
+                            {
+                                uint d = state.ReadLong((uint)(this.EffectiveAddress + (i * 4) + 32));
+                                if ((this.mask & maskCheck) == maskCheck)
+                                {
+                                    state.WriteAReg((byte)i, d);
+                                }
+
+                                maskCheck += maskCheck;
+                            }
+
+                            this.setEAValue(this.DecodeEffectiveAddressMode(), this.EffectiveAddress + (32 * 2));
+
+                            break;
                         case MoveDirection.RegisterToMemory:
                             throw new System.NotImplementedException();
                         default:
                             throw new InvalidStateException();
                     }
+
+                    break;
 
                 default:
                     throw new InvalidStateException();
@@ -96,12 +124,12 @@
 
         protected override Size getSize()
         {
-            return getSizeFrom1Bit(6);
+            return this.getSizeFrom1Bit(6);
         }
 
         protected MoveDirection getDirection()
         {
-            return (MoveDirection)GetBits('D');
+            return (MoveDirection)this.GetBits('D');
         }
     }
 }

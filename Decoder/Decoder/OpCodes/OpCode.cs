@@ -2,8 +2,58 @@
 {
     using System;
 
+    /// <summary>
+    /// OpCode base class.
+    /// </summary>
     public abstract class OpCode
     {
+        /// <summary>
+        /// Gets the address of the OpCode.
+        /// </summary>
+        public readonly uint Address;
+
+        /// <summary>
+        /// Gets the OpCode name.
+        /// </summary>
+        public abstract string Name { get; }
+
+        /// <summary>
+        /// Gets the OpCode description.
+        /// </summary>
+        public abstract string Description { get; }
+
+        /// <summary>
+        /// Gets the OpCode operation.
+        /// </summary>
+        public abstract string Operation { get; }
+
+        /// <summary>
+        /// Gets the OpCode syntax.
+        /// </summary>
+        public abstract string Syntax { get; }
+
+        /// <summary>
+        /// Gets the OpCode assembly instruction.
+        /// </summary>
+        public abstract string Assembly { get; }
+
+        /// <summary>
+        /// Gets the OpCode size.
+        /// </summary>
+        public readonly Size Size;
+
+        /// <summary>
+        /// Gets the OpCode effective address.
+        /// </summary>
+        public uint EffectiveAddress { get; protected set; }
+
+        protected readonly MachineState state;
+
+        /// <summary>
+        /// Gets the OpCode definition string.
+        /// </summary>
+        private readonly string definition;
+
         private const char DEFINITION_CHAR_MODE = 'm';
         private const char DEFINITION_CHAR_XN = 'x';
         private const char DEFINITION_CHAR_IMMEDIATE = 'b';
@@ -11,35 +61,25 @@
         private const char DEFINITION_CHAR_AN = 'a';
         private const char DEFINITION_CHAR_CONDITION = 'c';
 
-        protected abstract string definition { get; }
-
-        protected readonly MachineState state;
-
-        public readonly uint Address;
-
-        public abstract string Name { get; }
-
-        public abstract string Description { get; }
-
-        public abstract string Operation { get; }
-
-        public abstract string Syntax { get; }
-
-        public abstract string Assembly { get; }
-
-        public readonly Size Size;
-
-        public uint EffectiveAddress { get; protected set; }
-
-        // TODO: add operation length so we can skip addresses in disassembly
-
-        public OpCode(MachineState state)
+        public OpCode(string definition, MachineState state)
         {
+            if (string.IsNullOrEmpty(definition))
+            {
+                throw new ArgumentNullException(nameof(definition));
+            }
+
+            if (definition.Length != 16)
+            {
+                throw new Exception("definition should be 16 characters.");
+            }
+
+            this.definition = definition;
+
             this.state = state;
 
             this.Address = state.PC;
 
-            this.Size = getSize();
+            this.Size = this.getSize();
 
             this.validate();
         }

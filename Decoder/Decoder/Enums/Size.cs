@@ -1,5 +1,8 @@
 ﻿namespace Decoder
 {
+    /// <summary>
+    /// OpCode size enum.
+    /// </summary>
     public enum Size
     {
         /// <summary>
@@ -17,6 +20,9 @@
         /// </summary>
         Long,
 
-        None
+        /// <summary>
+        /// Not applicable
+        /// </summary>
+        None,
     }
 }

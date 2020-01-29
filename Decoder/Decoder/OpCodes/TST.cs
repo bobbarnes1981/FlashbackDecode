@@ -14,10 +14,8 @@ namespace Decoder.OpCodes
 
         public override string Assembly => $"{Name} {getEAAssemblyString()}";
 
-        protected override string definition => "01001010ssmmmxxx";
-
         public TST(MachineState state)
-            : base(state)
+            : base("01001010ssmmmxxx", state)
         {
             EffectiveAddress = readEA();
 

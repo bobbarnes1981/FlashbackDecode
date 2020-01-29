@@ -26,10 +26,8 @@
             }
         }
 
-        protected override string definition => "0110ccccbbbbbbbb";
-
         public Bcc(MachineState state)
-            : base(state)
+            : base("0110ccccbbbbbbbb", state)
         {
             if (Size == Size.Word)
             {

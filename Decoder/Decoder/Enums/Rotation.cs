@@ -1,8 +1,18 @@
 ﻿namespace Decoder
 {
-    enum Rotation
+    /// <summary>
+    /// Rotation target enum.
+    /// </summary>
+    public enum Rotation
     {
+        /// <summary>
+        /// Immediate
+        /// </summary>
         Immediate,
-        Register
+
+        /// <summary>
+        /// Register
+        /// </summary>
+        Register,
     }
 }

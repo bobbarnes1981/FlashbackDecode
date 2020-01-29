@@ -1,8 +1,18 @@
 ﻿namespace Decoder
 {
-    enum Direction
+    /// <summary>
+    /// Rotation direction enum.
+    /// </summary>
+    public enum Direction
     {
+        /// <summary>
+        /// Right
+        /// </summary>
         Right,
-        Left
+
+        /// <summary>
+        /// Left
+        /// </summary>
+        Left,
     }
 }

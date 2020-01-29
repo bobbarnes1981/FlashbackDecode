@@ -12,10 +12,8 @@
 
         public override string Assembly => $"{Name} {getEAAssemblyString()}, {GetAn()}";
 
-        protected override string definition => "0100aaa111mmmxxx";
-
         public LEA(MachineState state)
-            : base(state)
+            : base("0100aaa111mmmxxx", state)
         {
             EffectiveAddress = readEA(DecodeEffectiveAddressMode());
 

@@ -1,83 +1,72 @@
-﻿using System;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
-    /// <summary>
-    /// 00SS XXX MMM MMM XXX
-    /// </summary>
-    //public class MOVE : OpCode
-    //{
-    //    protected override string definition => "00ss______mmmxxx";
+    public class MOVE : OpCode
+    {
+        public override string Name => "MOVE";
 
-    //    public override string Name => "MOVE";
+        public override string Description => "Move Data from Source to Destination";
 
-    //    public override string Description => "Move Data from Source to Destination";
+        public override string Operation => "<ea> -> <ea>";
 
-    //    public override string Operation => "<ea> -> <ea>";
+        public override string Syntax => $"{Name} <ea>, <ea>";
 
-    //    public override string Syntax => string.Format("{0} <ea>, <ea>", Name);
+        public override string Assembly
+        {
+            get
+            {
+                return $"{Name} {getEAAssemblyString(DecodeEffectiveAddressMode(GetSrcM(), GetSrcXn()), SrcEA, GetSrcXn())}, {getEAAssemblyString(DecodeEffectiveAddressMode(GetDstM(), GetDstXn()), DstEA, GetDstXn())}";
+            }
+        }
 
-    //    public override string Assembly
-    //    {
-    //        get
-    //        {
-    //            return string.Format("{0} {1}, {2}",
-    //                FullName,
-    //                getEAString(decodeEAMode(getSrcM(), getSrcXn()), SrcEA, getSrcXn()),
-    //                getEAString(decodeEAMode(getDstM(), getDstXn()), DstEA, getDstXn())
-    //            );
-    //        }
-    //    }
+        public uint SrcEA { get; protected set; }
+        public uint DstEA { get; protected set; }
 
-    //    public uint SrcEA { get; protected set; }
-    //    public uint DstEA { get; protected set; }
+        public MOVE(MachineState state)
+            : base("00ss______mmmxxx", state)
+        {
+            this.SrcEA = this.readEA(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.GetSrcXn());
+            this.DstEA = this.readEA(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.GetDstXn());
 
-    //    public MOVE(MachineState state)
-    //        : base(state)
-    //    {
-    //        SrcEA = readEA(decodeEAMode(getSrcM(), getSrcXn()), getSrcXn());
-    //        DstEA = readEA(decodeEAMode(getDstM(), getDstXn()), getDstXn());
+            var srcVal = getEAValue(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.EffectiveAddress, (byte)this.SrcEA);
+            this.setEAValue(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.DstEA, srcVal);
+        }
 
-    //        var srcVal = getEAValue(decodeEAMode(getSrcM(), getSrcXn()), SrcEA);
-    //        setEAValue(decodeEAMode(getDstM(), getDstXn()), DstEA, srcVal);
-    //    }
+        protected byte GetSrcM()
+        {
+            return GetM();
+        }
 
-    //    protected byte getSrcM()
-    //    {
-    //        return getM();
-    //    }
+        protected byte GetDstM()
+        {
+            return (byte)this.state.OpCode.GetBits(6, 3);
+        }
 
-    //    protected byte getDstM()
-    //    {
-    //        return (byte)state.OpCode.GetBits(6, 3);
-    //    }
+        protected override Size getSize()
+        {
+            switch (this.GetBits('s'))
+            {
+                case 0x0001:
+                    return Size.Byte;
 
-    //    protected override Size getSize()
-    //    {
-    //        switch (state.OpCode.GetBits(12, 2))
-    //        {
-    //            case 0x0001:
-    //                return Size.Byte;
+                case 0x0002:
+                    return Size.Long;
 
-    //            case 0x0002:
-    //                return Size.Long;
+                case 0x0003:
+                    return Size.Word;
 
-    //            case 0x0003:
-    //                return Size.Word;
+                default:
+                    throw new InvalidStateException();
+            }
+        }
 
-    //            default:
-    //                throw new InvalidStateException();
-    //        }
-    //    }
+        protected byte GetSrcXn()
+        {
+            return this.GetXn();
+        }
 
-    //    protected byte getSrcXn()
-    //    {
-    //        return getXn();
-    //    }
-
-    //    protected byte getDstXn()
-    //    {
-    //        return (byte)state.OpCode.GetBits(9, 3);
-    //    }
-    //}
+        protected byte GetDstXn()
+        {
+            return (byte)this.state.OpCode.GetBits(9, 3);
+        }
+    }
 }

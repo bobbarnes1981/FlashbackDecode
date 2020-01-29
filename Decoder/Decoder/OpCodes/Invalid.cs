@@ -4,8 +4,6 @@ namespace Decoder.OpCodes
 {
     class Invalid : OpCode
     {
-        protected override string definition => throw new NotImplementedException();
-
         public override string Name => "INVALID";
 
         public override string Description => throw new NotImplementedException();
@@ -17,7 +15,7 @@ namespace Decoder.OpCodes
         public override string Assembly => throw new NotImplementedException();
 
         public Invalid(MachineState state)
-            : base(state)
+            : base("----------------", state)
         {
         }
 

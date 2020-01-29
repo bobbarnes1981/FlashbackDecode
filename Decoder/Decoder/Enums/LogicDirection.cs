@@ -1,8 +1,18 @@
 ﻿namespace Decoder
 {
-    enum LogicDirection
+    /// <summary>
+    /// Logic direction enum.
+    /// </summary>
+    public enum LogicDirection
     {
-        Dn_EA,
-        EA_Dn
+        /// <summary>
+        /// Data register to effective address
+        /// </summary>
+        DntoEA,
+
+        /// <summary>
+        /// Effective address to data register
+        /// </summary>
+        EAtoDn,
     }
 }

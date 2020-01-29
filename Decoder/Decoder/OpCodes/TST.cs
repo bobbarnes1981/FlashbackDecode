@@ -19,19 +19,19 @@ namespace Decoder.OpCodes
         public TST(MachineState state)
             : base(state)
         {
-            EA = readEA();
+            EffectiveAddress = readEA();
 
             var val = getEAValue();
 
-            state.Condition_N = isNegative(val);
-            state.Condition_Z = isZero(val);
+            state.Condition_N = IsNegative(val);
+            state.Condition_Z = IsZero(val);
             state.Condition_V = false;
             state.Condition_C = false;
         }
 
         protected override Size getSize()
         {
-            return (Size)getBits('s');
+            return (Size)GetBits('s');
         }
     }
 }

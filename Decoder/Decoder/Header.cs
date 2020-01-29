@@ -120,7 +120,7 @@ namespace Decoder
         {
             get
             {
-                throw new NotImplementedException();
+                return data.ReadLong(0x0001A0);
             }
         }
 
@@ -128,7 +128,7 @@ namespace Decoder
         {
             get
             {
-                throw new NotImplementedException();
+                return data.ReadLong(0x0001A4);
             }
         }
 
@@ -136,7 +136,7 @@ namespace Decoder
         {
             get
             {
-                throw new NotImplementedException();
+                return data.ReadLong(0x0001A8);
             }
         }
 
@@ -144,7 +144,7 @@ namespace Decoder
         {
             get
             {
-                throw new NotImplementedException();
+                return data.ReadLong(0x0001AC);
             }
         }
     }

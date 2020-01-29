@@ -10,7 +10,7 @@
 
         public override string Operation => "<list> -> <ea> or <ea> -> <list>";
 
-        public override string Syntax => $"{Name} <list> , <ea>\r\n{Name} <ea>, <list>";
+        public override string Syntax => $"{Name} <list> ,<ea>\r\n{Name} <ea>, <list>";
 
         public override string Assembly
         {
@@ -38,45 +38,70 @@
             mask = state.ReadWord(state.PC);
             state.PC += 2;
 
-            EA = readEA(decodeEAMode());
+            EffectiveAddress = readEA(DecodeEffectiveAddressMode());
 
             switch (Size)
             {
-                //case Size.Word:
-                //    switch (getDirection())
-                //    {
-                //        case MoveDirection.MemoryToRegister:
-                //            throw new System.NotImplementedException();
-                //        case MoveDirection.RegisterToMemory:
-                //            throw new System.NotImplementedException();
-                //        default:
-                //            throw new InvalidStateException();
-                //    }
+                case Size.Word:
+                    switch (getDirection())
+                    {
+                        case MoveDirection.MemoryToRegister:
+                            ushort maskCheck = 1;
+                            for (int i = 0; i < 8; i++)
+                            {
+                                uint d = state.ReadWord((uint)(EffectiveAddress + (i * 2)));
+                                if ((mask & maskCheck) == maskCheck)
+                                {
+                                    state.WriteDReg((byte)i, d);
+                                }
+                                maskCheck += maskCheck;
+                            }
 
-                //case Size.Long:
-                //    switch (getDirection())
-                //    {
-                //        case MoveDirection.MemoryToRegister:
-                //            throw new System.NotImplementedException();
-                //        case MoveDirection.RegisterToMemory:
-                //            throw new System.NotImplementedException();
-                //        default:
-                //            throw new InvalidStateException();
-                //    }
+                            for (int i = 0; i < 8; i++)
+                            {
+                                uint d = state.ReadWord((uint)(EffectiveAddress + (i * 2) + (i * 8)));
+                                if ((mask & maskCheck) == maskCheck)
+                                {
+                                    state.WriteAReg((byte)i, d);
+                                }
+                                maskCheck += maskCheck;
+                            }
 
-                //default:
-                //    throw new InvalidStateException();
+                            setEAValue(DecodeEffectiveAddressMode(), EffectiveAddress + (16 * 2));
+
+                            break;
+                        case MoveDirection.RegisterToMemory:
+                            throw new System.NotImplementedException();
+                        default:
+                            throw new InvalidStateException();
+                    }
+
+                    break;
+
+                case Size.Long:
+                    switch (getDirection())
+                    {
+                        case MoveDirection.MemoryToRegister:
+                            throw new System.NotImplementedException();
+                        case MoveDirection.RegisterToMemory:
+                            throw new System.NotImplementedException();
+                        default:
+                            throw new InvalidStateException();
+                    }
+
+                default:
+                    throw new InvalidStateException();
             }
         }
 
         protected override Size getSize()
         {
-            return getSizeFromBits1(6);
+            return getSizeFrom1Bit(6);
         }
 
         protected MoveDirection getDirection()
         {
-            return (MoveDirection)getBits('D');
+            return (MoveDirection)GetBits('D');
         }
     }
 }

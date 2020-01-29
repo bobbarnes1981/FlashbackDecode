@@ -2,6 +2,9 @@
 
 namespace Decoder
 {
+    /// <summary>
+    /// Sega Mega Drive Machine State.
+    /// </summary>
     public class MachineState
     {
         private Data rom;
@@ -20,13 +23,25 @@ namespace Decoder
         {
             get
             {
-                // TODO: check supervisor bit
-                return USP;
+                if (Condition_Supervisor)
+                {
+                    return SSP;
+                }
+                else
+                {
+                    return USP;
+                }
             }
             set
             {
-                // TODO: check supervisor bit
-                USP = value;
+                if (Condition_Supervisor)
+                {
+                    SSP = value;
+                }
+                else
+                {
+                    USP = value;
+                }
             }
         }
 
@@ -42,12 +57,16 @@ namespace Decoder
         private uint RAM_MIN = 0xFF0000;
         private uint RAM_MAX = 0xFFFFFF;
 
-        public MachineState(Data rom, uint origin, uint sp)
+        public MachineState(Data rom, uint origin, uint sp, uint romMin, uint romMax, uint ramMin, uint ramMax)
         {
             PC = origin;
             USP = sp;
 
-            //TODO: ram and rom start/end
+            ROM_MIN = romMin;
+            ROM_MAX = romMax;
+
+            RAM_MIN = ramMin;
+            RAM_MAX = ramMax;
 
             this.rom = rom;
             ram68k = new Data(new byte[0x10000]);
@@ -119,6 +138,11 @@ namespace Decoder
             {
                 Console.WriteLine("Reading Expansion Port Control");
                 return 0x0000;
+            }
+
+            if (address >= RAM_MIN && address <= RAM_MAX)
+            {
+                return ram68k.ReadWord(address - RAM_MIN);
             }
 
             throw new NotImplementedException($"{address:X8}");

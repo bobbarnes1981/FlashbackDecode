@@ -21,7 +21,7 @@ namespace Decoder.UnitTests.OpCodes
                 0x4A, 0xB9, 0x00, 0xFF, 0x00, 0x00
             };
 
-            MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000);
+            MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
             state.WriteByte(0xFF0000, 0x80);
             state.FetchOpCode();
 
@@ -55,7 +55,7 @@ namespace Decoder.UnitTests.OpCodes
                 0x4A, 0xB9, 0x00, 0xFF, 0x00, 0x00
             };
 
-            MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000);
+            MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
             state.WriteByte(0xFF0000, 0x00);
             state.FetchOpCode();
 

@@ -20,7 +20,7 @@ namespace Decoder.UnitTests.OpCodes
                 0x66, 0x06
             };
 
-            MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000);
+            MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
             state.Condition_Z = false;
             state.FetchOpCode();
 
@@ -44,7 +44,7 @@ namespace Decoder.UnitTests.OpCodes
                 0x66, 0x06
             };
 
-            MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000);
+            MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
             state.Condition_Z = true;
             state.FetchOpCode();
 

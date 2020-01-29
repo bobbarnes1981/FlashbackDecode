@@ -1,9 +1,16 @@
-﻿using System;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
+    using System;
+
     public abstract class OpCode
     {
+        private const char DEFINITION_CHAR_MODE = 'm';
+        private const char DEFINITION_CHAR_XN = 'x';
+        private const char DEFINITION_CHAR_IMMEDIATE = 'b';
+        private const char DEFINITION_CHAR_DN = 'd';
+        private const char DEFINITION_CHAR_AN = 'a';
+        private const char DEFINITION_CHAR_CONDITION = 'c';
+
         protected abstract string definition { get; }
 
         protected readonly MachineState state;
@@ -22,7 +29,7 @@ namespace Decoder.OpCodes
 
         public readonly Size Size;
 
-        public uint EA { get; protected set; }
+        public uint EffectiveAddress { get; protected set; }
 
         // TODO: add operation length so we can skip addresses in disassembly
 
@@ -30,11 +37,11 @@ namespace Decoder.OpCodes
         {
             this.state = state;
 
-            Address = state.PC;
+            this.Address = state.PC;
 
-            Size = getSize();
+            this.Size = getSize();
 
-            validate();
+            this.validate();
         }
 
         protected void validate()
@@ -67,7 +74,7 @@ namespace Decoder.OpCodes
 
         protected abstract Size getSize();
 
-        protected Size getSizeFromBits1(int offset)
+        protected Size getSizeFrom1Bit(int offset)
         {
             switch (state.OpCode.GetBits(offset, 1))
             {
@@ -82,7 +89,7 @@ namespace Decoder.OpCodes
 
         protected Size getSizeFrom8BitImmediate()
         {
-            byte displacement = (byte)getImmediate();
+            byte displacement = (byte)GetImmediate();
 
             if (displacement == 0x00)
             {
@@ -90,111 +97,173 @@ namespace Decoder.OpCodes
             }
             else
             {
-                EA = displacement;
+                EffectiveAddress = displacement;
                 return Size.Byte;
             }
         }
 
-        protected Condition getCondition()
+        /// <summary>
+        /// Check the status register for the opcode condition.
+        /// </summary>
+        /// <returns>true if the status register meets the opcode condition.</returns>
+        protected bool CheckCondition()
         {
-            return (Condition)getBits('c');
-        }
-
-        protected bool checkCondition(uint ea)
-        {
-            switch (getCondition())
+            switch (this.GetCondition())
             {
                 case Condition.NE:
-                    return state.Condition_Z == false;
+                    return this.state.Condition_Z == false;
 
                 default:
                     throw new InvalidStateException();
             }
         }
 
-        private Tuple<int, int> getValues(char c)
+        /// <summary>
+        /// Get the offset and length values defined by specified character in definition.
+        /// </summary>
+        /// <param name="c">character to search for in definition.</param>
+        /// <returns>offset and length values.</returns>
+        private Tuple<int, int> GetValues(char c)
         {
             int offset = -1;
             int length = -1;
             for (int i = 0; i < 16; i++)
             {
-                if (definition[15-i] == c)
+                if (this.definition[15 - i] == c)
                 {
                     if (offset == -1)
                     {
                         offset = i;
                         length = 0;
                     }
+
                     length++;
                 }
             }
 
             if (offset == -1 || length == -1)
             {
-                throw new Exception(string.Format("{0} not defined", c));
+                throw new Exception($"{c} not defined");
             }
 
             return new Tuple<int, int>(offset, length);
         }
 
-        protected ushort getBits(char c)
+        /// <summary>
+        /// Get bits from opcode defined by specified character in definition.
+        /// </summary>
+        /// <param name="c">character to search for in definition.</param>
+        /// <returns>ushort representing the data.</returns>
+        protected ushort GetBits(char c)
         {
-            var vals = getValues(c);
-            return state.OpCode.GetBits(vals.Item1, vals.Item2);
+            var vals = this.GetValues(c);
+            return this.state.OpCode.GetBits(vals.Item1, vals.Item2);
         }
 
-        protected AddressRegister getAn()
+        /// <summary>
+        /// Fetch the condition data from the definition.
+        /// Identified by 'c' in definition.
+        /// </summary>
+        /// <returns>condition enum</returns>
+        protected Condition GetCondition()
         {
-            return (AddressRegister)getBits('a'); // Address register 'An'
+            return (Condition)this.GetBits(DEFINITION_CHAR_CONDITION);
         }
 
-        protected DataRegister getDn()
+        /// <summary>
+        /// Fetch the address register number from the definition.
+        /// Identified by 'a' in definition.
+        /// </summary>
+        /// <returns>address register enum (castable to byte)</returns>
+        protected AddressRegister GetAn()
         {
-            return (DataRegister)getBits('d'); // Data register 'Dn'
+            return (AddressRegister)this.GetBits(DEFINITION_CHAR_AN);
         }
 
-        protected ushort getImmediate()
+        /// <summary>
+        /// Fetch the data register number from the definition.
+        /// Identified by 'd' in definition.
+        /// </summary>
+        /// <returns>data register enum (castable to byte).</returns>
+        protected DataRegister GetDn()
         {
-            return getBits('b'); // Immediate data (in opcode)
+            return (DataRegister)this.GetBits(DEFINITION_CHAR_DN);
         }
 
-        protected uint readImmediate()
+        /// <summary>
+        /// Fetch the immediate data from the definition.
+        /// Ientified by b in definition.
+        /// </summary>
+        /// <returns>ushort representing immediate data.</returns>
+        protected ushort GetImmediate()
         {
-            return (uint)readData(Size);
+            return this.GetBits(DEFINITION_CHAR_IMMEDIATE);
         }
 
-        protected byte getM()
+        /// <summary>
+        /// Fetch the Mode data M from the definition.
+        /// Identified by 'm' in definition.
+        /// </summary>
+        /// <returns>byte representing M.</returns>
+        protected byte GetM()
         {
-            return (byte)getBits('m'); // Mode 'M'
+            return (byte)this.GetBits(DEFINITION_CHAR_MODE);
         }
 
-        protected byte getXn()
+        /// <summary>
+        /// Fetch the Address, Data register or address mode number Xn from the definition.
+        /// Identified by 'x' in definition.
+        /// </summary>
+        /// <returns>byte representing Xn.</returns>
+        protected byte GetXn()
         {
-            return (byte)getBits('x'); // Reg number 'Xn' 
+            return (byte)this.GetBits(DEFINITION_CHAR_XN);
         }
 
-        protected EffectiveAddressMode decodeEAMode()
+        /// <summary>
+        /// Read immediate data from memory using the program counter.
+        /// Program counter will be incremented.
+        /// This is normally data immediately after the opcode.
+        /// </summary>
+        /// <returns>data from memory.</returns>
+        protected uint ReadImmediate()
         {
-            return decodeEAMode(getM(), getXn());
+            return (uint)this.ReadData(this.Size);
         }
 
-        protected EffectiveAddressMode decodeEAMode(byte M, byte Xn)
+        /// <summary>
+        /// Decode the Effective Address Mode from the definition.
+        /// Decoded from M and Xn.
+        /// </summary>
+        /// <returns>Effective Address enum.</returns>
+        protected EffectiveAddressMode DecodeEffectiveAddressMode()
+        {
+            return this.DecodeEffectiveAddressMode(this.GetM(), this.GetXn());
+        }
+
+        /// <summary>
+        /// Decode the Effective Address Mode from the definition.
+        /// Decoded from M and Xn.
+        /// </summary>
+        /// <param name="m">M parameter.</param>
+        /// <param name="xn">Xn parameter.</param>
+        /// <returns>Effective Address enum.</returns>
+        protected EffectiveAddressMode DecodeEffectiveAddressMode(byte m, byte xn)
         {
             // TODO: validate allowed addressing modes
-
-            if (M < 0x07)
+            if (m < 0x07)
             {
-                return (EffectiveAddressMode)(M << 3);
+                return (EffectiveAddressMode)(m << 3);
             }
             else
             {
-                return (EffectiveAddressMode)(M << 3 | Xn);
+                return (EffectiveAddressMode)(m << 3 | xn);
             }
         }
 
         protected string getEAAssemblyString()
         {
-            return getEAAssemblyString(decodeEAMode(), EA, getXn());
+            return getEAAssemblyString(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
         }
 
         protected string getEAAssemblyString(EffectiveAddressMode mode, uint ea, byte xn)
@@ -243,7 +312,7 @@ namespace Decoder.OpCodes
 
         protected string getEADescriptionString()
         {
-            return getEADescriptionString(decodeEAMode(), EA, getXn());
+            return getEADescriptionString(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
         }
 
         protected string getEADescriptionString(EffectiveAddressMode mode, uint ea, byte xn)
@@ -292,7 +361,7 @@ namespace Decoder.OpCodes
 
         protected uint getEAValue()
         {
-            return getEAValue(decodeEAMode(), EA, getXn());
+            return getEAValue(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
         }
 
         protected uint getEAValue(EffectiveAddressMode mode, uint ea, byte xn)
@@ -345,7 +414,7 @@ namespace Decoder.OpCodes
 
         protected void setEAValue(EffectiveAddressMode ea, uint value)
         {
-            setEAValue(ea, getXn(), value);
+            setEAValue(ea, GetXn(), value);
         }
 
         protected void setEAValue(EffectiveAddressMode ea, uint Xn, uint value)
@@ -385,6 +454,10 @@ namespace Decoder.OpCodes
 
                     break;
 
+                case EffectiveAddressMode.Address_PostIncremenet:
+                    state.WriteAReg((byte)Xn, value);
+                    break;
+                
                 default:
                     throw new NotImplementedException(ea.ToString());
             }
@@ -392,12 +465,12 @@ namespace Decoder.OpCodes
 
         protected uint readEA()
         {
-            return readEA(decodeEAMode(), getXn());
+            return readEA(DecodeEffectiveAddressMode(), GetXn());
         }
 
         protected uint readEA(EffectiveAddressMode ea)
         {
-            return readEA(ea, getXn());
+            return readEA(ea, GetXn());
         }
 
         protected uint readEA(EffectiveAddressMode ea, byte Xn)
@@ -405,22 +478,22 @@ namespace Decoder.OpCodes
             switch (ea)
             {
                 case EffectiveAddressMode.Immediate:
-                    return (uint)readData(Size);
+                    return (uint)ReadData(Size);
 
                 case EffectiveAddressMode.AbsoluteWord:
-                    return (uint)readData(Size.Word);
+                    return (uint)ReadData(Size.Word);
 
                 case EffectiveAddressMode.AbsoluteLong:
-                    return (uint)readData(Size.Long);
+                    return (uint)ReadData(Size.Long);
 
                 case EffectiveAddressMode.DataRegister:
                     return Xn;
 
                 case EffectiveAddressMode.AddressWithDisplacement:
-                    return (uint)readData(Size.Word);
+                    return (uint)ReadData(Size.Word);
 
                 case EffectiveAddressMode.ProgramCounter_Displacement:
-                    return (uint)readData(Size.Word);
+                    return (uint)ReadData(Size.Word);
 
                 case EffectiveAddressMode.Address:
                     return state.ReadAReg(Xn);
@@ -438,26 +511,32 @@ namespace Decoder.OpCodes
             }
         }
 
-        protected int readData(Size size)
+        /// <summary>
+        /// Reads data of the specified size from memory using the program counter
+        /// and incrementing the program counter.
+        /// </summary>
+        /// <param name="size">Size of data to read.</param>
+        /// <returns>The read data cast to int.</returns>
+        protected int ReadData(Size size)
         {
             switch (size)
             {
                 case Size.Long:
-                    uint l = state.ReadLong(state.PC);
-                    state.PC += 4;
+                    uint l = this.state.ReadLong(this.state.PC);
+                    this.state.PC += 4;
                     return (int)l;
 
                 case Size.Word:
-                    ushort w = state.ReadWord(state.PC);
-                    state.PC += 2;
+                    ushort w = this.state.ReadWord(this.state.PC);
+                    this.state.PC += 2;
                     return (int)w;
 
                 case Size.Byte:
-                    // discard first byte
-                    state.ReadByte(state.PC);
-                    state.PC += 1;
-                    byte b = (byte)state.ReadByte(state.PC);
-                    state.PC += 1;
+                    // read word but discard first byte
+                    this.state.ReadByte(this.state.PC);
+                    this.state.PC += 1;
+                    byte b = (byte)this.state.ReadByte(this.state.PC);
+                    this.state.PC += 1;
                     return (int)b;
 
                 default:
@@ -465,9 +544,14 @@ namespace Decoder.OpCodes
             }
         }
 
-        protected bool isNegative(uint val)
+        /// <summary>
+        /// Returns true if the specified value is negative when cast to the operand Size.
+        /// </summary>
+        /// <param name="val">value to check.</param>
+        /// <returns>true if negative.</returns>
+        protected bool IsNegative(uint val)
         {
-            switch (Size)
+            switch (this.Size)
             {
                 case Size.Byte:
                     return ((sbyte)val) < 0;
@@ -480,9 +564,14 @@ namespace Decoder.OpCodes
             }
         }
 
-        protected bool isZero(uint val)
+        /// <summary>
+        /// Returns true if the specified valie is zero when cast to the operand size.
+        /// </summary>
+        /// <param name="val">value to check.</param>
+        /// <returns>true if zero.</returns>
+        protected bool IsZero(uint val)
         {
-            switch (Size)
+            switch (this.Size)
             {
                 case Size.Byte:
                     return ((sbyte)val) == 0;

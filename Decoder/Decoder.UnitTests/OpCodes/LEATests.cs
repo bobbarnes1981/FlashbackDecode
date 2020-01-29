@@ -21,7 +21,7 @@ namespace Decoder.UnitTests.OpCodes
                 0x4B, 0xFA, 0x00, 0x7C
             };
 
-            MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000);
+            MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
             state.FetchOpCode();
 
             var opcode = new LEA(state);

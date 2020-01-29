@@ -8,7 +8,7 @@
 
         public override string Operation => "If CONDITION TRUE PC+dn -> PC";
 
-        public override string Syntax => $"{Name}{getCondition()} <label>";
+        public override string Syntax => $"{Name}{GetCondition()} <label>";
 
         public override string Assembly
         {
@@ -17,9 +17,9 @@
                 switch (Size)
                 {
                     case Size.Byte:
-                        return $"{Name}{getCondition()} {(sbyte)EA}";
+                        return $"{Name}{GetCondition()} {(sbyte)EffectiveAddress}";
                     case Size.Word:
-                        return $"{Name}{getCondition()} {(short)EA}";
+                        return $"{Name}{GetCondition()} {(short)EffectiveAddress}";
                     default:
                         throw new InvalidStateException();
                 }
@@ -33,18 +33,18 @@
         {
             if (Size == Size.Word)
             {
-                EA = readEA(EffectiveAddressMode.Immediate, 0x00);
+                EffectiveAddress = readEA(EffectiveAddressMode.Immediate, 0x00);
             }
 
-            if (checkCondition(EA))
+            if (CheckCondition())
             {
                 if (Size == Size.Word)
                 {
-                    state.PC += EA - 2;
+                    state.PC += EffectiveAddress - 2;
                 }
                 else
                 {
-                    state.PC += EA;
+                    state.PC += EffectiveAddress;
                 }
             }
         }

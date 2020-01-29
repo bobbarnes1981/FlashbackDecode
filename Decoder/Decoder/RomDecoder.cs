@@ -17,7 +17,7 @@ namespace Decoder
         public RomDecoder(Data rom)
         {
             Header h = new Header(rom);
-            state = new MachineState(rom, h.Origin, h.SP);
+            state = new MachineState(rom, h.Origin, h.SP, h.RomStart, h.RomEnd, h.RamStart, h.RamEnd);
 
             disassembly = new Dictionary<uint, OpCode>();
         }

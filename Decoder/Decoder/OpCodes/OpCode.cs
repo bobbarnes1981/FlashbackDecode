@@ -33,6 +33,36 @@ namespace Decoder.OpCodes
             Address = state.PC;
 
             Size = getSize();
+
+            validate();
+        }
+
+        protected void validate()
+        {
+            ushort count = 1;
+            for (int i = 0; i < 16; i++)
+            {
+                switch (definition[15-i])
+                {
+                    case '0':
+                        if ((state.OpCode & count) != 0x0000)
+                        {
+                            throw new InvalidOpCodeException();
+                        }
+
+                        break;
+
+                    case '1':
+                        if ((state.OpCode & count) == 0x0000)
+                        {
+                            throw new InvalidOpCodeException();
+                        }
+
+                        break;
+                }
+
+                count += count;
+            }
         }
 
         protected abstract Size getSize();

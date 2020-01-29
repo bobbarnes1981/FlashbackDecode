@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="OpCodes\BccTests.cs" />
     <Compile Include="OpCodes\LEATests.cs" />
+    <Compile Include="OpCodes\MOVEMTests.cs" />
     <Compile Include="OpCodes\TSTTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

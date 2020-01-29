@@ -61,6 +61,7 @@
     <Compile Include="Enums\AddressRegister.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Header.cs" />
+    <Compile Include="InvalidOpCodeException.cs" />
     <Compile Include="InvalidStateException.cs" />
     <Compile Include="MachineState.cs" />
     <Compile Include="OpCodeDecoder.cs" />

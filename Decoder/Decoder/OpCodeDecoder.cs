@@ -158,7 +158,7 @@ namespace Decoder
                     }
                     else
                     {
-                        throw new NotImplementedException("MOVEM");
+                        return new MOVEM(state);
                     }
 
                 // xxxx 011x xxxx xxxx

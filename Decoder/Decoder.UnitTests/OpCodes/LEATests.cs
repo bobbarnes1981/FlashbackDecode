@@ -29,7 +29,7 @@ namespace Decoder.UnitTests.OpCodes
             Assert.That(opcode.Size, Is.EqualTo(Size.Long));
 
             Assert.That(state.PC, Is.EqualTo(0x00000004));
-            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x0000007C));
+            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x7E));
         }
     }
 }

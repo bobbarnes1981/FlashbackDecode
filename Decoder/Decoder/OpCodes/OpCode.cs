@@ -310,40 +310,40 @@
         {
             switch (mode)
             {
-                case EffectiveAddressMode.Immediate:
-                    switch (Size)
-                    {
-                        case Size.Long:
-                            return string.Format("#{0}", (int)ea);
-                        case Size.Word:
-                            return string.Format("#{0}", (short)ea);
-                        default:
-                            throw new NotImplementedException();
-                    }
+                //case EffectiveAddressMode.Immediate:
+                //    switch (Size)
+                //    {
+                //        case Size.Long:
+                //            return string.Format("#{0}", (int)ea);
+                //        case Size.Word:
+                //            return string.Format("#{0}", (short)ea);
+                //        default:
+                //            throw new NotImplementedException();
+                //    }
 
-                case EffectiveAddressMode.AbsoluteWord:
-                    return string.Format("0x{0:X4}", ea);
+                //case EffectiveAddressMode.AbsoluteWord:
+                //    return string.Format("0x{0:X4}", ea);
 
                 case EffectiveAddressMode.AbsoluteLong:
-                    return string.Format("0x{0:X8}", ea);
+                    return $"0x{ea:X8}";
 
                 case EffectiveAddressMode.AddressWithDisplacement:
                     return $"({(short)ea}, A{xn})";
 
                 case EffectiveAddressMode.ProgramCounter_Displacement:
-                    return $"({(short)ea}, PC)";
+                    return $"(0x{(short)ea:X4}, PC)";
 
-                case EffectiveAddressMode.Address:
-                    return string.Format("(A{0})", xn);
+                //case EffectiveAddressMode.Address:
+                //    return string.Format("(A{0})", xn);
 
                 case EffectiveAddressMode.Address_PostIncremenet:
-                    return string.Format("(A{0}+)", xn);
+                    return $"(A{xn})+";
 
                 case EffectiveAddressMode.DataRegister:
-                    return string.Format("D{0}", xn);
+                    return $"D{xn}";
 
-                case EffectiveAddressMode.AddressRegister:
-                    return string.Format("A{0}", xn);
+                //case EffectiveAddressMode.AddressRegister:
+                //    return string.Format("A{0}", xn);
 
                 default:
                     throw new NotImplementedException(mode.ToString());
@@ -359,40 +359,40 @@
         {
             switch (mode)
             {
-                case EffectiveAddressMode.Immediate:
-                    switch (Size)
-                    {
-                        case Size.Long:
-                            return string.Format("#{0}", (int)ea);
-                        case Size.Word:
-                            return string.Format("#{0}", (short)ea);
-                        default:
-                            throw new NotImplementedException();
-                    }
+                //case EffectiveAddressMode.Immediate:
+                //    switch (Size)
+                //    {
+                //        case Size.Long:
+                //            return string.Format("#{0}", (int)ea);
+                //        case Size.Word:
+                //            return string.Format("#{0}", (short)ea);
+                //        default:
+                //            throw new NotImplementedException();
+                //    }
 
-                case EffectiveAddressMode.AbsoluteWord:
-                    return string.Format("0x{0:X4}", ea);
+                //case EffectiveAddressMode.AbsoluteWord:
+                //    return string.Format("0x{0:X4}", ea);
 
-                case EffectiveAddressMode.AbsoluteLong:
-                    return string.Format("0x{0:X8}", ea);
+                //case EffectiveAddressMode.AbsoluteLong:
+                //    return string.Format("0x{0:X8}", ea);
 
-                case EffectiveAddressMode.AddressWithDisplacement:
-                    return $"(d16, A{xn})";
+                //case EffectiveAddressMode.AddressWithDisplacement:
+                //    return $"(d16, A{xn})";
 
                 case EffectiveAddressMode.ProgramCounter_Displacement:
                     return $"(d16, PC)";
 
-                case EffectiveAddressMode.Address:
-                    return string.Format("(A{0})", xn);
+                //case EffectiveAddressMode.Address:
+                //    return string.Format("(A{0})", xn);
 
-                case EffectiveAddressMode.Address_PostIncremenet:
-                    return string.Format("(A{0}+)", xn);
+                //case EffectiveAddressMode.Address_PostIncremenet:
+                //    return string.Format("(A{0}+)", xn);
 
-                case EffectiveAddressMode.DataRegister:
-                    return string.Format("D{0}", xn);
+                //case EffectiveAddressMode.DataRegister:
+                //    return string.Format("D{0}", xn);
 
-                case EffectiveAddressMode.AddressRegister:
-                    return string.Format("A{0}", xn);
+                //case EffectiveAddressMode.AddressRegister:
+                //    return string.Format("A{0}", xn);
 
                 default:
                     throw new NotImplementedException(mode.ToString());
@@ -408,44 +408,48 @@
         {
             switch (mode)
             {
-                case EffectiveAddressMode.Immediate:
-                    return ea;
+                //case EffectiveAddressMode.Immediate:
+                //    return ea;
 
-                case EffectiveAddressMode.AbsoluteWord:
-                    switch (Size)
-                    {
-                        case Size.Long:
-                            return state.ReadLong(ea);
-                        case Size.Word:
-                            return state.ReadWord(ea);
-                        default:
-                            throw new NotImplementedException();
-                    }
+                //case EffectiveAddressMode.AbsoluteWord:
+                //    switch (Size)
+                //    {
+                //        case Size.Long:
+                //            return state.ReadLong(ea);
+                //        case Size.Word:
+                //            return state.ReadWord(ea);
+                //        default:
+                //            throw new NotImplementedException();
+                //    }
 
                 case EffectiveAddressMode.AbsoluteLong:
-                    switch (Size)
+                    switch (this.Size)
                     {
                         case Size.Long:
-                            return state.ReadLong(ea);
+                            return this.state.ReadLong(ea);
                         case Size.Word:
                             return state.ReadWord(ea);
                         default:
                             throw new NotImplementedException();
                     }
 
-                case EffectiveAddressMode.DataRegister:
-                    return state.ReadDReg((byte)ea);
+                //case EffectiveAddressMode.DataRegister:
+                //    return state.ReadDReg((byte)ea);
 
-                case EffectiveAddressMode.AddressRegister:
-                    return state.ReadAReg((byte)ea);
+                //case EffectiveAddressMode.AddressRegister:
+                //    return state.ReadAReg((byte)ea);
 
-                case EffectiveAddressMode.Address:
-                    throw new NotImplementedException();
-                //return state.Read(state.ReadAReg(xn));
+                //case EffectiveAddressMode.Address:
+                //    throw new NotImplementedException();
+                ////return state.Read(state.ReadAReg(xn));
 
+                // get the contents of the address register + displacement
+                case EffectiveAddressMode.AddressWithDisplacement:
+
+                    return this.state.ReadByte((uint)(this.state.ReadAReg(xn) + (short)ea));
+                // get the PC + displacement (-2 so it is from opcode address)
                 case EffectiveAddressMode.ProgramCounter_Displacement:
-                    // TODO: is -4 required?
-                    return (uint)(state.PC - 4 + (short)ea);
+                    return (uint)(this.state.PC - 2 + (short)ea);
 
                 default:
                     throw new NotImplementedException(mode.ToString());
@@ -461,41 +465,36 @@
         {
             switch (ea)
             {
-                case EffectiveAddressMode.AbsoluteWord:
-                    //                    state.Write(Xn + 0, (byte)((value >> 0) & 0xFF));
-                    //                    state.Write(Xn + 1, (byte)((value >> 8) & 0xFF));
-                    throw new NotImplementedException();
-                    break;
+                //                case EffectiveAddressMode.AbsoluteWord:
+                //                    //                    state.Write(Xn + 0, (byte)((value >> 0) & 0xFF));
+                //                    //                    state.Write(Xn + 1, (byte)((value >> 8) & 0xFF));
+                //                    throw new NotImplementedException();
+                //                    break;
 
-                case EffectiveAddressMode.Address:
-                    uint addr = state.ReadAReg((byte)Xn);
+                //                case EffectiveAddressMode.Address:
+                //                    uint addr = state.ReadAReg((byte)Xn);
 
-                    // TODO: check Size????
+                //                    // TODO: check Size????
 
-//                    state.Write(addr + 0, (byte)((value >> 0) & 0xFF));
-//                    state.Write(addr + 1, (byte)((value >> 8) & 0xFF));
-                    throw new NotImplementedException();
+                ////                    state.Write(addr + 0, (byte)((value >> 0) & 0xFF));
+                ////                    state.Write(addr + 1, (byte)((value >> 8) & 0xFF));
+                //                    throw new NotImplementedException();
 
-                    break;
+                //                    break;
 
+                // write the value to the specified data register
                 case EffectiveAddressMode.DataRegister:
-
-                    // TODO: write all 32 bits
-
-                    state.WriteDReg((byte)Xn, value);
-
+                    this.state.WriteDReg((byte)Xn, (byte)value);
                     break;
 
+                // write the value to the specified address register
                 case EffectiveAddressMode.AddressRegister:
-
-                    // TODO: write all 32 bits
-
-                    state.WriteAReg((byte)Xn, value);
-
+                    this.state.WriteAReg((byte)Xn, value);
                     break;
 
+                // write the value to the specified address register
                 case EffectiveAddressMode.Address_PostIncremenet:
-                    state.WriteAReg((byte)Xn, value);
+                    this.state.WriteAReg((byte)Xn, value);
                     break;
                 
                 default:
@@ -517,33 +516,37 @@
         {
             switch (ea)
             {
-                case EffectiveAddressMode.Immediate:
-                    return (uint)ReadData(Size);
+                //case EffectiveAddressMode.Immediate:
+                //    return (uint)ReadData(Size);
 
-                case EffectiveAddressMode.AbsoluteWord:
-                    return (uint)ReadData(Size.Word);
+                //case EffectiveAddressMode.AbsoluteWord:
+                //    return (uint)ReadData(Size.Word);
 
                 case EffectiveAddressMode.AbsoluteLong:
-                    return (uint)ReadData(Size.Long);
+                    return (uint)this.ReadData(Size.Long);
 
+                // get the data register number
                 case EffectiveAddressMode.DataRegister:
                     return Xn;
 
+                // get the displacement word immediately following the opcode
                 case EffectiveAddressMode.AddressWithDisplacement:
-                    return (uint)ReadData(Size.Word);
+                    return (uint)this.ReadData(Size.Word);
 
+                // get the displacement word immediately following the opcode
                 case EffectiveAddressMode.ProgramCounter_Displacement:
-                    return (uint)ReadData(Size.Word);
+                    return (uint)this.ReadData(Size.Word);
 
-                case EffectiveAddressMode.Address:
-                    return state.ReadAReg(Xn);
+                //case EffectiveAddressMode.Address:
+                //    return state.ReadAReg(Xn);
 
-                case EffectiveAddressMode.AddressRegister:
-                    return Xn;
+                //case EffectiveAddressMode.AddressRegister:
+                //    return Xn;
 
+                // get the reg value and increment
                 case EffectiveAddressMode.Address_PostIncremenet:
-                    uint api = state.ReadAReg(Xn);
-                    state.WriteAReg(Xn, (byte)((api + 1) & 0xFF));
+                    uint api = this.state.ReadAReg(Xn);
+                    this.state.WriteAReg(Xn, api + 1);
                     return api;
 
                 default:
@@ -565,20 +568,17 @@
                     uint l = this.state.ReadLong(this.state.PC);
                     this.state.PC += 4;
                     return (int)l;
-
                 case Size.Word:
                     ushort w = this.state.ReadWord(this.state.PC);
                     this.state.PC += 2;
                     return (int)w;
-
-                case Size.Byte:
-                    // read word but discard first byte
-                    this.state.ReadByte(this.state.PC);
-                    this.state.PC += 1;
-                    byte b = (byte)this.state.ReadByte(this.state.PC);
-                    this.state.PC += 1;
-                    return (int)b;
-
+                //case Size.Byte:
+                //    // read word but discard first byte
+                //    this.state.ReadByte(this.state.PC);
+                //    this.state.PC += 1;
+                //    byte b = (byte)this.state.ReadByte(this.state.PC);
+                //    this.state.PC += 1;
+                //    return (int)b;
                 default:
                     throw new InvalidStateException();
             }

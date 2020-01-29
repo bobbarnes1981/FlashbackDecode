@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
     public class TST : OpCode
     {
@@ -12,7 +10,7 @@ namespace Decoder.OpCodes
 
         public override string Syntax => $"{Name} <ea>";
 
-        public override string Assembly => $"{Name} {getEAAssemblyString()}";
+        public override string Assembly => $"{Name}.{Size.ToString().ToLower()[0]} {getEAAssemblyString()}";
 
         public TST(MachineState state)
             : base("01001010ssmmmxxx", state)

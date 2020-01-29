@@ -14,7 +14,7 @@
         {
             get
             {
-                return $"{Name} {getEAAssemblyString(DecodeEffectiveAddressMode(GetSrcM(), GetSrcXn()), SrcEA, GetSrcXn())}, {getEAAssemblyString(DecodeEffectiveAddressMode(GetDstM(), GetDstXn()), DstEA, GetDstXn())}";
+                return $"{Name}.{Size.ToString().ToLower()[0]} {getEAAssemblyString(DecodeEffectiveAddressMode(GetSrcM(), GetSrcXn()), SrcEA, GetSrcXn())}, {getEAAssemblyString(DecodeEffectiveAddressMode(GetDstM(), GetDstXn()), DstEA, GetDstXn())}";
             }
         }
 
@@ -27,7 +27,7 @@
             this.SrcEA = this.readEA(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.GetSrcXn());
             this.DstEA = this.readEA(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.GetDstXn());
 
-            var srcVal = getEAValue(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.EffectiveAddress, (byte)this.SrcEA);
+            var srcVal = getEAValue(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.SrcEA, this.GetSrcXn());
             this.setEAValue(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.DstEA, srcVal);
         }
 

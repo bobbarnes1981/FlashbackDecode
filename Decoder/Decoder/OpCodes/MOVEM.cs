@@ -46,12 +46,14 @@
                     {
                         case MoveDirection.MemoryToRegister:
                             ushort maskCheck = 1;
+                            int count = 0;
                             for (int i = 0; i < 8; i++)
                             {
-                                uint d = state.ReadWord((uint)(this.EffectiveAddress + (i * 2)));
+                                uint d = state.ReadWord((uint)(this.EffectiveAddress + (count * 2)));
                                 if ((this.mask & maskCheck) == maskCheck)
                                 {
                                     state.WriteDReg((byte)i, d);
+                                    count++;
                                 }
 
                                 maskCheck += maskCheck;
@@ -59,16 +61,17 @@
 
                             for (int i = 0; i < 8; i++)
                             {
-                                uint d = state.ReadWord((uint)(this.EffectiveAddress + (i * 2) + 16));
+                                uint d = state.ReadWord((uint)(this.EffectiveAddress + (count * 2)));
                                 if ((this.mask & maskCheck) == maskCheck)
                                 {
                                     state.WriteAReg((byte)i, d);
+                                    count++;
                                 }
 
                                 maskCheck += maskCheck;
                             }
 
-                            this.setEAValue(this.DecodeEffectiveAddressMode(), this.EffectiveAddress + (16 * 2));
+                            this.setEAValue(this.DecodeEffectiveAddressMode(), (uint)(this.EffectiveAddress + (count * 2)));
 
                             break;
                         case MoveDirection.RegisterToMemory:
@@ -84,12 +87,14 @@
                     {
                         case MoveDirection.MemoryToRegister:
                             ushort maskCheck = 1;
+                            int count = 0;
                             for (int i = 0; i < 8; i++)
                             {
-                                uint d = state.ReadLong((uint)(this.EffectiveAddress + (i * 4)));
+                                uint d = state.ReadLong((uint)(this.EffectiveAddress + (count * 4)));
                                 if ((this.mask & maskCheck) == maskCheck)
                                 {
                                     state.WriteDReg((byte)i, d);
+                                    count++;
                                 }
 
                                 maskCheck += maskCheck;
@@ -97,16 +102,17 @@
 
                             for (int i = 0; i < 8; i++)
                             {
-                                uint d = state.ReadLong((uint)(this.EffectiveAddress + (i * 4) + 32));
+                                uint d = state.ReadLong((uint)(this.EffectiveAddress + (count * 4)));
                                 if ((this.mask & maskCheck) == maskCheck)
                                 {
                                     state.WriteAReg((byte)i, d);
+                                    count++;
                                 }
 
                                 maskCheck += maskCheck;
                             }
 
-                            this.setEAValue(this.DecodeEffectiveAddressMode(), this.EffectiveAddress + (32 * 2));
+                            this.setEAValue(this.DecodeEffectiveAddressMode(), (uint)(this.EffectiveAddress + (count * 4)));
 
                             break;
                         case MoveDirection.RegisterToMemory:

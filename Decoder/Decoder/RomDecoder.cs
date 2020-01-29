@@ -26,8 +26,13 @@ namespace Decoder
         {
             OpCodeDecoder decoder = new OpCodeDecoder();
 
+            displayState(state);
+
             do
             {
+                Console.WriteLine("Enter to execute next instruction...");
+                Console.ReadLine();
+
                 Console.WriteLine("Addr\t0x{0:X4} ({0})", state.PC);
 
                 state.FetchOpCode();
@@ -47,8 +52,7 @@ namespace Decoder
 
                 displayOpCode(opcode);
 
-                Console.WriteLine("Enter to execute next instruction...");
-                Console.ReadLine();
+                displayState(state);
 
             } while (running);
 
@@ -60,10 +64,26 @@ namespace Decoder
                 {
                     builder.AppendFormat("\t{0}", disassembly[addr].Assembly);
                 }
+
                 builder.AppendLine();
             }
 
             File.WriteAllText("output.asm", builder.ToString());
+        }
+
+        private void displayState(MachineState state)
+        {
+            Console.WriteLine($"A0=0x{state.ReadAReg(0x0):X8} A1=0x{state.ReadAReg(0x1):X8}");
+            Console.WriteLine($"A2=0x{state.ReadAReg(0x2):X8} A3=0x{state.ReadAReg(0x3):X8}");
+            Console.WriteLine($"A4=0x{state.ReadAReg(0x4):X8} A5=0x{state.ReadAReg(0x5):X8}");
+            Console.WriteLine($"A6=0x{state.ReadAReg(0x6):X8} A7=0x{state.ReadAReg(0x7):X8}");
+            Console.WriteLine($"D0=0x{state.ReadDReg(0x0):X8} D1=0x{state.ReadDReg(0x1):X8}");
+            Console.WriteLine($"D2=0x{state.ReadDReg(0x2):X8} D3=0x{state.ReadDReg(0x3):X8}");
+            Console.WriteLine($"D4=0x{state.ReadDReg(0x4):X8} D5=0x{state.ReadDReg(0x5):X8}");
+            Console.WriteLine($"D6=0x{state.ReadDReg(0x6):X8} D7=0x{state.ReadDReg(0x7):X8}");
+            Console.WriteLine($"PC=0x{state.PC:X8} SR=0x{state.SR:X8}");
+
+            Console.WriteLine();
         }
 
         private void displayOpCode(OpCode opcode)

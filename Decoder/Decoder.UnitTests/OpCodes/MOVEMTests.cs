@@ -32,13 +32,12 @@ namespace Decoder.UnitTests.OpCodes
 
             Assert.That(opcode.Size, Is.EqualTo(Size.Word));
 
-
             Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x0000));
             Assert.That(state.ReadAReg(0x1), Is.EqualTo(0x0000));
             Assert.That(state.ReadAReg(0x2), Is.EqualTo(0x0000));
             Assert.That(state.ReadAReg(0x3), Is.EqualTo(0x0000));
             Assert.That(state.ReadAReg(0x4), Is.EqualTo(0x0000));
-            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0xFF0020));
+            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0xFF0006));
             Assert.That(state.ReadAReg(0x6), Is.EqualTo(0x0000));
             Assert.That(state.ReadAReg(0x7), Is.EqualTo(0x0000));
 
@@ -47,12 +46,12 @@ namespace Decoder.UnitTests.OpCodes
             Assert.That(state.ReadDReg(0x2), Is.EqualTo(0x0000));
             Assert.That(state.ReadDReg(0x3), Is.EqualTo(0x0000));
             Assert.That(state.ReadDReg(0x4), Is.EqualTo(0x0000));
-            Assert.That(state.ReadDReg(0x5), Is.EqualTo(0x0A0B));
-            Assert.That(state.ReadDReg(0x6), Is.EqualTo(0x0C0D));
-            Assert.That(state.ReadDReg(0x7), Is.EqualTo(0x0E0F));
+            Assert.That(state.ReadDReg(0x5), Is.EqualTo(0x0001));
+            Assert.That(state.ReadDReg(0x6), Is.EqualTo(0x0203));
+            Assert.That(state.ReadDReg(0x7), Is.EqualTo(0x0405));
 
             Assert.That(state.PC, Is.EqualTo(0x00000004));
-            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x00FF0020));
+            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x00FF0006));
         }
 
         [Test]
@@ -81,13 +80,12 @@ namespace Decoder.UnitTests.OpCodes
 
             Assert.That(opcode.Size, Is.EqualTo(Size.Long));
 
-
-            Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x20212223));
-            Assert.That(state.ReadAReg(0x1), Is.EqualTo(0x24252627));
-            Assert.That(state.ReadAReg(0x2), Is.EqualTo(0x28292A2B));
-            Assert.That(state.ReadAReg(0x3), Is.EqualTo(0x2C2D2E2F));
-            Assert.That(state.ReadAReg(0x4), Is.EqualTo(0x30313233));
-            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x00FF0040));
+            Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x00010203));
+            Assert.That(state.ReadAReg(0x1), Is.EqualTo(0x04050607));
+            Assert.That(state.ReadAReg(0x2), Is.EqualTo(0x08090A0B));
+            Assert.That(state.ReadAReg(0x3), Is.EqualTo(0x0C0D0E0F));
+            Assert.That(state.ReadAReg(0x4), Is.EqualTo(0x10111213));
+            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x00FF0014));
             Assert.That(state.ReadAReg(0x6), Is.EqualTo(0x0000));
             Assert.That(state.ReadAReg(0x7), Is.EqualTo(0x0000));
 
@@ -101,7 +99,7 @@ namespace Decoder.UnitTests.OpCodes
             Assert.That(state.ReadDReg(0x7), Is.EqualTo(0x0000));
 
             Assert.That(state.PC, Is.EqualTo(0x00000004));
-            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x00FF0040));
+            Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x00FF0014));
         }
     }
 }

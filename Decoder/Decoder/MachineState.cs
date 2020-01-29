@@ -108,7 +108,18 @@ namespace Decoder
                 return rom.ReadByte(address);
             }
 
-            throw new NotImplementedException();
+            if (address >= RAM_MIN && address <= RAM_MAX)
+            {
+                return ram68k.ReadByte(address - RAM_MIN);
+            }
+
+            if (address == 0xA10001)
+            {
+                Console.WriteLine("Reading second byte of version register");
+                return 0x00;
+            }
+
+            throw new NotImplementedException($"{address:X8}");
         }
 
         public void WriteByte(uint address, byte data)
@@ -123,7 +134,7 @@ namespace Decoder
             }
             else
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException($"{address:X8}");
             }
         }
 

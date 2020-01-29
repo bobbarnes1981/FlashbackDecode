@@ -17,9 +17,9 @@
                 switch (Size)
                 {
                     case Size.Byte:
-                        return $"{Name}{GetCondition()} {(sbyte)EffectiveAddress}";
+                        return $"{Name}{GetCondition()} 0x{((sbyte)EffectiveAddress) + Address:X4} ";
                     case Size.Word:
-                        return $"{Name}{GetCondition()} {(short)EffectiveAddress}";
+                        return $"{Name}{GetCondition()} 0x{((short)EffectiveAddress) + Address:X4}";
                     default:
                         throw new InvalidStateException();
                 }

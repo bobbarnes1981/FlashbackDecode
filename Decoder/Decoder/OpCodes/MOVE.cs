@@ -1,4 +1,6 @@
-﻿namespace Decoder.OpCodes
+﻿using Decoder.Exceptions;
+
+namespace Decoder.OpCodes
 {
     /// <summary>
     /// MOVE OpCode.
@@ -29,14 +31,14 @@
         public override string Operation => "<ea> -> <ea>";
 
         /// <inheritdoc/>
-        public override string Syntax => $"{this.Name} <ea>, <ea>";
+        public override string Syntax => $"{this.Name} <ea>,<ea>";
 
         /// <inheritdoc/>
         public override string Assembly
         {
             get
             {
-                return $"{this.Name}.{this.Size.ToString().ToLower()[0]} {this.GetAssemblyForEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.SrcEA, this.GetSrcXn())}, {this.GetAssemblyForEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.DstEA, this.GetDstXn())}";
+                return $"{this.Name}.{this.Size.ToString().ToLower()[0]} {this.GetAssemblyForEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.SrcEA, this.GetSrcXn())},{this.GetAssemblyForEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.DstEA, this.GetDstXn())}";
             }
         }
 

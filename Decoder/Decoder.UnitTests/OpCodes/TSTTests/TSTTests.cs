@@ -1,19 +1,18 @@
 ﻿using Decoder.OpCodes;
 using NUnit.Framework;
 
-namespace Decoder.UnitTests.OpCodes
+namespace Decoder.UnitTests.OpCodes.TSTTests
 {
     [TestFixture]
     public class TSTTests
     {
-        [Test]
+        [Test(Description = "TST.l $00FF0000")]
         public void CheckIsNegativeSetsN()
         {
             // TST <ea>
             // 0100 1010 1011 1001  0x4AB9
             // 0000 0000 1111 1111  0x00FF
             // 0000 0000 0000 0000  0x0000
-
             // TST 0x00FF0000
 
             byte[] data = new byte[]
@@ -29,6 +28,8 @@ namespace Decoder.UnitTests.OpCodes
 
             var opcode = new TST(state);
 
+            Assert.That(opcode.Assembly, Is.EqualTo("TST.l $00FF0000"));
+
             Assert.That(opcode.Size, Is.EqualTo(Size.Long));
 
             Assert.That(state.PC, Is.EqualTo(0x00000006));
@@ -40,14 +41,13 @@ namespace Decoder.UnitTests.OpCodes
             Assert.That(state.Condition_C, Is.False);   // always cleared
         }
 
-        [Test]
+        [Test(Description = "TST.l $00FF0000")]
         public void CheckIsZeroSetsZ()
         {
             // TST <ea>
             // 0100 1010 1011 1001  0x4AB9
             // 0000 0000 1111 1111  0x00FF
             // 0000 0000 0000 0000  0x0000
-
             // TST 0x00FF0000
 
             byte[] data = new byte[]
@@ -62,6 +62,8 @@ namespace Decoder.UnitTests.OpCodes
             state.SR |= 0x0011;
 
             var opcode = new TST(state);
+
+            Assert.That(opcode.Assembly, Is.EqualTo("TST.l $00FF0000"));
 
             Assert.That(opcode.Size, Is.EqualTo(Size.Long));
 

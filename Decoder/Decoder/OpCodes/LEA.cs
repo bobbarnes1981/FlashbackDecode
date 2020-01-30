@@ -12,9 +12,21 @@
         public LEA(MachineState state)
             : base("0100aaa111mmmxxx", state)
         {
+            var allowedModes = new[]
+            {
+                EffectiveAddressMode.Address,
+                EffectiveAddressMode.AddressWithDisplacement,
+                EffectiveAddressMode.AddressWithIndex,
+                EffectiveAddressMode.AbsoluteWord,
+                EffectiveAddressMode.AbsoluteLong,
+                EffectiveAddressMode.ProgramCounterWithDisplacement,
+                EffectiveAddressMode.ProgramCounterWithIndex,
+            };
+            this.ValidateEffectiveAddress(this.DecodeEffectiveAddressMode(), allowedModes);
+
             this.EffectiveAddress = this.FetchEffectiveAddress();
 
-            var srcVal = this.InterpretEffectiveAddress();
+            var srcVal = this.ResolveEffectiveAddress();
             this.WriteValueToEffectiveAddress(EffectiveAddressMode.AddressRegister, (uint)this.GetAn(), srcVal);
         }
 
@@ -28,10 +40,10 @@
         public override string Operation => "<ea> -> An";
 
         /// <inheritdoc/>
-        public override string Syntax => $"{this.Name} <ea>, An\r\n{this.Name} {this.DescribeEffectiveAddress()}, {this.GetAn()}";
+        public override string Syntax => $"{this.Name} <ea>,An\r\n{this.Name} {this.DescribeEffectiveAddress()},{this.GetAn()}";
 
         /// <inheritdoc/>
-        public override string Assembly => $"{this.Name} {this.GetAssemblyForEffectiveAddress()}, {this.GetAn()}";
+        public override string Assembly => $"{this.Name} {this.GetAssemblyForEffectiveAddress()},{this.GetAn()}";
 
         /// <inheritdoc/>
         public override Size Size

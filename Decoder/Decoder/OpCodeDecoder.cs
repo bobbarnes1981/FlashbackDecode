@@ -1,4 +1,5 @@
-﻿using Decoder.OpCodes;
+﻿using Decoder.Exceptions;
+using Decoder.OpCodes;
 using System;
 
 namespace Decoder
@@ -197,7 +198,6 @@ namespace Decoder
                             throw new NotImplementedException("ADDQ");
 
                         case 0x1:
-                            //SUBQ
                             throw new NotImplementedException("SUBQ");
 
                         default:

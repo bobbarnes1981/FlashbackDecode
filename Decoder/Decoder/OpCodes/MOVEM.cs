@@ -1,4 +1,6 @@
-﻿namespace Decoder.OpCodes
+﻿using Decoder.Exceptions;
+
+namespace Decoder.OpCodes
 {
     /// <summary>
     /// MOVEM OpCode.
@@ -122,7 +124,7 @@
         public override string Operation => "<list> -> <ea> or <ea> -> <list>";
 
         /// <inheritdoc/>
-        public override string Syntax => $"{this.Name} <list> ,<ea>\r\n{this.Name} <ea>, <list>";
+        public override string Syntax => $"{this.Name} <list>,<ea>\r\n{this.Name} <ea>,<list>";
 
         /// <inheritdoc/>
         public override string Assembly
@@ -132,10 +134,10 @@
                 switch (this.GetDirection())
                 {
                     case MoveDirection.MemoryToRegister:
-                        return $"{this.Name} {this.GetAssemblyForEffectiveAddress()}, {this.mask.ToBinary()}";
+                        return $"{this.Name} {this.GetAssemblyForEffectiveAddress()},%{this.mask.ToBinary()}";
 
                     case MoveDirection.RegisterToMemory:
-                        return $"{this.Name} {this.mask.ToBinary()}, {this.GetAssemblyForEffectiveAddress()}";
+                        return $"{this.Name} %{this.mask.ToBinary()},{this.GetAssemblyForEffectiveAddress()}";
 
                     default:
                         throw new InvalidStateException();

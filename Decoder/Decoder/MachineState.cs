@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Decoder.Exceptions;
+using System;
 
 namespace Decoder
 {

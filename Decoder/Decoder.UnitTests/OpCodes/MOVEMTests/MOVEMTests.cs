@@ -1,19 +1,18 @@
 ﻿using Decoder.OpCodes;
 using NUnit.Framework;
 
-namespace Decoder.UnitTests.OpCodes
+namespace Decoder.UnitTests.OpCodes.MOVEMTests
 {
     [TestFixture]
     class MOVEMTests
     {
-        [Test]
+        [Test(Description = "MOVEM (A5)+,%0000000011100000")]
         public void CheckA5PostIncMoveWordToReg()
         {
-            // MOVEM <ea>, <ea>
+            // MOVEM <ea>,<ea>
             // 0100 1100 1001 1101  0x4C9D
             // 0000 0000 1110 0000  0x00E0
-
-            // MOVEM (A5)+, 0000 0000 1110 0000
+            // MOVEM (A5)+,0000000011100000
 
             byte[] data = new byte[]
             {
@@ -30,6 +29,7 @@ namespace Decoder.UnitTests.OpCodes
 
             var opcode = new MOVEM(state);
 
+            Assert.That(opcode.Assembly, Is.EqualTo("MOVEM (A5)+,%0000000011100000"));
             Assert.That(opcode.Size, Is.EqualTo(Size.Word));
 
             Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x0000));
@@ -54,14 +54,13 @@ namespace Decoder.UnitTests.OpCodes
             Assert.That(state.ReadAReg(0x5), Is.EqualTo(0x00FF0006));
         }
 
-        [Test]
+        [Test(Description = "MOVEM (A5)+,%0001111100000000")]
         public void CheckA5PostIncMoveLongToReg()
         {
-            // MOVEM <ea>, <ea>
+            // MOVEM <ea>,<ea>
             // 0100 1100 1101 1101  0x4CDD
             // 0001 1111 0000 0000  0x1F00
-
-            // MOVEM (A5)+, 0001 1111 0000 0000
+            // MOVEM (A5)+,0001111100000000
 
             byte[] data = new byte[]
             {
@@ -78,6 +77,7 @@ namespace Decoder.UnitTests.OpCodes
 
             var opcode = new MOVEM(state);
 
+            Assert.That(opcode.Assembly, Is.EqualTo("MOVEM (A5)+,%0001111100000000"));
             Assert.That(opcode.Size, Is.EqualTo(Size.Long));
 
             Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x00010203));

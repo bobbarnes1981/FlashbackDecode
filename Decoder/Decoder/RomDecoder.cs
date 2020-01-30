@@ -17,6 +17,12 @@ namespace Decoder
         public RomDecoder(Data rom)
         {
             Header h = new Header(rom);
+
+            displayHeader(h);
+
+            Console.WriteLine($"Calc Checksum:\t{rom.Checksum(0x200)}");
+            Console.WriteLine();
+
             state = new MachineState(rom, h.Origin, h.SP, h.RomStart, h.RomEnd, h.RamStart, h.RamEnd);
 
             disassembly = new Dictionary<uint, OpCode>();
@@ -69,6 +75,18 @@ namespace Decoder
             }
 
             File.WriteAllText("output.asm", builder.ToString());
+        }
+
+        private void displayHeader(Header header)
+        {
+            Console.WriteLine($"Console:\t{header.ConsoleName}");
+            Console.WriteLine($"Copyright:\t{header.Copyright}");
+            Console.WriteLine($"Name:\t\t{header.DomesticName}");
+            Console.WriteLine($"Int Name:\t{header.InternationalName}");
+            Console.WriteLine($"Version:\t{header.Version}");
+            Console.WriteLine($"Checksum:\t{header.Checksum}");
+
+            Console.WriteLine();
         }
 
         private void displayState(MachineState state)

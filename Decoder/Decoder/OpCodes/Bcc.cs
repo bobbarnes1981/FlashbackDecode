@@ -1,4 +1,6 @@
-﻿namespace Decoder.OpCodes
+﻿using Decoder.Exceptions;
+
+namespace Decoder.OpCodes
 {
     /// <summary>
     /// Bcc (Branch Condition) OpCode.
@@ -31,7 +33,7 @@
 
                 if (this.Size == Size.Byte)
                 {
-                    state.PC += this.EffectiveAddress;
+                    this.state.PC += this.EffectiveAddress;
                 }
             }
         }
@@ -56,9 +58,9 @@
                 switch (this.Size)
                 {
                     case Size.Byte:
-                        return $"{this.Name}{this.GetCondition()} 0x{((sbyte)this.EffectiveAddress) + this.Address:X4} ";
+                        return $"{this.Name}{this.GetCondition()} ${((sbyte)this.EffectiveAddress) + this.Address:X4}";
                     case Size.Word:
-                        return $"{this.Name}{this.GetCondition()} 0x{((short)this.EffectiveAddress) + this.Address:X4}";
+                        return $"{this.Name}{this.GetCondition()} ${((short)this.EffectiveAddress) + this.Address:X4}";
                     default:
                         throw new InvalidStateException();
                 }

@@ -16,12 +16,12 @@
         F,
 
         /// <summary>
-        /// 
+        /// High
         /// </summary>
         HI,
 
         /// <summary>
-        /// 
+        /// Low or same
         /// </summary>
         LS,
 
@@ -46,22 +46,22 @@
         EQ,
 
         /// <summary>
-        /// V cleared
+        /// Overflow cleared
         /// </summary>
         VC,
 
         /// <summary>
-        /// V set
+        /// Overflow set
         /// </summary>
         VS,
 
         /// <summary>
-        /// 
+        /// Plus
         /// </summary>
         PL,
 
         /// <summary>
-        /// 
+        /// Minus
         /// </summary>
         MI,
 

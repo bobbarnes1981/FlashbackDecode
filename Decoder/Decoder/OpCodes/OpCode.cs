@@ -403,6 +403,10 @@
         {
             switch (mode)
             {
+                // get the immediate value
+                case EffectiveAddressMode.Immediate:
+                    return ea;
+
                 // get the data in memory pointed to by the address register
                 case EffectiveAddressMode.Address:
                     switch (this.Size)
@@ -438,11 +442,17 @@
                     switch (this.Size)
                     {
                         case Size.Long:
-                            var reg = this.state.ReadAReg(xn);
-                            reg -= 4;
-                            var l = this.state.ReadLong(reg);
-                            this.state.WriteAReg(xn, reg);
+                            var regl = this.state.ReadAReg(xn);
+                            regl -= 4;
+                            var l = this.state.ReadLong(regl);
+                            this.state.WriteAReg(xn, regl);
                             return l;
+                        case Size.Byte:
+                            var regb = this.state.ReadAReg(xn);
+                            regb -= 2;
+                            var b = this.state.ReadByte(regb);
+                            this.state.WriteAReg(xn, regb);
+                            return b;
                         default:
                             throw new InvalidStateException();
                     }
@@ -534,6 +544,14 @@
                 case EffectiveAddressMode.AbsoluteLong:
                     return (uint)this.ReadDataUsingPC(Size.Long);
 
+                // get the address data immediately following the opcode
+                case EffectiveAddressMode.AbsoluteWord:
+                    return (uint)this.ReadDataUsingPC(Size.Long);
+
+                // get the immediate value follwoing the opcode
+                case EffectiveAddressMode.Immediate:
+                    return (uint)this.ReadDataUsingPC(this.Size);
+
                 // get the address register number
                 case EffectiveAddressMode.Address:
                     return Xn;
@@ -573,7 +591,7 @@
                     switch (this.Size)
                     {
                         case Size.Byte:
-                            throw new NotImplementedException();
+                            return this.state.ReadAReg(Xn);
                         case Size.Word:
                             return this.state.ReadAReg(Xn);
                         case Size.Long:
@@ -606,12 +624,12 @@
                     this.state.PC += 2;
                     return (int)w;
                 case Size.Byte:
-                    //// read word but discard first byte
-                    //this.state.ReadByte(this.state.PC);
-                    //this.state.PC += 1;
-                    //byte b = (byte)this.state.ReadByte(this.state.PC);
-                    //this.state.PC += 1;
-                    //return (int)b;
+                    // read word but discard first byte
+                    this.state.ReadByte(this.state.PC);
+                    this.state.PC += 1;
+                    byte b = (byte)this.state.ReadByte(this.state.PC);
+                    this.state.PC += 1;
+                    return (int)b;
                     throw new NotImplementedException();
                 default:
                     throw new InvalidStateException();

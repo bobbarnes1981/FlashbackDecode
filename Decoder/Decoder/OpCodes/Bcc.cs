@@ -1,55 +1,77 @@
 ﻿namespace Decoder.OpCodes
 {
+    /// <summary>
+    /// Bcc (Branch Condition) OpCode.
+    /// </summary>
     public class Bcc : OpCode
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Bcc"/> class.
+        /// </summary>
+        /// <param name="state">machine state.</param>
+        public Bcc(MachineState state)
+            : base("0110ccccbbbbbbbb", state)
+        {
+            if (this.Size == Size.Word)
+            {
+                this.EffectiveAddress = this.FetchAffectiveAddress(EffectiveAddressMode.Immediate, 0x00);
+            }
+
+            if (this.Size == Size.Byte)
+            {
+                this.EffectiveAddress = (byte)this.GetImmediate();
+            }
+
+            if (this.CheckCondition())
+            {
+                if (this.Size == Size.Word)
+                {
+                    this.state.PC += this.EffectiveAddress - 2;
+                }
+
+                if (this.Size == Size.Byte)
+                {
+                    state.PC += this.EffectiveAddress;
+                }
+            }
+        }
+
+        /// <inheritdoc/>
         public override string Name => "B";
 
+        /// <inheritdoc/>
         public override string Description => "Branch Conditionally";
 
+        /// <inheritdoc/>
         public override string Operation => "If CONDITION TRUE PC+dn -> PC";
 
-        public override string Syntax => $"{Name}{GetCondition()} <label>";
+        /// <inheritdoc/>
+        public override string Syntax => $"{this.Name}{this.GetCondition()} <label>";
 
+        /// <inheritdoc/>
         public override string Assembly
         {
             get
             {
-                switch (Size)
+                switch (this.Size)
                 {
                     case Size.Byte:
-                        return $"{Name}{GetCondition()} 0x{((sbyte)EffectiveAddress) + Address:X4} ";
+                        return $"{this.Name}{this.GetCondition()} 0x{((sbyte)this.EffectiveAddress) + this.Address:X4} ";
                     case Size.Word:
-                        return $"{Name}{GetCondition()} 0x{((short)EffectiveAddress) + Address:X4}";
+                        return $"{this.Name}{this.GetCondition()} 0x{((short)this.EffectiveAddress) + this.Address:X4}";
                     default:
                         throw new InvalidStateException();
                 }
             }
         }
 
-        public Bcc(MachineState state)
-            : base("0110ccccbbbbbbbb", state)
+        /// <inheritdoc/>
+        public override Size Size
         {
-            if (Size == Size.Word)
+            get
             {
-                EffectiveAddress = readEA(EffectiveAddressMode.Immediate, 0x00);
-            }
-
-            if (CheckCondition())
-            {
-                if (Size == Size.Word)
-                {
-                    state.PC += EffectiveAddress - 2;
-                }
-                else
-                {
-                    state.PC += EffectiveAddress;
-                }
+                return this.GetSizeFrom8BitImmediate();
             }
         }
-
-        protected override Size getSize()
-            {
-                return getSizeFrom8BitImmediate();
-            }
     }
 }

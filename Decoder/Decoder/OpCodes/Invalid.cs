@@ -1,27 +1,43 @@
-﻿using System;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
-    class Invalid : OpCode
+    using System;
+
+    /// <summary>
+    /// Invalid OpCode.
+    /// </summary>
+    public class Invalid : OpCode
     {
-        public override string Name => "INVALID";
-
-        public override string Description => throw new NotImplementedException();
-
-        public override string Operation => throw new NotImplementedException();
-
-        public override string Syntax => throw new NotImplementedException();
-
-        public override string Assembly => throw new NotImplementedException();
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Invalid"/> class.
+        /// </summary>
+        /// <param name="state">machine state.</param>
         public Invalid(MachineState state)
             : base("----------------", state)
         {
         }
 
-        protected override Size getSize()
+        /// <inheritdoc/>
+        public override string Name => "INVALID";
+
+        /// <inheritdoc/>
+        public override string Description => throw new NotImplementedException();
+
+        /// <inheritdoc/>
+        public override string Operation => throw new NotImplementedException();
+
+        /// <inheritdoc/>
+        public override string Syntax => throw new NotImplementedException();
+
+        /// <inheritdoc/>
+        public override string Assembly => throw new NotImplementedException();
+
+        /// <inheritdoc/>
+        public override Size Size
         {
-            throw new NotImplementedException();
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

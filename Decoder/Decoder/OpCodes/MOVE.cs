@@ -1,69 +1,108 @@
 ﻿namespace Decoder.OpCodes
 {
+    /// <summary>
+    /// MOVE OpCode.
+    /// </summary>
     public class MOVE : OpCode
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MOVE"/> class.
+        /// </summary>
+        /// <param name="state">machine state.</param>
+        public MOVE(MachineState state)
+            : base("00ss______mmmxxx", state)
+        {
+            this.SrcEA = this.FetchAffectiveAddress(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.GetSrcXn());
+            this.DstEA = this.FetchAffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.GetDstXn());
+
+            var srcVal = this.InterpretEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.SrcEA, this.GetSrcXn());
+            this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.DstEA, srcVal);
+        }
+
+        /// <inheritdoc/>
         public override string Name => "MOVE";
 
+        /// <inheritdoc/>
         public override string Description => "Move Data from Source to Destination";
 
+        /// <inheritdoc/>
         public override string Operation => "<ea> -> <ea>";
 
-        public override string Syntax => $"{Name} <ea>, <ea>";
+        /// <inheritdoc/>
+        public override string Syntax => $"{this.Name} <ea>, <ea>";
 
+        /// <inheritdoc/>
         public override string Assembly
         {
             get
             {
-                return $"{Name}.{Size.ToString().ToLower()[0]} {getEAAssemblyString(DecodeEffectiveAddressMode(GetSrcM(), GetSrcXn()), SrcEA, GetSrcXn())}, {getEAAssemblyString(DecodeEffectiveAddressMode(GetDstM(), GetDstXn()), DstEA, GetDstXn())}";
+                return $"{this.Name}.{this.Size.ToString().ToLower()[0]} {this.GetAssemblyForEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.SrcEA, this.GetSrcXn())}, {this.GetAssemblyForEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.DstEA, this.GetDstXn())}";
             }
         }
 
+        /// <inheritdoc/>
+        public override Size Size
+        {
+            get
+            {
+                switch (this.GetBits('s'))
+                {
+                    case 0x0001:
+                        return Size.Byte;
+
+                    case 0x0002:
+                        return Size.Long;
+
+                    case 0x0003:
+                        return Size.Word;
+
+                    default:
+                        throw new InvalidStateException();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the source effective address.
+        /// </summary>
         public uint SrcEA { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the destination effective address.
+        /// </summary>
         public uint DstEA { get; protected set; }
 
-        public MOVE(MachineState state)
-            : base("00ss______mmmxxx", state)
-        {
-            this.SrcEA = this.readEA(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.GetSrcXn());
-            this.DstEA = this.readEA(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.GetDstXn());
-
-            var srcVal = getEAValue(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.SrcEA, this.GetSrcXn());
-            this.setEAValue(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.DstEA, srcVal);
-        }
-
+        /// <summary>
+        /// Get source M.
+        /// </summary>
+        /// <returns>M value.</returns>
         protected byte GetSrcM()
         {
-            return GetM();
+            return this.GetM();
         }
 
+        /// <summary>
+        /// Get destination M.
+        /// </summary>
+        /// <returns>M value.</returns>
         protected byte GetDstM()
         {
             return (byte)this.state.OpCode.GetBits(6, 3);
         }
 
-        protected override Size getSize()
-        {
-            switch (this.GetBits('s'))
-            {
-                case 0x0001:
-                    return Size.Byte;
-
-                case 0x0002:
-                    return Size.Long;
-
-                case 0x0003:
-                    return Size.Word;
-
-                default:
-                    throw new InvalidStateException();
-            }
-        }
-
+        /// <summary>
+        /// Get source Xn.
+        /// </summary>
+        /// <returns>Xn value.</returns>
         protected byte GetSrcXn()
         {
             return this.GetXn();
         }
 
+        /// <summary>
+        /// Get destination Xn.
+        /// </summary>
+        /// <returns>Xn value.</returns>
         protected byte GetDstXn()
         {
             return (byte)this.state.OpCode.GetBits(9, 3);

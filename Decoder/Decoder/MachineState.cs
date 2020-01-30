@@ -199,6 +199,7 @@ namespace Decoder
 
         public void WriteAReg(byte register, uint data)
         {
+            // TODO: sign extend data
             if (register > 0x07)
             {
                 throw new System.Exception();

@@ -1,48 +1,32 @@
 ﻿namespace Decoder.OpCodes
 {
+    /// <summary>
+    /// MOVEM OpCode.
+    /// </summary>
     public class MOVEM : OpCode
     {
-        private ushort mask;
+        /// <summary>
+        /// Register mask.
+        /// </summary>
+        private readonly ushort mask;
 
-        public override string Name => "MOVEM";
-
-        public override string Description => "Move Multiple Registers";
-
-        public override string Operation => "<list> -> <ea> or <ea> -> <list>";
-
-        public override string Syntax => $"{Name} <list> ,<ea>\r\n{Name} <ea>, <list>";
-
-        public override string Assembly
-        {
-            get
-            {
-                switch (getDirection())
-                {
-                    case MoveDirection.MemoryToRegister:
-                        return $"{Name} {getEAAssemblyString()}, {mask.ToBinary()}";
-
-                    case MoveDirection.RegisterToMemory:
-                        return $"{Name} {mask.ToBinary()}, {getEAAssemblyString()}";
-
-                    default:
-                        throw new InvalidStateException();
-                }
-            }
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MOVEM"/> class.
+        /// </summary>
+        /// <param name="state">machine state.</param>
         public MOVEM(MachineState state)
             : base("01001D001smmmxxx", state)
         {
             this.mask = state.ReadWord(state.PC);
             state.PC += 2;
 
-            this.EffectiveAddress = this.readEA(this.DecodeEffectiveAddressMode());
+            this.EffectiveAddress = this.FetchEffectiveAddress();
 
             // TODO: should the increment only include values that are beingset?
             switch (this.Size)
             {
                 case Size.Word:
-                    switch (this.getDirection())
+                    switch (this.GetDirection())
                     {
                         case MoveDirection.MemoryToRegister:
                             ushort maskCheck = 1;
@@ -71,7 +55,7 @@
                                 maskCheck += maskCheck;
                             }
 
-                            this.setEAValue(this.DecodeEffectiveAddressMode(), (uint)(this.EffectiveAddress + (count * 2)));
+                            this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), (uint)(this.EffectiveAddress + (count * 2)));
 
                             break;
                         case MoveDirection.RegisterToMemory:
@@ -83,7 +67,7 @@
                     break;
 
                 case Size.Long:
-                    switch (this.getDirection())
+                    switch (this.GetDirection())
                     {
                         case MoveDirection.MemoryToRegister:
                             ushort maskCheck = 1;
@@ -112,7 +96,7 @@
                                 maskCheck += maskCheck;
                             }
 
-                            this.setEAValue(this.DecodeEffectiveAddressMode(), (uint)(this.EffectiveAddress + (count * 4)));
+                            this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), (uint)(this.EffectiveAddress + (count * 4)));
 
                             break;
                         case MoveDirection.RegisterToMemory:
@@ -128,12 +112,51 @@
             }
         }
 
-        protected override Size getSize()
+        /// <inheritdoc/>
+        public override string Name => "MOVEM";
+
+        /// <inheritdoc/>
+        public override string Description => "Move Multiple Registers";
+
+        /// <inheritdoc/>
+        public override string Operation => "<list> -> <ea> or <ea> -> <list>";
+
+        /// <inheritdoc/>
+        public override string Syntax => $"{this.Name} <list> ,<ea>\r\n{this.Name} <ea>, <list>";
+
+        /// <inheritdoc/>
+        public override string Assembly
         {
-            return this.getSizeFrom1Bit(6);
+            get
+            {
+                switch (this.GetDirection())
+                {
+                    case MoveDirection.MemoryToRegister:
+                        return $"{this.Name} {this.GetAssemblyForEffectiveAddress()}, {this.mask.ToBinary()}";
+
+                    case MoveDirection.RegisterToMemory:
+                        return $"{this.Name} {this.mask.ToBinary()}, {this.GetAssemblyForEffectiveAddress()}";
+
+                    default:
+                        throw new InvalidStateException();
+                }
+            }
         }
 
-        protected MoveDirection getDirection()
+        /// <inheritdoc/>
+        public override Size Size
+        {
+            get
+            {
+                return this.GetSizeFrom1BitImmediate(6);
+            }
+        }
+
+        /// <summary>
+        /// Get direction.
+        /// </summary>
+        /// <returns>direction.</returns>
+        protected MoveDirection GetDirection()
         {
             return (MoveDirection)this.GetBits('D');
         }

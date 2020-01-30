@@ -23,7 +23,7 @@
         /// <summary>
         /// Address post increment (An)+
         /// </summary>
-        Address_PostIncremenet      = 0x18, // 0001 1000
+        Address_PostIncrement       = 0x18, // 0001 1000
 
         /// <summary>
         /// Address pre decrement -(An)

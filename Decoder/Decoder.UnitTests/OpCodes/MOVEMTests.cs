@@ -13,7 +13,7 @@ namespace Decoder.UnitTests.OpCodes
             // 0100 1100 1001 1101  0x4C9D
             // 0000 0000 1110 0000  0x00E0
 
-            // MOVEM (A5+), 0000 0000 1110 0000
+            // MOVEM (A5)+, 0000 0000 1110 0000
 
             byte[] data = new byte[]
             {
@@ -61,7 +61,7 @@ namespace Decoder.UnitTests.OpCodes
             // 0100 1100 1101 1101  0x4CDD
             // 0001 1111 0000 0000  0x1F00
 
-            // MOVEM (A5+), 0001 1111 0000 0000
+            // MOVEM (A5)+, 0001 1111 0000 0000
 
             byte[] data = new byte[]
             {

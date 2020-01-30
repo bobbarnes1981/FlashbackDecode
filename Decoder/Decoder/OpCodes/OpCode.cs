@@ -40,13 +40,16 @@
         /// <summary>
         /// Gets the OpCode size.
         /// </summary>
-        public readonly Size Size;
+        public abstract Size Size { get; }
 
         /// <summary>
-        /// Gets the OpCode effective address.
+        /// Gets or sets the OpCode effective address.
         /// </summary>
         public uint EffectiveAddress { get; protected set; }
 
+        /// <summary>
+        /// Machine state.
+        /// </summary>
         protected readonly MachineState state;
 
         /// <summary>
@@ -61,6 +64,11 @@
         private const char DEFINITION_CHAR_AN = 'a';
         private const char DEFINITION_CHAR_CONDITION = 'c';
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OpCode"/> class.
+        /// </summary>
+        /// <param name="definition">opcode definition string.</param>
+        /// <param name="state">machine state.</param>
         public OpCode(string definition, MachineState state)
         {
             if (string.IsNullOrEmpty(definition))
@@ -79,20 +87,23 @@
 
             this.Address = state.PC;
 
-            this.Size = this.getSize();
+            this.ValidateDefinition();
 
-            this.validate();
+            this.ValidateSize();
         }
 
-        protected void validate()
+        /// <summary>
+        /// Validate the opcode against the definition string.
+        /// </summary>
+        private void ValidateDefinition()
         {
             ushort count = 1;
             for (int i = 0; i < 16; i++)
             {
-                switch (definition[15-i])
+                switch (this.definition[15 - i])
                 {
                     case '0':
-                        if ((state.OpCode & count) != 0x0000)
+                        if ((this.state.OpCode & count) != 0x0000)
                         {
                             throw new InvalidOpCodeException();
                         }
@@ -100,7 +111,7 @@
                         break;
 
                     case '1':
-                        if ((state.OpCode & count) == 0x0000)
+                        if ((this.state.OpCode & count) == 0x0000)
                         {
                             throw new InvalidOpCodeException();
                         }
@@ -112,11 +123,22 @@
             }
         }
 
-        protected abstract Size getSize();
-
-        protected Size getSizeFrom1Bit(int offset)
+        /// <summary>
+        /// Validate the opcode size against allowed values.
+        /// </summary>
+        private void ValidateSize()
         {
-            switch (state.OpCode.GetBits(offset, 1))
+
+        }
+
+        /// <summary>
+        /// Decode the size from the 1 bit immediate value.
+        /// </summary>
+        /// <param name="offset">bit offset.</param>
+        /// <returns>size.</returns>
+        protected Size GetSizeFrom1BitImmediate(int offset)
+        {
+            switch (this.state.OpCode.GetBits(offset, 1))
             {
                 case 0x0000:
                     return Size.Word;
@@ -127,9 +149,13 @@
             }
         }
 
-        protected Size getSizeFrom8BitImmediate()
+        /// <summary>
+        /// Decode the size from the 8 bit immediate value.
+        /// </summary>
+        /// <returns>size.</returns>
+        protected Size GetSizeFrom8BitImmediate()
         {
-            byte displacement = (byte)GetImmediate();
+            byte displacement = (byte)this.GetImmediate();
 
             if (displacement == 0x00)
             {
@@ -137,7 +163,6 @@
             }
             else
             {
-                EffectiveAddress = displacement;
                 return Size.Byte;
             }
         }
@@ -158,36 +183,6 @@
             }
         }
 
-        /// <summary>
-        /// Get the offset and length values defined by specified character in definition.
-        /// </summary>
-        /// <param name="c">character to search for in definition.</param>
-        /// <returns>offset and length values.</returns>
-        private Tuple<int, int> GetValues(char c)
-        {
-            int offset = -1;
-            int length = -1;
-            for (int i = 0; i < 16; i++)
-            {
-                if (this.definition[15 - i] == c)
-                {
-                    if (offset == -1)
-                    {
-                        offset = i;
-                        length = 0;
-                    }
-
-                    length++;
-                }
-            }
-
-            if (offset == -1 || length == -1)
-            {
-                throw new Exception($"{c} not defined");
-            }
-
-            return new Tuple<int, int>(offset, length);
-        }
 
         /// <summary>
         /// Get bits from opcode defined by specified character in definition.
@@ -268,7 +263,7 @@
         /// <returns>data from memory.</returns>
         protected uint ReadImmediate()
         {
-            return (uint)this.ReadData(this.Size);
+            return (uint)this.ReadDataUsingPC(this.Size);
         }
 
         /// <summary>
@@ -301,12 +296,12 @@
             }
         }
 
-        protected string getEAAssemblyString()
+        protected string GetAssemblyForEffectiveAddress()
         {
-            return getEAAssemblyString(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
+            return GetAssemblyForEffectiveAddress(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
         }
 
-        protected string getEAAssemblyString(EffectiveAddressMode mode, uint ea, byte xn)
+        protected string GetAssemblyForEffectiveAddress(EffectiveAddressMode mode, uint ea, byte xn)
         {
             switch (mode)
             {
@@ -336,7 +331,7 @@
                 //case EffectiveAddressMode.Address:
                 //    return string.Format("(A{0})", xn);
 
-                case EffectiveAddressMode.Address_PostIncremenet:
+                case EffectiveAddressMode.Address_PostIncrement:
                     return $"(A{xn})+";
 
                 case EffectiveAddressMode.DataRegister:
@@ -350,12 +345,12 @@
             }
         }
 
-        protected string getEADescriptionString()
+        protected string DescribeEffectiveAddress()
         {
-            return getEADescriptionString(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
+            return DescribeEffectiveAddress(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
         }
 
-        protected string getEADescriptionString(EffectiveAddressMode mode, uint ea, byte xn)
+        protected string DescribeEffectiveAddress(EffectiveAddressMode mode, uint ea, byte xn)
         {
             switch (mode)
             {
@@ -399,54 +394,76 @@
             }
         }
 
-        protected uint getEAValue()
+        protected uint InterpretEffectiveAddress()
         {
-            return getEAValue(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
+            return InterpretEffectiveAddress(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
         }
 
-        protected uint getEAValue(EffectiveAddressMode mode, uint ea, byte xn)
+        protected uint InterpretEffectiveAddress(EffectiveAddressMode mode, uint ea, byte xn)
         {
             switch (mode)
             {
-                //case EffectiveAddressMode.Immediate:
-                //    return ea;
+                // get the data in memory pointed to by the address register
+                case EffectiveAddressMode.Address:
+                    switch (this.Size)
+                    {
+                        case Size.Long:
+                            return this.state.ReadLong(this.state.ReadAReg(xn));
+                        default:
+                            throw new InvalidStateException();
+                    }
 
-                //case EffectiveAddressMode.AbsoluteWord:
-                //    switch (Size)
-                //    {
-                //        case Size.Long:
-                //            return state.ReadLong(ea);
-                //        case Size.Word:
-                //            return state.ReadWord(ea);
-                //        default:
-                //            throw new NotImplementedException();
-                //    }
+                // get the data in memory pointed to by the address register (post increment register)
+                case EffectiveAddressMode.Address_PostIncrement:
+                    switch (this.Size)
+                    {
+                        case Size.Long:
+                            var reg = this.state.ReadAReg(xn);
+                            var l = this.state.ReadLong(reg);
+                            this.state.WriteAReg(xn, reg + 4);
+                            return l;
+                        default:
+                            throw new InvalidStateException();
+                    }
 
+                // get the data in memory pointed to by the address register (pre decrement register)
+                case EffectiveAddressMode.Address_PreDecrement:
+                    switch (this.Size)
+                    {
+                        case Size.Long:
+                            var reg = this.state.ReadAReg(xn);
+                            reg -= 4;
+                            var l = this.state.ReadLong(reg);
+                            this.state.WriteAReg(xn, reg);
+                            return l;
+                        default:
+                            throw new InvalidStateException();
+                    }
+
+                // get the number stored in the address register
+                case EffectiveAddressMode.AddressRegister:
+                    return this.state.ReadAReg(xn);
+
+                // get the number stored in the data register
+                case EffectiveAddressMode.DataRegister:
+                    return this.state.ReadDReg(xn);
+
+                // get the value from memory using the provided long address
                 case EffectiveAddressMode.AbsoluteLong:
                     switch (this.Size)
                     {
                         case Size.Long:
                             return this.state.ReadLong(ea);
                         case Size.Word:
-                            return state.ReadWord(ea);
+                            return this.state.ReadWord(ea);
                         default:
                             throw new NotImplementedException();
                     }
 
-                //case EffectiveAddressMode.DataRegister:
-                //    return state.ReadDReg((byte)ea);
-
-                //case EffectiveAddressMode.AddressRegister:
-                //    return state.ReadAReg((byte)ea);
-
-                //case EffectiveAddressMode.Address:
-                //    throw new NotImplementedException();
-                ////return state.Read(state.ReadAReg(xn));
-
                 // get the contents of the address register + displacement
                 case EffectiveAddressMode.AddressWithDisplacement:
+                    return (uint)(this.state.ReadAReg(xn) + (short)ea);
 
-                    return this.state.ReadByte((uint)(this.state.ReadAReg(xn) + (short)ea));
                 // get the PC + displacement (-2 so it is from opcode address)
                 case EffectiveAddressMode.ProgramCounter_Displacement:
                     return (uint)(this.state.PC - 2 + (short)ea);
@@ -456,35 +473,30 @@
             }
         }
 
-        protected void setEAValue(EffectiveAddressMode ea, uint value)
-        {
-            setEAValue(ea, GetXn(), value);
-        }
-
-        protected void setEAValue(EffectiveAddressMode ea, uint Xn, uint value)
+        protected void WriteValueToEffectiveAddress(EffectiveAddressMode ea, uint Xn, uint value)
         {
             switch (ea)
             {
-                //                case EffectiveAddressMode.AbsoluteWord:
-                //                    //                    state.Write(Xn + 0, (byte)((value >> 0) & 0xFF));
-                //                    //                    state.Write(Xn + 1, (byte)((value >> 8) & 0xFF));
-                //                    throw new NotImplementedException();
-                //                    break;
-
-                //                case EffectiveAddressMode.Address:
-                //                    uint addr = state.ReadAReg((byte)Xn);
-
-                //                    // TODO: check Size????
-
-                ////                    state.Write(addr + 0, (byte)((value >> 0) & 0xFF));
-                ////                    state.Write(addr + 1, (byte)((value >> 8) & 0xFF));
-                //                    throw new NotImplementedException();
-
-                //                    break;
-
-                // write the value to the specified data register
+                // write the value at the address to the specified data register
                 case EffectiveAddressMode.DataRegister:
-                    this.state.WriteDReg((byte)Xn, (byte)value);
+                    switch (this.Size)
+                    {
+                        case Size.Byte:
+                            var b = this.state.ReadByte(value);
+                            this.state.WriteDReg((byte)Xn, b);
+                            break;
+                        case Size.Word:
+                            var w = this.state.ReadWord(value);
+                            this.state.WriteDReg((byte)Xn, w);
+                            break;
+                        case Size.Long:
+                            var l = this.state.ReadLong(value);
+                            this.state.WriteDReg((byte)Xn, l);
+                            break;
+                        default:
+                            throw new InvalidStateException();
+                    }
+
                     break;
 
                 // write the value to the specified address register
@@ -493,37 +505,35 @@
                     break;
 
                 // write the value to the specified address register
-                case EffectiveAddressMode.Address_PostIncremenet:
+                case EffectiveAddressMode.Address_PostIncrement:
                     this.state.WriteAReg((byte)Xn, value);
                     break;
-                
+
                 default:
                     throw new NotImplementedException(ea.ToString());
             }
         }
 
-        protected uint readEA()
+        protected uint FetchEffectiveAddress()
         {
-            return readEA(DecodeEffectiveAddressMode(), GetXn());
+            return FetchAffectiveAddress(DecodeEffectiveAddressMode(), GetXn());
         }
 
-        protected uint readEA(EffectiveAddressMode ea)
-        {
-            return readEA(ea, GetXn());
-        }
-
-        protected uint readEA(EffectiveAddressMode ea, byte Xn)
+        protected uint FetchAffectiveAddress(EffectiveAddressMode ea, byte Xn)
         {
             switch (ea)
             {
-                //case EffectiveAddressMode.Immediate:
-                //    return (uint)ReadData(Size);
-
-                //case EffectiveAddressMode.AbsoluteWord:
-                //    return (uint)ReadData(Size.Word);
-
+                // get the address data immediately following the opcode
                 case EffectiveAddressMode.AbsoluteLong:
-                    return (uint)this.ReadData(Size.Long);
+                    return (uint)this.ReadDataUsingPC(Size.Long);
+
+                // get the address register number
+                case EffectiveAddressMode.Address:
+                    return Xn;
+
+                // get the address register number
+                case EffectiveAddressMode.AddressRegister:
+                    return Xn;
 
                 // get the data register number
                 case EffectiveAddressMode.DataRegister:
@@ -531,23 +541,39 @@
 
                 // get the displacement word immediately following the opcode
                 case EffectiveAddressMode.AddressWithDisplacement:
-                    return (uint)this.ReadData(Size.Word);
+                    return (uint)this.ReadDataUsingPC(Size.Word);
 
                 // get the displacement word immediately following the opcode
                 case EffectiveAddressMode.ProgramCounter_Displacement:
-                    return (uint)this.ReadData(Size.Word);
+                    return (uint)this.ReadDataUsingPC(Size.Word);
 
-                //case EffectiveAddressMode.Address:
-                //    return state.ReadAReg(Xn);
+                // get the reg value
+                case EffectiveAddressMode.Address_PostIncrement:
+                    switch (this.Size)
+                    {
+                        case Size.Byte:
+                            throw new NotImplementedException();
+                        case Size.Word:
+                            return this.state.ReadAReg(Xn);
+                        case Size.Long:
+                            return this.state.ReadAReg(Xn);
+                        default:
+                            throw new InvalidStateException();
+                    }
 
-                //case EffectiveAddressMode.AddressRegister:
-                //    return Xn;
-
-                // get the reg value and increment
-                case EffectiveAddressMode.Address_PostIncremenet:
-                    uint api = this.state.ReadAReg(Xn);
-                    this.state.WriteAReg(Xn, api + 1);
-                    return api;
+                // get the reg value
+                case EffectiveAddressMode.Address_PreDecrement:
+                    switch (this.Size)
+                    {
+                        case Size.Byte:
+                            throw new NotImplementedException();
+                        case Size.Word:
+                            return this.state.ReadAReg(Xn);
+                        case Size.Long:
+                            return this.state.ReadAReg(Xn);
+                        default:
+                            throw new InvalidStateException();
+                    }
 
                 default:
                     throw new NotImplementedException(ea.ToString());
@@ -560,7 +586,7 @@
         /// </summary>
         /// <param name="size">Size of data to read.</param>
         /// <returns>The read data cast to int.</returns>
-        protected int ReadData(Size size)
+        protected int ReadDataUsingPC(Size size)
         {
             switch (size)
             {
@@ -572,13 +598,14 @@
                     ushort w = this.state.ReadWord(this.state.PC);
                     this.state.PC += 2;
                     return (int)w;
-                //case Size.Byte:
-                //    // read word but discard first byte
-                //    this.state.ReadByte(this.state.PC);
-                //    this.state.PC += 1;
-                //    byte b = (byte)this.state.ReadByte(this.state.PC);
-                //    this.state.PC += 1;
-                //    return (int)b;
+                case Size.Byte:
+                    //// read word but discard first byte
+                    //this.state.ReadByte(this.state.PC);
+                    //this.state.PC += 1;
+                    //byte b = (byte)this.state.ReadByte(this.state.PC);
+                    //this.state.PC += 1;
+                    //return (int)b;
+                    throw new NotImplementedException();
                 default:
                     throw new InvalidStateException();
             }
@@ -622,6 +649,37 @@
                 default:
                     throw new InvalidStateException();
             }
+        }
+
+        /// <summary>
+        /// Get the offset and length values defined by specified character in definition.
+        /// </summary>
+        /// <param name="c">character to search for in definition.</param>
+        /// <returns>offset and length values.</returns>
+        private Tuple<int, int> GetValues(char c)
+        {
+            int offset = -1;
+            int length = -1;
+            for (int i = 0; i < 16; i++)
+            {
+                if (this.definition[15 - i] == c)
+                {
+                    if (offset == -1)
+                    {
+                        offset = i;
+                        length = 0;
+                    }
+
+                    length++;
+                }
+            }
+
+            if (offset == -1 || length == -1)
+            {
+                throw new Exception($"{c} not defined");
+            }
+
+            return new Tuple<int, int>(offset, length);
         }
     }
 }

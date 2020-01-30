@@ -499,16 +499,13 @@
                     switch (this.Size)
                     {
                         case Size.Byte:
-                            var b = this.state.ReadByte(value);
-                            this.state.WriteDReg((byte)Xn, b);
+                            this.state.WriteDReg((byte)Xn, (uint)(byte)value);
                             break;
                         case Size.Word:
-                            var w = this.state.ReadWord(value);
-                            this.state.WriteDReg((byte)Xn, w);
+                            this.state.WriteDReg((byte)Xn, (uint)(short)value);
                             break;
                         case Size.Long:
-                            var l = this.state.ReadLong(value);
-                            this.state.WriteDReg((byte)Xn, l);
+                            this.state.WriteDReg((byte)Xn, (uint)value);
                             break;
                         default:
                             throw new InvalidStateException();
@@ -524,6 +521,23 @@
                 // write the value to the specified address register
                 case EffectiveAddressMode.Address_PostIncrement:
                     this.state.WriteAReg((byte)Xn, value);
+                    break;
+
+                // write value to address specified in An
+                case EffectiveAddressMode.Address:
+                    switch (this.Size)
+                    {
+                        case Size.Byte:
+                            this.state.WriteByte(this.state.ReadAReg((byte)Xn), (byte)value);
+                            break;
+                        case Size.Word:
+                            throw new NotImplementedException();
+                        case Size.Long:
+                            throw new NotImplementedException();
+                        default:
+                            throw new InvalidStateException();
+                    }
+
                     break;
 
                 default:

@@ -34,11 +34,13 @@ namespace Decoder.UnitTests.OpCodes
             };
 
             MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
+            state.WriteDReg(0x0, 0xAABBCCDD);
             state.FetchOpCode();
 
             var opcode = new MOVE(state);
 
-            Assert.Fail("write test");
+            Assert.That(state.PC, Is.EqualTo(0x02));
+            Assert.That(state.ReadAReg(0x1), Is.EqualTo(0xAABBCCDD));
         }
 
         [Test]
@@ -55,11 +57,13 @@ namespace Decoder.UnitTests.OpCodes
             };
 
             MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
+            state.WriteAReg(0x0, 0xAABBCCDD);
             state.FetchOpCode();
 
             var opcode = new MOVE(state);
 
-            Assert.Fail("write test");
+            Assert.That(state.PC, Is.EqualTo(0x02));
+            Assert.That(state.ReadAReg(0x1), Is.EqualTo(0xAABBCCDD));
         }
 
         [Test]
@@ -76,11 +80,14 @@ namespace Decoder.UnitTests.OpCodes
             };
 
             MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
+            state.WriteAReg(0x0, 0x00FF0000);
+            state.WriteByte(0x00FF0000, 0xAA);
             state.FetchOpCode();
 
             var opcode = new MOVE(state);
 
-            Assert.Fail("write test");
+            Assert.That(state.PC, Is.EqualTo(0x02));
+            Assert.That(state.ReadAReg(0x1), Is.EqualTo(0x000000AA));
         }
 
         [Test]
@@ -88,20 +95,26 @@ namespace Decoder.UnitTests.OpCodes
         {
             // MOVEM <ea>, <ea>
             // 0001 0010 0101 1000  0x1258
+            // 0000 0000 1111 1111  0x00FF
+            // 0000 0000 0000 0000  0x0000
 
             // MOVE (A0)+, A1
 
             byte[] data = new byte[]
             {
-                0x12, 0x58
+                0x12, 0x58, 0x00, 0xFF, 0x00, 0x00
             };
 
             MachineState state = new MachineState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
+            state.WriteAReg(0x0, 0x00FF0000);
+            state.WriteByte(0x00FF0000, 0xAA);
             state.FetchOpCode();
 
             var opcode = new MOVE(state);
 
-            Assert.Fail("write test");
+            Assert.That(state.PC, Is.EqualTo(0x02));
+            Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x00FF0004));
+            Assert.That(state.ReadAReg(0x1), Is.EqualTo(0x000000AA));
         }
 
         [Test]

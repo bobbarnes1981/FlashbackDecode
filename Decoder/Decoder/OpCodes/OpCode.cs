@@ -409,6 +409,8 @@
                     {
                         case Size.Long:
                             return this.state.ReadLong(this.state.ReadAReg(xn));
+                        case Size.Byte:
+                            return this.state.ReadByte(this.state.ReadAReg(xn));
                         default:
                             throw new InvalidStateException();
                     }
@@ -418,10 +420,15 @@
                     switch (this.Size)
                     {
                         case Size.Long:
-                            var reg = this.state.ReadAReg(xn);
-                            var l = this.state.ReadLong(reg);
-                            this.state.WriteAReg(xn, reg + 4);
+                            var regl = this.state.ReadAReg(xn);
+                            var l = this.state.ReadLong(regl);
+                            this.state.WriteAReg(xn, regl + 4);
                             return l;
+                        case Size.Byte:
+                            var regb = this.state.ReadAReg(xn);
+                            var b = this.state.ReadByte(regb);
+                            this.state.WriteAReg(xn, regb + 4);
+                            return b;
                         default:
                             throw new InvalidStateException();
                     }
@@ -552,7 +559,7 @@
                     switch (this.Size)
                     {
                         case Size.Byte:
-                            throw new NotImplementedException();
+                            return this.state.ReadAReg(Xn);
                         case Size.Word:
                             return this.state.ReadAReg(Xn);
                         case Size.Long:

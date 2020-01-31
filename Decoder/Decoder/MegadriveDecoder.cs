@@ -40,8 +40,8 @@
 
             do
             {
-                Console.WriteLine("Enter to execute next instruction...");
-                Console.ReadLine();
+                //Console.WriteLine("Enter to execute next instruction...");
+                //Console.ReadLine();
 
                 Console.WriteLine("Addr\t0x{0:X4} ({0})", state.PC);
 

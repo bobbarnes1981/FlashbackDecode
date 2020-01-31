@@ -169,6 +169,22 @@
             throw new NotImplementedException($"{address:X8}");
         }
 
+        public void WriteWord(uint address, ushort data)
+        {
+            if (address <= this.ROM_MAX)
+            {
+                throw new InvalidStateException();
+            }
+            else if (address >= this.RAM_MIN && address <= this.RAM_MAX)
+            {
+                this.ram68k.WriteWord(address - this.RAM_MIN, data);
+            }
+            else
+            {
+                throw new NotImplementedException($"{address:X8}");
+            }
+        }
+
         public uint ReadLong(uint address)
         {
             if (address <= this.ROM_MAX)
@@ -188,6 +204,22 @@
             }
 
             throw new NotImplementedException($"{address:X8}");
+        }
+
+        public void WriteLong(uint address, uint data)
+        {
+            if (address <= this.ROM_MAX)
+            {
+                throw new InvalidStateException();
+            }
+            else if (address >= this.RAM_MIN && address <= this.RAM_MAX)
+            {
+                this.ram68k.WriteLong(address - this.RAM_MIN, data);
+            }
+            else
+            {
+                throw new NotImplementedException($"{address:X8}");
+            }
         }
 
         public uint ReadAReg(byte register)

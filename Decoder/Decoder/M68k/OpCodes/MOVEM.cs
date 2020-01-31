@@ -155,6 +155,40 @@
             }
         }
 
+
+        /// <summary>
+        /// MOVEM will write to the register instead of the referenced address.
+        /// </summary>
+        /// <param name="ea">Effective Address Mode.</param>
+        /// <param name="Xn">Xn value.</param>
+        /// <param name="value">Value to write.</param>
+        protected void WriteValueToEffectiveAddress(EffectiveAddressMode ea, uint Xn, uint value)
+        {
+            switch (ea)
+            {
+                case EffectiveAddressMode.AddressPostIncrement:
+                    switch (this.Size)
+                    {
+                        case Size.Byte:
+                            this.state.WriteAReg((byte)Xn, value);
+                            break;
+                        case Size.Word:
+                            this.state.WriteAReg((byte)Xn, value);
+                            break;
+                        case Size.Long:
+                            this.state.WriteAReg((byte)Xn, value);
+                            break;
+                        default:
+                            throw new InvalidStateException();
+                    }
+
+                    break;
+
+                default:
+                    throw new InvalidStateException();
+            }
+        }
+
         /// <summary>
         /// Get direction.
         /// </summary>

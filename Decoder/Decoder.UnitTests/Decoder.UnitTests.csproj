@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="M68k\OpCodes\ANDITests\ANDITests.cs" />
+    <Compile Include="M68k\OpCodes\ANDITests\ANDIByteTests.cs" />
     <Compile Include="M68k\OpCodes\BccTests\BccTests.cs" />
     <Compile Include="M68k\OpCodes\LEATests\LEATests.cs" />
     <Compile Include="M68k\OpCodes\MOVEMTests\MOVEMTests.cs" />

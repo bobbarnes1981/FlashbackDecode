@@ -469,12 +469,17 @@
                         case Size.Long:
                             var regl = this.state.ReadAReg(xn);
                             var l = this.state.ReadLong(regl);
-                            this.state.WriteAReg(xn, regl + 4);
+                            this.state.WriteAReg(xn, regl + 8);
                             return l;
+                        case Size.Word:
+                            var regw = this.state.ReadAReg(xn);
+                            var w = this.state.ReadWord(regw);
+                            this.state.WriteAReg(xn, regw + 4);
+                            return w;
                         case Size.Byte:
                             var regb = this.state.ReadAReg(xn);
                             var b = this.state.ReadByte(regb);
-                            this.state.WriteAReg(xn, regb + 4);
+                            this.state.WriteAReg(xn, regb + 2);
                             return b;
                         default:
                             throw new InvalidStateException();
@@ -585,7 +590,21 @@
 
                 // write the value to the specified address register
                 case EffectiveAddressMode.AddressPostIncrement:
-                    this.state.WriteAReg((byte)Xn, value);
+                    switch (this.Size)
+                    {
+                        case Size.Byte:
+                            this.state.WriteByte(this.EffectiveAddress, (byte)value);
+                            break;
+                        case Size.Word:
+                            this.state.WriteWord(this.EffectiveAddress, (ushort)value);
+                            break;
+                        case Size.Long:
+                            this.state.WriteLong(this.EffectiveAddress, (uint)value);
+                            break;
+                        default:
+                            throw new InvalidStateException();
+                    }
+
                     break;
 
                 // write value to address specified in An

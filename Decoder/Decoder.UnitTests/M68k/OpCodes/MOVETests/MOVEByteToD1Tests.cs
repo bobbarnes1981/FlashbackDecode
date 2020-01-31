@@ -97,7 +97,7 @@ namespace Decoder.UnitTests.M68k.OpCodes.MOVETests
 
             Assert.That(opcode.Assembly, Is.EqualTo("MOVE.b (A0)+,D1"));
             Assert.That(state.PC, Is.EqualTo(0x02));
-            Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x00FF0004));
+            Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x00FF0002));
             Assert.That(state.ReadDReg(0x1), Is.EqualTo(0x000000AA));
         }
 

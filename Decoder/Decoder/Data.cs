@@ -84,5 +84,21 @@
             System.Console.WriteLine($"{address:X8} {b:X2}");
             this.data[address + 0] = b;
         }
+
+        public void WriteWord(uint address, ushort s)
+        {
+            System.Console.WriteLine($"{address:X8} {s:X4}");
+            this.data[address + 0] = (byte)((s >> 8) & 0xFF);
+            this.data[address + 1] = (byte)((s >> 0) & 0xFF);
+        }
+
+        public void WriteLong(uint address, ulong l)
+        {
+            System.Console.WriteLine($"{address:X8} {l:X8}");
+            this.data[address + 0] = (byte)((l >> 24) & 0xFF);
+            this.data[address + 1] = (byte)((l >> 16) & 0xFF);
+            this.data[address + 2] = (byte)((l >> 8) & 0xFF);
+            this.data[address + 3] = (byte)((l >> 0) & 0xFF);
+        }
     }
 }

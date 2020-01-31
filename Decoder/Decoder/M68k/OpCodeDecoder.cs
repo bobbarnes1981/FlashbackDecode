@@ -110,7 +110,7 @@
         {
             if (state.OpCode.GetBits(6, 3) == 0x0001)
             {
-                throw new NotImplementedException("MOVEA");
+                return new MOVEA(state);
             }
             else
             {

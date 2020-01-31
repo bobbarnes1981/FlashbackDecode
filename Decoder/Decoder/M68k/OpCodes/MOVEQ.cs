@@ -19,7 +19,6 @@
             : base("0111ddd0bbbbbbbb", state)
         {
             this.immediate = this.GetImmediate();
-
             this.register = this.GetDn();
 
             this.state.WriteDReg((byte)this.register, this.immediate);

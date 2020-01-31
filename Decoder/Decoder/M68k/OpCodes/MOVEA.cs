@@ -1,30 +1,59 @@
-﻿using System;
-
-namespace Decoder.M68k.OpCodes
+﻿namespace Decoder.M68k.OpCodes
 {
-    //class MOVEA : OpCode
-    //{
-    //    protected override string definition => "00ssaaa001mmmxxx";
+    using Decoder.Exceptions;
+    using Decoder.M68k.Enums;
 
-    //    public override string Name => "MOVEA";
+    /// <summary>
+    /// MOVEA OpCode.
+    /// </summary>
+    public class MOVEA : OpCode
+    {
+        private AddressRegister register;
 
-    //    public override string Description => "Move Address";
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MOVEA"/> class.
+        /// </summary>
+        /// <param name="state">machine state.</param>
+        public MOVEA(MegadriveState state)
+            : base("00ssaaa001mmmxxx", state)
+        {
+            this.EffectiveAddress = this.FetchEffectiveAddress();
+            this.register = this.GetAn();
 
-    //    public override string Operation => "<ea> -> An";
+            var val = this.InterpretEffectiveAddress();
+            this.state.WriteAReg((byte)this.register, val);
+        }
 
-    //    public override string Syntax => throw new NotImplementedException();
+        /// <inheritdoc/>
+        public override string Name => "MOVEA";
 
-    //    public override string Assembly => throw new NotImplementedException();
+        /// <inheritdoc/>
+        public override string Description => "Move Address";
 
-    //    public MOVEA(MachineState state)
-    //        : base(state)
-    //    {
-    //        EA = readEA(decodeEAMode());
-    //    }
+        /// <inheritdoc/>
+        public override string Operation => "source -> destination";
 
-    //    protected override Size getSize()
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
+        /// <inheritdoc/>
+        public override string Syntax => $"{this.Name} <ea>,An";
+
+        /// <inheritdoc/>
+        public override string Assembly => $"{this.Name} {this.GetAssemblyForEffectiveAddress()},{this.GetAn()}";
+
+        /// <inheritdoc/>
+        public override Size Size
+        {
+            get
+            {
+                switch (this.GetBits('s'))
+                {
+                    case 0x0002:
+                        return Size.Long;
+                    case 0x0003:
+                        return Size.Word;
+                    default:
+                        throw new InvalidStateException();
+                }
+            }
+        }
+    }
 }

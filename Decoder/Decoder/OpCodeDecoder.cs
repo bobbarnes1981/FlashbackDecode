@@ -72,6 +72,7 @@ namespace Decoder
         {
             switch (state.OpCode.GetBits(8, 4))
             {
+                // 0000 0110 xxxx xxxx
                 case 0x0006:
                     throw new NotImplementedException("ADDI");
 
@@ -79,8 +80,29 @@ namespace Decoder
                 case 0x000C:
                     throw new NotImplementedException("CMPI");
 
+                // 0000 0010 xxxx xxxx
+                case 0x0002:
+                    return decode_0200(state);
+
                 default:
                     throw new NotImplementedException();
+            }
+        }
+
+        private OpCode decode_0200(MachineState state)
+        {
+            switch (state.OpCode.GetBits(0, 8))
+            {
+                // 0000 0010 0011 1100
+                case 0x023C:
+                    throw new NotImplementedException("ANDItoCCR");
+
+                // 0000 0010 0111 1100
+                case 0x027C:
+                    throw new NotImplementedException("ANDItoSR");
+
+                default:
+                    return new ANDI(state);
             }
         }
 

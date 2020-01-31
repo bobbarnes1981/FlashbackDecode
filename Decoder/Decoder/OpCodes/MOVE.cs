@@ -14,11 +14,17 @@ namespace Decoder.OpCodes
         public MOVE(MachineState state)
             : base("00ss______mmmxxx", state)
         {
-            this.SrcEA = this.FetchAffectiveAddress(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.GetSrcXn());
-            this.DstEA = this.FetchAffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.GetDstXn());
+            this.SrcEA = this.FetchEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.GetSrcXn());
+            this.DstEA = this.FetchEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.GetDstXn());
 
             var srcVal = this.InterpretEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.SrcEA, this.GetSrcXn());
             this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.DstEA, srcVal);
+
+            // X — Not affected.
+            // N — Set if the result is negative; cleared otherwise.
+            // Z — Set if the result is zero; cleared otherwise.
+            // V — Always cleared.
+            // C — Always cleared.
         }
 
         /// <inheritdoc/>

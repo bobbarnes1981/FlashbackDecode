@@ -184,6 +184,9 @@
                 case Condition.NE:
                     return this.state.Condition_Z == false;
 
+                case Condition.EQ:
+                    return this.state.Condition_Z == true;
+
                 default:
                     throw new InvalidStateException();
             }
@@ -606,10 +609,10 @@
 
         protected uint FetchEffectiveAddress()
         {
-            return FetchAffectiveAddress(DecodeEffectiveAddressMode(), GetXn());
+            return this.FetchEffectiveAddress(DecodeEffectiveAddressMode(), GetXn());
         }
 
-        protected uint FetchAffectiveAddress(EffectiveAddressMode ea, byte Xn)
+        protected uint FetchEffectiveAddress(EffectiveAddressMode ea, byte Xn)
         {
             switch (ea)
             {

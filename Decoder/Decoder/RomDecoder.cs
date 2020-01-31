@@ -20,7 +20,10 @@ namespace Decoder
 
             displayHeader(h);
 
-            Console.WriteLine($"Calc Checksum:\t{rom.Checksum(0x200)}");
+            ushort checksum = rom.Checksum(0x200);
+            string match = checksum == h.Checksum ? "match" : "invalid";
+
+            Console.WriteLine($"Calc Checksum:\t{checksum}\t{match}");
             Console.WriteLine();
 
             state = new MachineState(rom, h.Origin, h.SP, h.RomStart, h.RomEnd, h.RamStart, h.RamEnd);

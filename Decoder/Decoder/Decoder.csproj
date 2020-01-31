@@ -69,6 +69,7 @@
     <Compile Include="OpCodes\ADDI.cs" />
     <Compile Include="OpCodes\ADDA.cs" />
     <Compile Include="OpCodes\AND.cs" />
+    <Compile Include="OpCodes\ANDI.cs" />
     <Compile Include="OpCodes\Bcc.cs" />
     <Compile Include="OpCodes\BRA.cs" />
     <Compile Include="OpCodes\BSR.cs" />

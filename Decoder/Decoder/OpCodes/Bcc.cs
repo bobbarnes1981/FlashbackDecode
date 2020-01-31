@@ -16,7 +16,7 @@ namespace Decoder.OpCodes
         {
             if (this.Size == Size.Word)
             {
-                this.EffectiveAddress = this.FetchAffectiveAddress(EffectiveAddressMode.Immediate, 0x00);
+                this.EffectiveAddress = this.FetchEffectiveAddress(EffectiveAddressMode.Immediate, 0x00);
             }
 
             if (this.Size == Size.Byte)

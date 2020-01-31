@@ -453,6 +453,8 @@
                     {
                         case Size.Long:
                             return this.state.ReadLong(this.state.ReadAReg(xn));
+                        case Size.Word:
+                            return this.state.ReadWord(this.state.ReadAReg(xn));
                         case Size.Byte:
                             return this.state.ReadByte(this.state.ReadAReg(xn));
                         default:

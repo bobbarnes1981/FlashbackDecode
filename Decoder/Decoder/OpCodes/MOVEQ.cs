@@ -1,27 +1,49 @@
-﻿namespace Decoder.OpCodes
+﻿using System;
+
+namespace Decoder.OpCodes
 {
-    //class MOVEQ : OpCode
-    //{
-    //    public override string Name => "MOVEQ";
+    /// <summary>
+    /// MOVEQ OpCode.
+    /// </summary>
+    public class MOVEQ : OpCode
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MOVEQ"/> class.
+        /// </summary>
+        /// <param name="state">machine state</param>
+        public MOVEQ(MachineState state)
+            : base("0111ddd0bbbbbbbb", state)
+        {
+            throw new NotImplementedException();
+            // X — Not affected.
+            // N — Set if the result is negative; cleared otherwise.
+            // Z — Set if the result is zero; cleared otherwise.
+            // V — Always cleared.
+            // C — Always cleared.
+        }
 
-    //    public override string Description => "Move Quick";
+        /// <inheritdoc/>
+        public override string Name => "MOVEQ";
 
-    //    public override string Operation => "Immediate data -> Destination";
+        /// <inheritdoc/>
+        public override string Description => "Move Quick";
 
-    //    public override string Syntax => string.Format("{0} #<data>, Dn", Name);
+        /// <inheritdoc/>
+        public override string Operation => "Immediate data -> Destination";
 
-    //    public override string Assembly => string.Format("{0} {1}, {2}", Name, getImmediate(), getDn());
+        /// <inheritdoc/>
+        public override string Syntax => $"{this.Name} #<data>, Dn";
 
-    //    protected override string definition => "0111ddd0bbbbbbbb";
+        /// <inheritdoc/>
+        public override string Assembly => $"{this.Name} {this.GetImmediate()},{this.GetDn()}";
 
-    //    public MOVEQ(MachineState state)
-    //        : base(state)
-    //    {
-    //    }
-
-    //    protected override Size getSize()
-    //    {
-    //        return Size.Long;
-    //    }
-    //}
+        /// <inheritdoc/>
+        public override Size Size
+        {
+            get
+            {
+                return Size.Long;
+            }
+        }
+    }
 }

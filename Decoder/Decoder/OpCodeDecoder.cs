@@ -262,7 +262,7 @@ namespace Decoder
 
         private OpCode decode_7000(MachineState state)
         {
-            throw new NotImplementedException("MOVEQ");
+            return new MOVEQ(state);
         }
 
         private OpCode decode_8000(MachineState state)

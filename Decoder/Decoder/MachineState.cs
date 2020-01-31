@@ -1,8 +1,8 @@
-﻿using Decoder.Exceptions;
-using System;
-
-namespace Decoder
+﻿namespace Decoder
 {
+    using System;
+    using Decoder.Exceptions;
+
     /// <summary>
     /// Sega Mega Drive Machine State.
     /// </summary>
@@ -35,6 +35,7 @@ namespace Decoder
                     return USP;
                 }
             }
+
             set
             {
                 if (Condition_Supervisor)
@@ -62,19 +63,19 @@ namespace Decoder
 
         public MachineState(Data rom, uint origin, uint sp, uint romMin, uint romMax, uint ramMin, uint ramMax)
         {
-            PC = origin;
-            USP = sp;
+            this.PC = origin;
+            this.USP = sp;
 
-            ROM_MIN = romMin;
-            ROM_MAX = romMax;
+            this.ROM_MIN = romMin;
+            this.ROM_MAX = romMax;
 
-            RAM_MIN = ramMin;
-            RAM_MAX = ramMax;
+            this.RAM_MIN = ramMin;
+            this.RAM_MAX = ramMax;
 
             this.rom = rom;
-            ram68k = new Data(new byte[0x10000]);
+            this.ram68k = new Data(new byte[0x10000]);
 
-            AddressRegisters = new uint[]
+            this.AddressRegisters = new uint[]
             {
                 0x00,
                 0x00,
@@ -85,7 +86,7 @@ namespace Decoder
                 0x00,
             };
 
-            DataRegisters = new uint[]
+            this.DataRegisters = new uint[]
             {
                 0x00,
                 0x00,
@@ -100,20 +101,20 @@ namespace Decoder
 
         public void FetchOpCode()
         {
-            OpCode = rom.ReadWord(PC);
-            PC += 2;
+            this.OpCode = this.rom.ReadWord(PC);
+            this.PC += 2;
         }
 
         public byte ReadByte(uint address)
         {
-            if (address <= ROM_MAX)
+            if (address <= this.ROM_MAX)
             {
-                return rom.ReadByte(address);
+                return this.rom.ReadByte(address);
             }
 
-            if (address >= RAM_MIN && address <= RAM_MAX)
+            if (address >= this.RAM_MIN && address <= this.RAM_MAX)
             {
-                return ram68k.ReadByte(address - RAM_MIN);
+                return this.ram68k.ReadByte(address - this.RAM_MIN);
             }
 
             if (address == 0xA10001)
@@ -127,13 +128,13 @@ namespace Decoder
 
         public void WriteByte(uint address, byte data)
         {
-            if (address <= ROM_MAX)
+            if (address <= this.ROM_MAX)
             {
                 throw new InvalidStateException();
             }
-            else if (address >= RAM_MIN && address <= RAM_MAX)
+            else if (address >= this.RAM_MIN && address <= this.RAM_MAX)
             {
-                ram68k.WriteByte(address - RAM_MIN, data);
+                this.ram68k.WriteByte(address - this.RAM_MIN, data);
             }
             else
             {
@@ -143,9 +144,9 @@ namespace Decoder
 
         public ushort ReadWord(uint address)
         {
-            if (address <= ROM_MAX)
+            if (address <= this.ROM_MAX)
             {
-                return rom.ReadWord(address);
+                return this.rom.ReadWord(address);
             }
 
             if (address == 0x00A1000C)
@@ -154,9 +155,15 @@ namespace Decoder
                 return 0x0000;
             }
 
-            if (address >= RAM_MIN && address <= RAM_MAX)
+            if (address == 0x00C00004)
             {
-                return ram68k.ReadWord(address - RAM_MIN);
+                Writer.Write("Reading VDP Port Control", ConsoleColor.Yellow);
+                return 0x0000;
+            }
+
+            if (address >= this.RAM_MIN && address <= this.RAM_MAX)
+            {
+                return this.ram68k.ReadWord(address - this.RAM_MIN);
             }
 
             throw new NotImplementedException($"{address:X8}");
@@ -164,9 +171,9 @@ namespace Decoder
 
         public uint ReadLong(uint address)
         {
-            if (address <= ROM_MAX)
+            if (address <= this.ROM_MAX)
             {
-                return rom.ReadLong(address);
+                return this.rom.ReadLong(address);
             }
 
             if (address == 0xA10008)
@@ -175,9 +182,9 @@ namespace Decoder
                 return 0x00000000;
             }
 
-            if (address >= RAM_MIN && address <= RAM_MAX)
+            if (address >= this.RAM_MIN && address <= this.RAM_MAX)
             {
-                return ram68k.ReadLong(address - RAM_MIN);
+                return this.ram68k.ReadLong(address - this.RAM_MIN);
             }
 
             throw new NotImplementedException($"{address:X8}");
@@ -187,16 +194,16 @@ namespace Decoder
         {
             if (register > 0x07)
             {
-                throw new System.Exception();
+                throw new Exception();
             }
 
             if (register == 0x07)
             {
-                return (uint)SP;
+                return (uint)this.SP;
             }
             else
             {
-                return AddressRegisters[register];
+                return this.AddressRegisters[register];
             }
         }
 
@@ -205,27 +212,27 @@ namespace Decoder
             // TODO: sign extend data
             if (register > 0x07)
             {
-                throw new System.Exception();
+                throw new Exception();
             }
 
             if (register == 0x07)
             {
-                SP = data;
+                this.SP = data;
             }
             else
             {
-                AddressRegisters[register] = data;
+                this.AddressRegisters[register] = data;
             }
         }
 
         public uint ReadDReg(byte register)
         {
-            return DataRegisters[register];
+            return this.DataRegisters[register];
         }
 
         public void WriteDReg(byte register, uint data)
         {
-            DataRegisters[register] = data;
+            this.DataRegisters[register] = data;
         }
 
         private const int CONDITION_TRACE = 13;
@@ -240,83 +247,106 @@ namespace Decoder
         {
             get
             {
-                return SR.GetBits(CONDITION_X, 1) == 0x1;
+                return this.SR.GetBits(CONDITION_X, 1) == 0x1;
             }
             set
             {
-                SR = SR.SetBits(CONDITION_X, 1, value);
+                this.SR = this.SR.SetBits(CONDITION_X, 1, value);
             }
         }
 
+        /// <summary>
+        /// Negative.
+        /// </summary>
         public bool Condition_N
         {
             get
             {
-                return SR.GetBits(CONDITION_NEGATIVE, 1) == 0x1;
+                return this.SR.GetBits(CONDITION_NEGATIVE, 1) == 0x1;
             }
             set
             {
-                SR = SR.SetBits(CONDITION_NEGATIVE, 1, value);
+                this.SR = this.SR.SetBits(CONDITION_NEGATIVE, 1, value);
             }
         }
 
+        /// <summary>
+        /// Zero.
+        /// </summary>
         public bool Condition_Z
         {
             get
             {
-                return SR.GetBits(CONDITION_ZERO, 1) == 0x1;
+                return this.SR.GetBits(CONDITION_ZERO, 1) == 0x1;
             }
+
             set
             {
-                SR = SR.SetBits(CONDITION_ZERO, 1, value);
+                this.SR = this.SR.SetBits(CONDITION_ZERO, 1, value);
             }
         }
 
+        /// <summary>
+        /// Overflow.
+        /// </summary>
         public bool Condition_V
         {
             get
             {
-                return SR.GetBits(CONDITION_V, 1) == 0x1;
+                return this.SR.GetBits(CONDITION_V, 1) == 0x1;
             }
+
             set
             {
-                SR = SR.SetBits(CONDITION_V, 1, value);
+                this.SR = this.SR.SetBits(CONDITION_V, 1, value);
             }
         }
 
+        /// <summary>
+        /// Carry.
+        /// </summary>
         public bool Condition_C
         {
             get
             {
-                return SR.GetBits(CONDITION_CARRY, 1) == 0x1;
+                return this.SR.GetBits(CONDITION_CARRY, 1) == 0x1;
             }
+
             set
             {
-                SR = SR.SetBits(CONDITION_CARRY, 1, value);
+                this.SR = this.SR.SetBits(CONDITION_CARRY, 1, value);
             }
         }
 
+        /// <summary>
+        /// Trace enabled.
+        /// </summary>
         public bool Condition_Trace
         {
             get
             {
-                return SR.GetBits(CONDITION_TRACE, 1) == 0x1;
+                return this.SR.GetBits(CONDITION_TRACE, 1) == 0x1;
             }
+
             set
             {
-                SR = SR.SetBits(CONDITION_TRACE, 1, value);
+                this.SR = this.SR.SetBits(CONDITION_TRACE, 1, value);
             }
         }
 
+        /// <summary>
+        /// Supervisor mode.
+        /// </summary>
         public bool Condition_Supervisor
         {
             get
             {
-                return SR.GetBits(CONDITION_SUPERVISOR, 1) == 0x1;
+                return this.SR.GetBits(CONDITION_SUPERVISOR, 1) == 0x1;
             }
+
             set
             {
-                SR = SR.SetBits(CONDITION_SUPERVISOR, 1, value);
+                this.SR = this.SR.SetBits(CONDITION_SUPERVISOR, 1, value);
             }
         }
     }

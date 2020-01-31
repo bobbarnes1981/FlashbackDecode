@@ -40,11 +40,10 @@
             val &= this.immediate;
             this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), val);
 
-            // X — Not affected.
-            // N — Set if the most significant bit of the result is set; cleared otherwise.
-            // Z — Set if the result is zero; cleared otherwise.
-            // V — Always cleared.
-            // C — Always cleared.
+            this.state.Condition_N = this.IsNegative(val);
+            this.state.Condition_Z = this.IsZero(val);
+            this.state.Condition_V = false;
+            this.state.Condition_C = false;
         }
 
         /// <inheritdoc/>

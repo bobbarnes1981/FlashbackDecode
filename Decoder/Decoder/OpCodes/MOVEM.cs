@@ -1,7 +1,7 @@
-﻿using Decoder.Exceptions;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
+    using Decoder.Exceptions;
+
     /// <summary>
     /// MOVEM OpCode.
     /// </summary>

@@ -1,7 +1,7 @@
-﻿using Decoder.Exceptions;
-
-namespace Decoder.OpCodes
+﻿namespace Decoder.OpCodes
 {
+    using Decoder.Exceptions;
+
     /// <summary>
     /// MOVE OpCode.
     /// </summary>
@@ -20,11 +20,10 @@ namespace Decoder.OpCodes
             var srcVal = this.InterpretEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.SrcEA, this.GetSrcXn());
             this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.DstEA, srcVal);
 
-            // X — Not affected.
-            // N — Set if the result is negative; cleared otherwise.
-            // Z — Set if the result is zero; cleared otherwise.
-            // V — Always cleared.
-            // C — Always cleared.
+            this.state.Condition_N = this.IsNegative(srcVal);
+            this.state.Condition_Z = this.IsZero(srcVal);
+            this.state.Condition_V = false;
+            this.state.Condition_C = false;
         }
 
         /// <inheritdoc/>

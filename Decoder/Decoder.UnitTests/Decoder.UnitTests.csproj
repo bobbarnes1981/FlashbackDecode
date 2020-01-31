@@ -53,6 +53,7 @@
     <Compile Include="OpCodes\BccTests\BccTests.cs" />
     <Compile Include="OpCodes\LEATests\LEATests.cs" />
     <Compile Include="OpCodes\MOVEMTests\MOVEMTests.cs" />
+    <Compile Include="OpCodes\MOVEQTests\MOVEQTests.cs" />
     <Compile Include="OpCodes\MOVETests\MOVEByteToD1Tests.cs" />
     <Compile Include="OpCodes\TSTTests\TSTTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

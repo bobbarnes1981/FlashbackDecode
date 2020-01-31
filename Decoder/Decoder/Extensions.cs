@@ -1,7 +1,7 @@
-﻿using System.Text;
-
-namespace Decoder
+﻿namespace Decoder
 {
+    using System.Text;
+
     public static class Extensions
     {
         public static string ToBinary(this ushort s)

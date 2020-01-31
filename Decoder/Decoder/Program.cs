@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            new RomDecoder(new Data(@"ROM\Flashback (Europe) (Rev A).md")).Decode();
+            new MegadriveDecoder(new Data(@"ROM\Flashback (Europe) (Rev A).md")).Decode();
         }
     }
 }

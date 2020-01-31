@@ -8,6 +8,8 @@ namespace Decoder
     /// </summary>
     public class MachineState
     {
+        public static ConsoleWriter Writer = new ConsoleWriter();
+
         private Data rom;
 
         private Data ram68k;
@@ -116,7 +118,7 @@ namespace Decoder
 
             if (address == 0xA10001)
             {
-                Console.WriteLine("Reading second byte of version register");
+                Writer.Write("Reading second byte of version register", ConsoleColor.Yellow);
                 return 0x00;
             }
 
@@ -148,7 +150,7 @@ namespace Decoder
 
             if (address == 0x00A1000C)
             {
-                Console.WriteLine("Reading Expansion Port Control");
+                Writer.Write("Reading Expansion Port Control", ConsoleColor.Yellow);
                 return 0x0000;
             }
 
@@ -169,7 +171,7 @@ namespace Decoder
 
             if (address == 0xA10008)
             {
-                Console.WriteLine("Reading Controller 1 Control and Controller 2 Control");
+                Writer.Write("Reading Controller 1 Control and Controller 2 Control", ConsoleColor.Yellow);
                 return 0x00000000;
             }
 

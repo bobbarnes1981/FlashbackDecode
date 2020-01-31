@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleWriter.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Enums\Condition.cs" />
     <Compile Include="Enums\LogicDirection.cs" />

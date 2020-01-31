@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OpCodes\ANDITests\ANDITests.cs" />
     <Compile Include="OpCodes\BccTests\BccTests.cs" />
     <Compile Include="OpCodes\LEATests\LEATests.cs" />
     <Compile Include="OpCodes\MOVEMTests\MOVEMTests.cs" />

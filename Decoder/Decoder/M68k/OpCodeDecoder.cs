@@ -127,7 +127,14 @@
                     return new TST(state);
             }
 
-            switch(state.OpCode)
+            switch (state.OpCode.GetBits(4, 8))
+            {
+                // 0100 1110 0110 daaa MOVE USP
+                case 0x00E6:
+                    return new MOVEUSP(state);
+            }
+
+            switch (state.OpCode)
             {
                 // 0100 1110 0111 0101
                 case 0x4E75:

@@ -97,7 +97,7 @@ namespace Decoder.UnitTests.M68k.OpCodes.MOVETests
 
             Assert.That(opcode.Assembly, Is.EqualTo("MOVE.b (A0)+,D1"));
             Assert.That(state.PC, Is.EqualTo(0x02));
-            Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x00FF0002));
+            Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x00FF0001));
             Assert.That(state.ReadDReg(0x1), Is.EqualTo(0x000000AA));
         }
 
@@ -114,7 +114,7 @@ namespace Decoder.UnitTests.M68k.OpCodes.MOVETests
             };
 
             MegadriveState state = new MegadriveState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
-            state.WriteAReg(0x0, 0x00FF0002);
+            state.WriteAReg(0x0, 0x00FF0001);
             state.WriteByte(0x00FF0000, 0xAA);
             state.FetchOpCode();
 

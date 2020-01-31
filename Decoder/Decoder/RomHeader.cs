@@ -74,7 +74,7 @@ namespace Decoder
     // dc.l Exception; Unused(reserved)
 
     // dc.b "SEGA GENESIS    "; Console name
-    // dc.b "(C)SEGA 1992.SEP"; Copyrght holder and release date
+    // dc.b "(C)SEGA 1992.SEP"; Copyright holder and release date
     // dc.b "YOUR GAME HERE                                  "; Domestic name
     // dc.b "YOUR GAME HERE                                  "; International name
     // dc.b "GM XXXXXXXX-XX"; Version number

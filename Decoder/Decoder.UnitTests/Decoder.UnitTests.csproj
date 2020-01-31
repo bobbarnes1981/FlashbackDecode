@@ -52,11 +52,12 @@
     <Compile Include="M68k\OpCodes\ANDITests\ANDIByteTests.cs" />
     <Compile Include="M68k\OpCodes\BccTests\BccTests.cs" />
     <Compile Include="M68k\OpCodes\LEATests\LEATests.cs" />
-    <Compile Include="M68k\OpCodes\MOVEATests\MOVEAByteTests.cs" />
+    <Compile Include="M68k\OpCodes\MOVEATests\MOVEAWordTests.cs" />
     <Compile Include="M68k\OpCodes\MOVEATests\MOVEALongTests.cs" />
     <Compile Include="M68k\OpCodes\MOVEMTests\MOVEMTests.cs" />
     <Compile Include="M68k\OpCodes\MOVEQTests\MOVEQTests.cs" />
     <Compile Include="M68k\OpCodes\MOVETests\MOVEByteToD1Tests.cs" />
+    <Compile Include="M68k\OpCodes\MOVEUSPTests\MOVEUSPTests.cs" />
     <Compile Include="M68k\OpCodes\TSTTests\TSTTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

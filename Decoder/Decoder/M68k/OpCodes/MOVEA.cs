@@ -21,7 +21,17 @@
             this.register = this.GetAn();
 
             var val = this.InterpretEffectiveAddress();
-            this.state.WriteAReg((byte)this.register, val);
+            switch (this.Size)
+            {
+                case Size.Word:
+                    this.state.WriteAReg((byte)this.register, (ushort)val);
+                    break;
+                case Size.Long:
+                    this.state.WriteAReg((byte)this.register, (uint)val);
+                    break;
+                default:
+                    throw new InvalidStateException();
+            }
         }
 
         /// <inheritdoc/>
@@ -46,10 +56,10 @@
             {
                 switch (this.GetBits('s'))
                 {
+                    case 0x0001:
+                        return Size.Word;
                     case 0x0002:
                         return Size.Long;
-                    case 0x0003:
-                        return Size.Word;
                     default:
                         throw new InvalidStateException();
                 }

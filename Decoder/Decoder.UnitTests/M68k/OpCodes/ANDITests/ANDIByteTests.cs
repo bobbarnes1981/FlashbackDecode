@@ -103,7 +103,7 @@ namespace Decoder.UnitTests.M68k.OpCodes.ANDITests
 
             Assert.That(opcode.Assembly, Is.EqualTo("ANDI #10,(A1)+"));
             Assert.That(state.PC, Is.EqualTo(0x04));
-            Assert.That(state.ReadAReg(0x1), Is.EqualTo(0x00FF0002));
+            Assert.That(state.ReadAReg(0x1), Is.EqualTo(0x00FF0001));
             Assert.That(state.ReadByte(0x00FF0000), Is.EqualTo(0x0000000A));
         }
 

@@ -11,6 +11,8 @@
     /// </summary>
     public abstract class OpCode
     {
+        public static ConsoleWriter Writer = new ConsoleWriter();
+
         /// <summary>
         /// Gets the address of the OpCode.
         /// </summary>
@@ -469,17 +471,17 @@
                         case Size.Long:
                             var regl = this.state.ReadAReg(xn);
                             var l = this.state.ReadLong(regl);
-                            this.state.WriteAReg(xn, regl + 8);
+                            this.state.WriteAReg(xn, regl + 4);
                             return l;
                         case Size.Word:
                             var regw = this.state.ReadAReg(xn);
                             var w = this.state.ReadWord(regw);
-                            this.state.WriteAReg(xn, regw + 4);
+                            this.state.WriteAReg(xn, regw + 2);
                             return w;
                         case Size.Byte:
                             var regb = this.state.ReadAReg(xn);
                             var b = this.state.ReadByte(regb);
-                            this.state.WriteAReg(xn, regb + 2);
+                            this.state.WriteAReg(xn, regb + 1);
                             return b;
                         default:
                             throw new InvalidStateException();
@@ -495,9 +497,15 @@
                             var l = this.state.ReadLong(regl);
                             this.state.WriteAReg(xn, regl);
                             return l;
+                        case Size.Word:
+                            var regw = this.state.ReadAReg(xn);
+                            regw -= 2;
+                            var w = this.state.ReadWord(regw);
+                            this.state.WriteAReg(xn, regw);
+                            return w;
                         case Size.Byte:
                             var regb = this.state.ReadAReg(xn);
-                            regb -= 2;
+                            regb -= 1;
                             var b = this.state.ReadByte(regb);
                             this.state.WriteAReg(xn, regb);
                             return b;
@@ -615,7 +623,8 @@
                             this.state.WriteByte(this.state.ReadAReg((byte)Xn), (byte)value);
                             break;
                         case Size.Word:
-                            throw new NotImplementedException();
+                            this.state.WriteWord(this.state.ReadAReg((byte)Xn), (byte)value);
+                            break;
                         case Size.Long:
                             throw new NotImplementedException();
                         default:

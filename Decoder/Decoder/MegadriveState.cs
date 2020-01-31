@@ -179,6 +179,10 @@
             {
                 this.ram68k.WriteWord(address - this.RAM_MIN, data);
             }
+            else if (address == 0x00C00004)
+            {
+                Writer.Write("Reading VDP Port Control", ConsoleColor.Yellow);
+            }
             else
             {
                 throw new NotImplementedException($"{address:X8}");

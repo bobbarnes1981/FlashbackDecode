@@ -43,7 +43,7 @@
                 //Console.WriteLine("Enter to execute next instruction...");
                 //Console.ReadLine();
 
-                Console.WriteLine($"Addr\t${state.PC:X4} ({state.PC})");
+                Console.WriteLine($"Addr\t${state.PC:X4} (#{state.PC})");
 
                 state.FetchOpCode();
 

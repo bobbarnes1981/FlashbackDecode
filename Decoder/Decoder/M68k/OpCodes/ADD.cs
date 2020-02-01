@@ -1,5 +1,6 @@
 ﻿namespace Decoder.M68k.OpCodes
 {
+    using Decoder.Exceptions;
     using Decoder.M68k.Enums;
     using System;
 
@@ -8,6 +9,9 @@
     /// </summary>
     public class ADD : OpCode
     {
+        private DataRegister register;
+        private MoveDirection direction;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ADD"/> class.
         /// </summary>
@@ -15,13 +19,43 @@
         public ADD(MegadriveState state)
             : base("1101dddDssmmmxxx", state)
         {
-            throw new NotImplementedException();
+            this.EffectiveAddress = this.FetchEffectiveAddress();
 
-            //X — Set the same as the carry bit.
-            //N — Set if the result is negative; cleared otherwise.
-            //Z — Set if the result is zero; cleared otherwise.
-            //V — Set if an overflow is generated; cleared otherwise.
-            //C — Set if a carry is generated; cleared otherwise. 
+            this.register = this.GetDn();
+            this.direction = this.GetDirection();
+
+            uint result;
+            switch (this.direction)
+            {
+                // <ea> + Dn -> Dn
+                case MoveDirection.RegisterToMemory:
+                    var val = this.InterpretEffectiveAddress();
+                    var dn = this.state.ReadDReg((byte)this.register);
+                    result = val + dn;
+                    switch (this.Size)
+                    {
+                        case Size.Word:
+                            this.state.WriteDReg((byte)this.register, (ushort)result);
+                            break;
+                        default:
+                            throw new InvalidStateException();
+                    }
+
+                    break;
+
+                // Dn + <ea> -> <ea>
+                case MoveDirection.MemoryToRegister:
+                    throw new NotImplementedException();
+
+                default:
+                    throw new InvalidStateException();
+            }
+
+            this.state.Condition_X = this.IsCarry(result);
+            this.state.Condition_N = this.IsNegative(result);
+            this.state.Condition_Z = this.IsZero(result);
+            this.state.Condition_V = this.IsOverflow(result);
+            this.state.Condition_C = this.IsCarry(result);
         }
 
         /// <inheritdoc/>
@@ -37,9 +71,23 @@
         public override string Syntax => $"{this.Name} <ea>,Dn\r\n{this.Name} Dn,<ea>";
 
         /// <inheritdoc/>
-        public override string Assembly => throw new NotImplementedException();
+        public override string Assembly
+        {
+            get
+            {
+                switch (this.direction)
+                {
+                    case MoveDirection.RegisterToMemory:
+                        return $"{this.Name} {this.GetAssemblyForEffectiveAddress()},{this.register}";
+                    case MoveDirection.MemoryToRegister:
+                        return $"{this.Name} {this.register},{this.GetAssemblyForEffectiveAddress()}";
+                    default:
+                        throw new InvalidStateException();
+                }
+            }
+        }
 
         /// <inheritdoc/>
-        public override Size Size => throw new NotImplementedException();
+        public override Size Size => (Size)this.GetBits('s');
     }
 }

@@ -249,7 +249,7 @@
 
             if ((state.OpCode & dbcc) == dbcc)
             {
-                throw new NotImplementedException("DBcc");
+                return new DBcc(state);
             }
 
             // 0101 xxxx 11?? ?xxx

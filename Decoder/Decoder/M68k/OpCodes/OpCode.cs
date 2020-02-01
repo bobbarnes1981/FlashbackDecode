@@ -268,6 +268,16 @@
         }
 
         /// <summary>
+        /// Fetch the direction from the definition.
+        /// Identified by 'D' in definition.
+        /// </summary>
+        /// <returns>direction.</returns>
+        protected MoveDirection GetDirection()
+        {
+            return (MoveDirection)this.GetBits('D');
+        }
+
+        /// <summary>
         /// Read immediate data from memory using the program counter.
         /// Program counter will be incremented.
         /// This is normally data immediately after the opcode.
@@ -781,6 +791,18 @@
                 default:
                     throw new InvalidStateException();
             }
+        }
+
+        protected bool IsCarry(uint val)
+        {
+            Writer.Write($"IsCarry not implemented", ConsoleColor.Red);
+            return false;
+        }
+
+        protected bool IsOverflow(uint val)
+        {
+            Writer.Write($"IsOverflow not implemented", ConsoleColor.Red);
+            return false;
         }
 
         /// <summary>

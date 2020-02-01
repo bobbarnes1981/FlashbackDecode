@@ -1,37 +1,43 @@
-﻿using System;
-
-namespace Decoder.M68k.OpCodes
+﻿namespace Decoder.M68k.OpCodes
 {
-    //class DBcc : OpCode
-    //{
-    //    protected override string definition => "0101cccc11001ddd";
+    using Decoder.M68k.Enums;
+    using System;
 
-    //    private short displacement;
+    /// <summary>
+    /// DBcc OpCode.
+    /// </summary>
+    public class DBcc : OpCode
+    {
+        private short displacement;
 
-    //    public override string Name => "DBcc";
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DBcc"/> class.
+        /// </summary>
+        /// <param name="state">machine state.</param>
+        public DBcc(MegadriveState state)
+            : base("0101cccc11001ddd", state)
+        {
+            this.displacement = (short)this.ReadDataUsingPC(this.Size); // always WORD
 
-    //    public override string Description => "Test Condition, Decrement and Branch";
+            throw new NotImplementedException();
+        }
 
-    //    public override string Operation => "IF CONDITON FALSE (Dn–1 -> Dn; If Dn != – 1 Then PC + dn -> PC)";
+        /// <inheritdoc/>
+        public override string Name => "DB";
 
-    //    public override string Syntax => string.Format("{0} Dn, <label>", Name);
+        /// <inheritdoc/>
+        public override string Description => "Test Condition, Decrement and Branch";
 
-    //    public override string Assembly => string.Format("{0}.{1} {2}, 0x{3:X4}", FullName, getCondition(), getDn(), displacement);
+        /// <inheritdoc/>
+        public override string Operation => "IF CONDITON FALSE (Dn–1 -> Dn; If Dn != – 1 Then PC + dn -> PC)";
 
-    //    public DBcc(MachineState state)
-    //        : base(state)
-    //    {
-    //        displacement = (short)readData(Size); // always WORD
-    //    }
+        /// <inheritdoc/>
+        public override string Syntax => $"{this.Name} Dn, <label>";
 
-    //    protected Condition getCondition()
-    //    {
-    //        return (Condition)getSizeFromBits1('c');
-    //    }
+        /// <inheritdoc/>
+        public override string Assembly => $"{this.Name}.{this.GetCondition()} {this.GetDn()}, ${this.displacement:X4}";
 
-    //    protected override Size getSize()
-    //    {
-    //        return Size.Word;
-    //    }
-    //}
+        /// <inheritdoc/>
+        public override Size Size => Size.Word;
+    }
 }

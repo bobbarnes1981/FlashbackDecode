@@ -75,14 +75,5 @@
 
         /// <inheritdoc/>
         public override Size Size => Size.Long;
-
-        /// <summary>
-        /// Get direction.
-        /// </summary>
-        /// <returns>direction.</returns>
-        protected MoveDirection GetDirection()
-        {
-            return (MoveDirection)this.GetBits('D');
-        }
     }
 }

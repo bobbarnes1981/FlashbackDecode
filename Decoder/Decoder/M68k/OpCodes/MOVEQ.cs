@@ -45,12 +45,6 @@
         public override string Assembly => $"{this.Name} #{this.GetImmediate()},{this.GetDn()}";
 
         /// <inheritdoc/>
-        public override Size Size
-        {
-            get
-            {
-                return Size.Long;
-            }
-        }
+        public override Size Size => Size.Long;
     }
 }

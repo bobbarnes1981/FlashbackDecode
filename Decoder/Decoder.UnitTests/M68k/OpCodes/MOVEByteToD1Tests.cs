@@ -1,7 +1,7 @@
 ﻿using Decoder.M68k.OpCodes;
 using NUnit.Framework;
 
-namespace Decoder.UnitTests.M68k.OpCodes.MOVETests
+namespace Decoder.UnitTests.M68k.OpCodes
 {
     [TestFixture]
     class MOVEByteToD1Tests

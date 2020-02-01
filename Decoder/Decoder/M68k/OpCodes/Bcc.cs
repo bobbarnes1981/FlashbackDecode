@@ -69,12 +69,6 @@
         }
 
         /// <inheritdoc/>
-        public override Size Size
-        {
-            get
-            {
-                return this.GetSizeFrom8BitImmediate();
-            }
-        }
+        public override Size Size => this.GetSizeFrom8BitImmediate();
     }
 }

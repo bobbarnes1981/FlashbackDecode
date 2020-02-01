@@ -48,12 +48,6 @@ namespace Decoder.M68k.OpCodes
         public override string Assembly => $"{this.Name} {this.GetAssemblyForEffectiveAddress()},{this.GetAn()}";
 
         /// <inheritdoc/>
-        public override Size Size
-        {
-            get
-            {
-                return Size.Long;
-            }
-        }
+        public override Size Size => Size.Long;
     }
 }

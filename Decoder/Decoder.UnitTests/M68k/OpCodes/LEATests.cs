@@ -4,7 +4,7 @@ using Decoder.M68k.OpCodes;
 using NUnit.Framework;
 using System;
 
-namespace Decoder.UnitTests.M68k.OpCodes.LEATests
+namespace Decoder.UnitTests.M68k.OpCodes
 {
     [TestFixture]
     class LEATests

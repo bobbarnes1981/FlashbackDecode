@@ -40,12 +40,6 @@
         public override string Assembly => $"{this.Name}.{this.Size.ToString().ToLower()[0]} {this.GetAssemblyForEffectiveAddress()}";
 
         /// <inheritdoc/>
-        public override Size Size
-        {
-            get
-            {
-                return (Size)this.GetBits('s');
-            }
-        }
+        public override Size Size => (Size)this.GetBits('s');
     }
 }

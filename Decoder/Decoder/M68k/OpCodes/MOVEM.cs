@@ -147,14 +147,7 @@
         }
 
         /// <inheritdoc/>
-        public override Size Size
-        {
-            get
-            {
-                return this.GetSizeFrom1BitImmediate(6);
-            }
-        }
-
+        public override Size Size => this.GetSizeFrom1BitImmediate(6);
 
         /// <summary>
         /// MOVEM will write to the register instead of the referenced address.

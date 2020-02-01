@@ -2,7 +2,7 @@
 using Decoder.M68k.OpCodes;
 using NUnit.Framework;
 
-namespace Decoder.UnitTests.M68k.OpCodes.TSTTests
+namespace Decoder.UnitTests.M68k.OpCodes
 {
     [TestFixture]
     public class TSTTests

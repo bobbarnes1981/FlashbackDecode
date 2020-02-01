@@ -49,16 +49,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="M68k\OpCodes\ANDITests\ANDIByteTests.cs" />
-    <Compile Include="M68k\OpCodes\BccTests\BccTests.cs" />
-    <Compile Include="M68k\OpCodes\LEATests\LEATests.cs" />
-    <Compile Include="M68k\OpCodes\MOVEATests\MOVEAWordTests.cs" />
-    <Compile Include="M68k\OpCodes\MOVEATests\MOVEALongTests.cs" />
-    <Compile Include="M68k\OpCodes\MOVEMTests\MOVEMTests.cs" />
-    <Compile Include="M68k\OpCodes\MOVEQTests\MOVEQTests.cs" />
-    <Compile Include="M68k\OpCodes\MOVETests\MOVEByteToD1Tests.cs" />
-    <Compile Include="M68k\OpCodes\MOVEUSPTests\MOVEUSPTests.cs" />
-    <Compile Include="M68k\OpCodes\TSTTests\TSTTests.cs" />
+    <Compile Include="M68k\OpCodeDecoderTests.cs" />
+    <Compile Include="M68k\OpCodes\ANDIByteTests.cs" />
+    <Compile Include="M68k\OpCodes\BccTests.cs" />
+    <Compile Include="M68k\OpCodes\LEATests.cs" />
+    <Compile Include="M68k\OpCodes\MOVEAWordTests.cs" />
+    <Compile Include="M68k\OpCodes\MOVEALongTests.cs" />
+    <Compile Include="M68k\OpCodes\MOVEMTests.cs" />
+    <Compile Include="M68k\OpCodes\MOVEQTests.cs" />
+    <Compile Include="M68k\OpCodes\MOVEByteToD1Tests.cs" />
+    <Compile Include="M68k\OpCodes\MOVEUSPTests.cs" />
+    <Compile Include="M68k\OpCodes\TSTTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

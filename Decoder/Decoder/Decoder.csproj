@@ -61,6 +61,8 @@
     <Compile Include="M68k\Enums\EffectiveAddressMode.cs" />
     <Compile Include="M68k\Enums\AddressRegister.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="M68k\OpCodes\ADD.cs" />
+    <Compile Include="M68k\OpCodes\ADDX.cs" />
     <Compile Include="M68k\OpCodes\MOVEUSP.cs" />
     <Compile Include="RomHeader.cs" />
     <Compile Include="Exceptions\InvalidOpCodeException.cs" />

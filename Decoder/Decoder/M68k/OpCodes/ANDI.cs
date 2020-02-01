@@ -58,12 +58,6 @@
         public override string Assembly => $"{this.Name} #{this.immediate},{this.GetAssemblyForEffectiveAddress()}";
 
         /// <inheritdoc/>
-        public override Size Size
-        {
-            get
-            {
-                return (Size)this.GetBits('s');
-            }
-        }
+        public override Size Size => (Size)this.GetBits('s');
     }
 }

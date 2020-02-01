@@ -69,6 +69,28 @@
 
         private OpCode decode_0000(MegadriveState state)
         {
+            if (state.OpCode.GetBits(8, 1) == 0x1)
+            {
+                // MOVEP
+                if (state.OpCode.GetBits(3, 3) == 0x1)
+                {
+                    throw new NotImplementedException("MOVEP");
+                }
+
+                // BTST, BCHG, BCLR, BSET
+                switch (state.OpCode.GetBits(6, 2))
+                {
+                    case 0x00:
+                        return new BTST(state);
+                    case 0x01:
+                        throw new NotImplementedException("BCHG");
+                    case 0x02:
+                        throw new NotImplementedException("BCLR");
+                    case 0x03:
+                        throw new NotImplementedException("BSET");
+                }
+            }
+
             switch (state.OpCode.GetBits(8, 4))
             {
                 // 0000 0110 xxxx xxxx

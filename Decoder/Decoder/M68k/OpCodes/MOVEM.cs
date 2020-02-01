@@ -177,6 +177,24 @@
 
                     break;
 
+                case EffectiveAddressMode.Address:
+                    switch (this.Size)
+                    {
+                        case Size.Byte:
+                            this.state.WriteAReg((byte)Xn, value);
+                            break;
+                        case Size.Word:
+                            this.state.WriteAReg((byte)Xn, value);
+                            break;
+                        case Size.Long:
+                            this.state.WriteAReg((byte)Xn, value);
+                            break;
+                        default:
+                            throw new InvalidStateException();
+                    }
+
+                    break;
+
                 default:
                     throw new InvalidStateException();
             }

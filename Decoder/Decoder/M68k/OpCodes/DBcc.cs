@@ -25,7 +25,7 @@
                 this.state.WriteDReg((byte)this.GetDn(), (uint)dn);
                 if (dn != -1)
                 {
-                    this.state.PC = (uint)(this.state.PC + this.displacement);
+                    this.state.PC = (uint)(this.state.PC - 2 + this.displacement);
                 }
             }
         }

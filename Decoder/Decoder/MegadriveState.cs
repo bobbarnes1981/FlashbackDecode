@@ -61,6 +61,9 @@
         private uint RAM_MIN = 0xFF0000;
         private uint RAM_MAX = 0xFFFFFF;
 
+        private uint Z80_MEM_MIN = 0xA00000;
+        private uint Z80_MEM_MAX = 0xA0FFFF;
+
         public MegadriveState(Data rom, uint origin, uint sp, uint romMin, uint romMax, uint ramMin, uint ramMax)
         {
             this.PC = origin;
@@ -105,8 +108,20 @@
             this.PC += 2;
         }
 
+        /// <summary>
+        /// Mega drive can only address 24 bit.
+        /// </summary>
+        /// <param name="address">address to mask.</param>
+        /// <returns>address masked to 24 bit.</returns>
+        private uint maskAddress(uint address)
+        {
+            return address & 0x00FFFFFF;
+        }
+
         public byte ReadByte(uint address)
         {
+            address = this.maskAddress(address);
+
             if (address <= this.ROM_MAX)
             {
                 return this.rom.ReadByte(address);
@@ -123,14 +138,30 @@
                 return 0x00;
             }
 
+            if (address == 0xA11100)
+            {
+                Writer.Write("Reading Z80 Bus Request", ConsoleColor.Yellow);
+                return 0x00;
+            }
+
             throw new NotImplementedException($"{address:X8}");
         }
 
         public void WriteByte(uint address, byte data)
         {
+            address = this.maskAddress(address);
+
             if (address <= this.ROM_MAX)
             {
                 throw new InvalidStateException();
+            }
+            else if (address >= this.Z80_MEM_MIN && address <= this.Z80_MEM_MAX)
+            {
+                Writer.Write("Writing to Z80 Memory", ConsoleColor.Yellow);
+            }
+            else if (address == 0xC00011)
+            {
+                Writer.Write("Writing to PSG Output", ConsoleColor.Yellow);
             }
             else if (address >= this.RAM_MIN && address <= this.RAM_MAX)
             {
@@ -144,6 +175,8 @@
 
         public ushort ReadWord(uint address)
         {
+            address = this.maskAddress(address);
+
             if (address <= this.ROM_MAX)
             {
                 return this.rom.ReadWord(address);
@@ -171,13 +204,11 @@
 
         public void WriteWord(uint address, ushort data)
         {
+            address = this.maskAddress(address);
+
             if (address <= this.ROM_MAX)
             {
                 throw new InvalidStateException();
-            }
-            else if (address >= this.RAM_MIN && address <= this.RAM_MAX)
-            {
-                this.ram68k.WriteWord(address - this.RAM_MIN, data);
             }
             else if (address == 0x00A11100)
             {
@@ -195,6 +226,10 @@
             {
                 Writer.Write("Writing VDP Control Port", ConsoleColor.Yellow);
             }
+            else if (address >= this.RAM_MIN && address <= this.RAM_MAX)
+            {
+                this.ram68k.WriteWord(address - this.RAM_MIN, data);
+            }
             else
             {
                 throw new NotImplementedException($"{address:X8}");
@@ -203,6 +238,8 @@
 
         public uint ReadLong(uint address)
         {
+            address = this.maskAddress(address);
+
             if (address <= this.ROM_MAX)
             {
                 return this.rom.ReadLong(address);
@@ -224,17 +261,23 @@
 
         public void WriteLong(uint address, uint data)
         {
+            address = this.maskAddress(address);
+
             if (address <= this.ROM_MAX)
             {
                 throw new InvalidStateException();
             }
-            else if (address >= this.RAM_MIN && address <= this.RAM_MAX)
+            else if (address == 0x00C00000)
             {
-                this.ram68k.WriteLong(address - this.RAM_MIN, data);
+                Writer.Write("Writing VDP Data Port", ConsoleColor.Yellow);
             }
             else if (address == 0x00C00004)
             {
                 Writer.Write("Writing VDP Control Port (and mirror)", ConsoleColor.Yellow);
+            }
+            else if (address >= this.RAM_MIN && address <= this.RAM_MAX)
+            {
+                this.ram68k.WriteLong(address - this.RAM_MIN, data);
             }
             else
             {

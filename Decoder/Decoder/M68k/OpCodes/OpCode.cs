@@ -584,6 +584,11 @@
 
         protected void WriteValueToEffectiveAddress(EffectiveAddressMode ea, uint Xn, uint value)
         {
+            this.WriteValueToEffectiveAddress(ea, this.EffectiveAddress, Xn, value);
+        }
+
+        protected void WriteValueToEffectiveAddress(EffectiveAddressMode ea, uint effectiveAddress, uint Xn, uint value)
+        {
             switch (ea)
             {
                 // write the value at the address to the specified data register
@@ -615,13 +620,40 @@
                     switch (this.Size)
                     {
                         case Size.Byte:
-                            this.state.WriteByte(this.EffectiveAddress, (byte)value);
+                            this.state.WriteByte(effectiveAddress, (byte)value);
                             break;
                         case Size.Word:
-                            this.state.WriteWord(this.EffectiveAddress, (ushort)value);
+                            this.state.WriteWord(effectiveAddress, (ushort)value);
                             break;
                         case Size.Long:
-                            this.state.WriteLong(this.EffectiveAddress, (uint)value);
+                            this.state.WriteLong(effectiveAddress, (uint)value);
+                            break;
+                        default:
+                            throw new InvalidStateException();
+                    }
+
+                    break;
+
+                case EffectiveAddressMode.AddressPreDecrement:
+                    switch (this.Size)
+                    {
+                        case Size.Long:
+                            var regl = this.state.ReadAReg((byte)Xn);
+                            regl -= 4;
+                            this.state.WriteLong(regl, value);
+                            this.state.WriteAReg((byte)Xn, regl);
+                            break;
+                        case Size.Word:
+                            var regw = this.state.ReadAReg((byte)Xn);
+                            regw -= 2;
+                            this.state.WriteWord(regw, (ushort)value);
+                            this.state.WriteAReg((byte)Xn, regw);
+                            break;
+                        case Size.Byte:
+                            var regb = this.state.ReadAReg((byte)Xn);
+                            regb -= 1;
+                            this.state.WriteByte(regb, (byte)value);
+                            this.state.WriteAReg((byte)Xn, regb);
                             break;
                         default:
                             throw new InvalidStateException();
@@ -642,6 +674,24 @@
                         case Size.Long:
                             this.state.WriteLong(this.state.ReadAReg((byte)Xn), (uint)value);
                             break;
+                        default:
+                            throw new InvalidStateException();
+                    }
+
+                    break;
+
+                case EffectiveAddressMode.AddressWithDisplacement:
+                    switch (this.Size)
+                    {
+                        case Size.Byte:
+                            var addrb = this.state.ReadAReg((byte)Xn);
+                            var displacementb = effectiveAddress;
+                            this.state.WriteByte(addrb + displacementb, (byte)value);
+                            break;
+                        case Size.Word:
+                            throw new NotImplementedException();
+                        case Size.Long:
+                            throw new NotImplementedException();
                         default:
                             throw new InvalidStateException();
                     }

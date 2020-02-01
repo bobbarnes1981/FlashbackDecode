@@ -58,7 +58,10 @@
                     throw new Exception("invalid opcode");
                 }
 
-                disassembly.Add(opcode.Address, opcode);
+                if (!disassembly.ContainsKey(opcode.Address))
+                {
+                    disassembly.Add(opcode.Address, opcode);
+                }
 
                 displayOpCode(opcode);
 

@@ -83,6 +83,8 @@
                 case 0x0002:
                     return decode_0200(state);
 
+                // TODO: BTST
+
                 default:
                     throw new NotImplementedException();
             }

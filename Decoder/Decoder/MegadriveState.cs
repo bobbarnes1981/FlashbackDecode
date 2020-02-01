@@ -157,7 +157,7 @@
 
             if (address == 0x00C00004)
             {
-                Writer.Write("Reading VDP Port Control", ConsoleColor.Yellow);
+                Writer.Write("Reading VDP Control Port", ConsoleColor.Yellow);
                 return 0x0000;
             }
 
@@ -179,9 +179,21 @@
             {
                 this.ram68k.WriteWord(address - this.RAM_MIN, data);
             }
+            else if (address == 0x00A11100)
+            {
+                Writer.Write("Writing Z80 Bus Request", ConsoleColor.Yellow);
+            }
+            else if (address == 0x00A11200)
+            {
+                Writer.Write("Writing Z80 Reset", ConsoleColor.Red);
+            }
+            else if (address == 0x00C00000)
+            {
+                Writer.Write("Writing VDP Data Port", ConsoleColor.Yellow);
+            }
             else if (address == 0x00C00004)
             {
-                Writer.Write("Reading VDP Port Control", ConsoleColor.Yellow);
+                Writer.Write("Writing VDP Control Port", ConsoleColor.Yellow);
             }
             else
             {
@@ -219,6 +231,10 @@
             else if (address >= this.RAM_MIN && address <= this.RAM_MAX)
             {
                 this.ram68k.WriteLong(address - this.RAM_MIN, data);
+            }
+            else if (address == 0x00C00004)
+            {
+                Writer.Write("Writing VDP Control Port (and mirror)", ConsoleColor.Yellow);
             }
             else
             {

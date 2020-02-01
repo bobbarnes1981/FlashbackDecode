@@ -19,7 +19,15 @@
         {
             this.displacement = (short)this.ReadDataUsingPC(this.Size); // always WORD
 
-            throw new NotImplementedException();
+            if (!this.CheckCondition())
+            {
+                short dn = (short)(this.state.ReadDReg((byte)this.GetDn()) - 1);
+                this.state.WriteDReg((byte)this.GetDn(), (uint)dn);
+                if (dn != -1)
+                {
+                    this.state.PC = (uint)(this.state.PC + this.displacement);
+                }
+            }
         }
 
         /// <inheritdoc/>

@@ -182,13 +182,17 @@
         /// <returns>true if the status register meets the opcode condition.</returns>
         protected bool CheckCondition()
         {
-            switch (this.GetCondition())
+            Condition c = this.GetCondition();
+            switch (c)
             {
                 case Condition.NE:
                     return this.state.Condition_Z == false;
 
                 case Condition.EQ:
                     return this.state.Condition_Z == true;
+
+                case Condition.F:
+                    return false;
 
                 default:
                     throw new InvalidStateException();
@@ -633,10 +637,11 @@
                             this.state.WriteByte(this.state.ReadAReg((byte)Xn), (byte)value);
                             break;
                         case Size.Word:
-                            this.state.WriteWord(this.state.ReadAReg((byte)Xn), (byte)value);
+                            this.state.WriteWord(this.state.ReadAReg((byte)Xn), (ushort)value);
                             break;
                         case Size.Long:
-                            throw new NotImplementedException();
+                            this.state.WriteLong(this.state.ReadAReg((byte)Xn), (uint)value);
+                            break;
                         default:
                             throw new InvalidStateException();
                     }

@@ -32,7 +32,7 @@
             this.EffectiveAddress = this.FetchEffectiveAddress();
             this.immediate = this.ReadImmediate();
 
-            var val = this.InterpretEffectiveAddress();
+            var val = this.ReadValueForEffectiveAddress();
             val &= this.immediate;
             this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), val);
 

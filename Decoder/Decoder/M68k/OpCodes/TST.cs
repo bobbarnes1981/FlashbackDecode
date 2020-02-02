@@ -16,7 +16,7 @@
         {
             this.EffectiveAddress = this.FetchEffectiveAddress();
 
-            var val = this.InterpretEffectiveAddress();
+            var val = this.ReadValueForEffectiveAddress();
 
             state.Condition_N = this.IsNegative(val);
             state.Condition_Z = this.IsZero(val);

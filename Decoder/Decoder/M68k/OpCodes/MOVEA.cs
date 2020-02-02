@@ -20,7 +20,7 @@
             this.EffectiveAddress = this.FetchEffectiveAddress();
             this.register = this.GetAn();
 
-            var val = this.InterpretEffectiveAddress();
+            var val = this.ReadValueForEffectiveAddress();
             switch (this.Size)
             {
                 case Size.Word:

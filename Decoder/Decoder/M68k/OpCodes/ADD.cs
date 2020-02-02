@@ -29,7 +29,7 @@
             {
                 // <ea> + Dn -> Dn
                 case MoveDirection.RegisterToMemory:
-                    var val = this.InterpretEffectiveAddress();
+                    var val = this.ReadValueForEffectiveAddress();
                     var dn = this.state.ReadDReg((byte)this.register);
                     result = val + dn;
                     switch (this.Size)

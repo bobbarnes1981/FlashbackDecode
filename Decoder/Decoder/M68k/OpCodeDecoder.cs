@@ -143,41 +143,32 @@
 
         private OpCode decode_4000(MegadriveState state)
         {
-            switch(state.OpCode.GetBits(8, 4))
+            if (state.OpCode.CheckBits("01001010xxxxxxxx"))
             {
-                // 01001010xxxxxxxx
-                case 0x000A:
-                    return new TST(state);
+                return new TST(state);
             }
 
-            // 0100 1110 0110 daaa  0x4E60
-            ushort moveusp = 0x4E60;
-            if ((state.OpCode & moveusp) == moveusp)
+            if (state.OpCode.CheckBits("010011100110xxxx"))
             {
                 return new MOVEUSP(state);
             }
 
-            // 0100 1110 0111 0101  0x4E75
-            ushort rts = 0x4E75;
-
-            if (state.OpCode == rts)
+            // 0x4E75
+            if (state.OpCode.CheckBits("0100111001110101"))
             {
                 throw new NotImplementedException("RTS");
             }
 
-            // 0100 ???? ???? ?xxx
-            switch (state.OpCode.GetBits(6, 6))
+            if (state.OpCode.CheckBits("0100100001xxxxxx"))
             {
-                // 100 001
-                case 0x0021:
-                    if (state.OpCode.GetBits(3, 3) == 0x0000)
-                    {
-                        // 100 001 000
-                        throw new NotImplementedException("SWAP");
-                    }
+                if (state.OpCode.CheckBits("0100100001000xxx"))
+                {
+                    // 0100 100 001 000
+                    throw new NotImplementedException("SWAP");
+                }
 
-                    // 100 001 xxx
-                    throw new NotImplementedException("PEA");
+                // 0100 100 001 xxx
+                throw new NotImplementedException("PEA");
             }
 
             // xxxx xxx? ??xx xxxx
@@ -200,46 +191,36 @@
 
         private OpCode decode_4XX0(MegadriveState state)
         {
-            switch (state.OpCode.GetBits(9, 3))
+            if (state.OpCode.CheckBits("0100100xxxxxxxxx") || state.OpCode.CheckBits("0100110xxxxxxxxx"))
             {
-                // xxxx 100x xxxx xxxx
-                // xxxx 110x xxxx xxxx
-                case 0x0004:
-                case 0x0006:
-                    // xxxx xxxx xx00 0xxx
-                    if (state.OpCode.GetBits(3, 3) == 0x0000)
-                    {
-                        throw new NotImplementedException("EXT");
-                    }
-                    else
-                    {
-                        return new MOVEM(state);
-                    }
-
-                // xxxx 011x xxxx xxxx
-                case 0x0003:
-                    var b = state.OpCode.GetBits(6, 10);
-                    if (state.OpCode.GetBits(6, 10) == 0x011B)
-                    {
-                        // 0100 0110 11xx xxxx
-                        throw new NotImplementedException("MOVEtoSR");
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-
-                default:
-                    throw new NotImplementedException();
+                if (state.OpCode.CheckBits("0100100xxx000xxx") || state.OpCode.CheckBits("0100110xxx000xxx"))
+                {
+                    throw new NotImplementedException("EXT");
+                }
+                else
+                {
+                    return new MOVEM(state);
+                }
             }
+
+            if (state.OpCode.CheckBits("0100011xxxxxxxxx"))
+            {
+                if (state.OpCode.CheckBits("0100011011xxxxxx"))
+                {
+                    return new MOVEtoSR(state);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            throw new NotImplementedException();
         }
 
         private OpCode decode_5000(MegadriveState state)
         {
-            // 0101 xxxx 11xx xxxx  0x50C0
-            ushort sdb = 0x50C0;
-
-            if ((state.OpCode & sdb) == sdb)
+            if (state.OpCode.CheckBits("0101xxxx11xxxxxx"))
             {
                 // Scc or DBcc
                 return decode_50C0(state);
@@ -247,18 +228,12 @@
 
             // 0101 xxxx ??xx xxxx
 
-            // 0101 xxx0 xxxx xxxx
-            ushort addq = 0x5000;
-
-            if ((state.OpCode & addq) == addq)
+            if (state.OpCode.CheckBits("0101xxx0xxxxxxxx"))
             {
                 throw new NotImplementedException("ADDQ");
             }
 
-            // 0101 xxx1 xxxx xxxx
-            ushort subq = 0x5100;
-
-            if ((state.OpCode & subq) == subq)
+            if (state.OpCode.CheckBits("0101xxx1xxxxxxxx"))
             {
                 throw new NotImplementedException("SUBQ");
             }
@@ -268,10 +243,7 @@
 
         private OpCode decode_50C0(MegadriveState state)
         {
-            // 0101 xxxx 1100 1xxx
-            ushort dbcc = 0x50C8;
-
-            if ((state.OpCode & dbcc) == dbcc)
+            if (state.OpCode.CheckBits("0101xxxx11001xxx"))
             {
                 return new DBcc(state);
             }
@@ -282,18 +254,17 @@
 
         private OpCode decode_6000(MegadriveState state)
         {
-            // 0110 ---- xxxx xxxx
-            switch (state.OpCode.GetBits(8, 4))
+            if (state.OpCode.CheckBits("01100000xxxxxxxx"))
             {
-                case 0x0000:
-                    throw new NotImplementedException("BRA");
-
-                case 0x0001:
-                    throw new NotImplementedException("BSR");
-
-                default:
-                    return new Bcc(state);
+                return new BRA(state);
             }
+
+            if (state.OpCode.CheckBits("01100001xxxxxxxx"))
+            {
+                throw new NotImplementedException("BSR");
+            }
+
+            return new Bcc(state);
         }
 
         private OpCode decode_7000(MegadriveState state)
@@ -303,7 +274,30 @@
 
         private OpCode decode_8000(MegadriveState state)
         {
-            throw new NotImplementedException();
+            // divu
+            // 1000 ddd0 11mm mxxx
+            if (state.OpCode.CheckBits("1000xxx011xxxxxx"))
+            {
+                throw new NotImplementedException("DIVU");
+            }
+
+            // divs
+            // 1000 ddd1 11mm mxxx
+            if (state.OpCode.CheckBits("1000xxx111xxxxxx"))
+            {
+                throw new NotImplementedException("DIVS");
+            }
+
+            // sbcd
+            // 1000 xxx1 0000 Mxxx
+            if (state.OpCode.CheckBits("1000xxx10000xxxx"))
+            {
+                throw new NotImplementedException("SBCD");
+            }
+
+            // or
+            // 1000 dddD ssmm mxxx
+            throw new NotImplementedException("OR");
         }
 
         private OpCode decode_9000(MegadriveState state)
@@ -323,22 +317,12 @@
 
         private OpCode decode_D000(MegadriveState state)
         {
-            // adda
-            // 1101 xxxx 11xx xxxx  0xD0C0
-            ushort adda = 0xD0C0;
-
-            if ((state.OpCode & adda) == adda)
+            if (state.OpCode.CheckBits("1101xxxx11xxxxxx"))
             {
                 throw new NotImplementedException("ADDA");
             }
 
-            // 1101 xxx1 xx00 0xxx  0xD100 addx Dn
-            ushort addxd = 0xD100;
-
-            // 1101 xxx1 xx00 1xxx  0xD101 addx -(An)
-            ushort addxa = 0xD108;
-
-            if (((state.OpCode & addxd) == addxd) || ((state.OpCode & addxa) == addxa))
+            if (state.OpCode.CheckBits("1101xxx1xx000xxx") || state.OpCode.CheckBits("1101xxx1xx001xxx"))
             {
                 return new ADDX(state);
             }
@@ -349,14 +333,12 @@
 
         private OpCode decode_E000(MegadriveState state)
         {
-            switch(state.OpCode.GetBits(6, 2))
+            if (state.OpCode.CheckBits("1110xxxx11xxxxxx"))
             {
-                case 0x3:
-                    return decode_E0C0(state);
-
-                default:
-                    return decode_E0X0(state);
+                return decode_E0C0(state);
             }
+
+            return decode_E0X0(state);
         }
 
         private OpCode decode_E0C0(MegadriveState state)

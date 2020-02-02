@@ -1,56 +1,65 @@
-﻿using System;
-
-namespace Decoder.M68k.OpCodes
+﻿namespace Decoder.M68k.OpCodes
 {
-    //public class BRA : OpCode
-    //{
-    //    protected override string definition => "01100000bbbbbbbb";
+    using Decoder.Exceptions;
+    using Decoder.M68k.Enums;
 
-    //    public override string Name => "BRA";
+    /// <summary>
+    /// BRA OpCode.
+    /// </summary>
+    public class BRA : OpCode
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BRA"/> class.
+        /// </summary>
+        /// <param name="state">machine state.</param>
+        public BRA(MegadriveState state)
+            : base("01100000bbbbbbbb", state)
+        {
+            if (this.Size == Size.Word)
+            {
+                this.EffectiveAddress = this.FetchEffectiveAddress(EffectiveAddressMode.Immediate, 0x00);
+            }
 
-    //    public override string Description => "Branch Always";
+            if (this.Size == Size.Word)
+            {
+                this.state.PC += this.EffectiveAddress - 2;
+            }
+            else
+            {
+                this.state.PC += this.EffectiveAddress;
+            }
+        }
 
-    //    public override string Operation => "PC + dn -> PC";
+        /// <inheritdoc/>
+        public override string Name => "BRA";
 
-    //    public override string Syntax => string.Format("{0} <label>", Name);
+        /// <inheritdoc/>
+        public override string Description => "Branch Always";
 
-    //    public override string Assembly
-    //    {
-    //        get
-    //        {
-    //            switch (Size)
-    //            {
-    //                case Size.Byte:
-    //                    return string.Format("{0} {1}", FullName, (sbyte)EA);
-    //                case Size.Word:
-    //                    return string.Format("{0} {1}", FullName, (short)EA);
-    //                default:
-    //                    throw new InvalidStateException();
-    //            }
-    //        }
-    //    }
+        /// <inheritdoc/>
+        public override string Operation => "PC + dn -> PC";
 
-    //    public BRA(MachineState state)
-    //        : base(state)
-    //    {
-    //        if (Size == Size.Word)
-    //        {
-    //            EA = readEA(EffectiveAddressMode.Immediate, 0x00);
-    //        }
+        /// <inheritdoc/>
+        public override string Syntax => $"{this.Name} <label>";
 
-    //        if (Size == Size.Word)
-    //        {
-    //            state.PC += EA - 2;
-    //        }
-    //        else
-    //        {
-    //            state.PC += EA;
-    //        }
-    //    }
+        /// <inheritdoc/>
+        public override string Assembly
+        {
+            get
+            {
+                switch (this.Size)
+                {
+                    case Size.Byte:
+                        return $"{this.Name} {(sbyte)this.EffectiveAddress}";
+                    case Size.Word:
+                        return $"{this.Name} {(short)this.EffectiveAddress}";
+                    default:
+                        throw new InvalidStateException();
+                }
+            }
+        }
 
-    //    protected override Size getSize()
-    //    {
-    //        return getSizeFrom8BitImmediate();
-    //    }
-    //}
+        /// <inheritdoc/>
+        public override Size Size => this.GetSizeFrom8BitImmediate();
+    }
 }

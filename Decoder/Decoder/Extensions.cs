@@ -1,5 +1,6 @@
 ﻿namespace Decoder
 {
+    using System;
     using System.Text;
 
     public static class Extensions
@@ -15,13 +16,48 @@
             return builder.ToString();
         }
 
+        public static bool CheckBits(this ushort s, string cs)
+        {
+            if (cs.Length != 16)
+            {
+                throw new ArgumentException("pass 16 bits", nameof(cs));
+            }
+
+            ushort count = 1;
+            for (int i = 15; i > -1; i--)
+            {
+                switch (cs[i])
+                {
+                    case '0':
+                        if ((s & count) == count)
+                        {
+                            return false;
+                        }
+
+                        break;
+
+                    case '1':
+                        if ((s & count) != count)
+                        {
+                            return false;
+                        }
+
+                        break;
+                }
+
+                count += count;
+            }
+
+            return true;
+        }
+
         public static ushort GetBits(this ushort s, int offset, int length)
         {
             // TODO: validate values
             ushort lengthMask = 0x0000;
 
             ushort count = 1;
-            for (int i = 1; i <= length; i++)
+            for (int i = 0; i < length; i++)
             {
                 lengthMask |= count;
                 count += count;

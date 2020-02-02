@@ -28,7 +28,7 @@ namespace Decoder.M68k.OpCodes
 
             this.EffectiveAddress = this.FetchEffectiveAddress();
 
-            var srcVal = this.ResolveEffectiveAddress();
+            var srcVal = this.ReadAddressForEffectiveAddress();
             this.WriteValueToEffectiveAddress(EffectiveAddressMode.AddressRegister, (uint)this.GetAn(), srcVal);
         }
 
@@ -42,7 +42,7 @@ namespace Decoder.M68k.OpCodes
         public override string Operation => "<ea> -> An";
 
         /// <inheritdoc/>
-        public override string Syntax => $"{this.Name} <ea>,An\r\n{this.Name} {this.DescribeEffectiveAddress()},{this.GetAn()}";
+        public override string Syntax => $"{this.Name} <ea>,An\r\n{this.Name} {this.GetDescriptionForEffectiveAddress()},{this.GetAn()}";
 
         /// <inheritdoc/>
         public override string Assembly => $"{this.Name} {this.GetAssemblyForEffectiveAddress()},{this.GetAn()}";

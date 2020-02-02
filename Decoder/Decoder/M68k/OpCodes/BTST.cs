@@ -37,7 +37,7 @@
                 }
 
                 mask = (uint)(mask << (int)bitnumber);
-                this.state.Condition_Z = (this.InterpretEffectiveAddress() & mask) == 0;
+                this.state.Condition_Z = (this.ReadValueForEffectiveAddress() & mask) == 0;
             }
             else
             {

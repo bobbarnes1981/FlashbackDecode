@@ -322,6 +322,10 @@
             }
         }
 
+        /// <summary>
+        /// Get the assembly representation of the effective address.
+        /// </summary>
+        /// <returns></returns>
         protected string GetAssemblyForEffectiveAddress()
         {
             return GetAssemblyForEffectiveAddress(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
@@ -376,12 +380,16 @@
             }
         }
 
-        protected string DescribeEffectiveAddress()
+        /// <summary>
+        /// Get the syntax description for the effective address.
+        /// </summary>
+        /// <returns></returns>
+        protected string GetDescriptionForEffectiveAddress()
         {
-            return DescribeEffectiveAddress(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
+            return GetDescriptionForEffectiveAddress(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
         }
 
-        protected string DescribeEffectiveAddress(EffectiveAddressMode mode, uint ea, byte xn)
+        protected string GetDescriptionForEffectiveAddress(EffectiveAddressMode mode, uint ea, byte xn)
         {
             switch (mode)
             {
@@ -425,12 +433,16 @@
             }
         }
 
-        protected uint ResolveEffectiveAddress()
+        /// <summary>
+        /// Calculate the address for the effective address.
+        /// </summary>
+        /// <returns></returns>
+        protected uint ReadAddressForEffectiveAddress()
         {
-            return this.ResolveEffectiveAddress(this.DecodeEffectiveAddressMode(), this.EffectiveAddress, this.GetXn());
+            return this.ReadAddressForEffectiveAddress(this.DecodeEffectiveAddressMode(), this.EffectiveAddress, this.GetXn());
         }
 
-        protected uint ResolveEffectiveAddress(EffectiveAddressMode mode, uint ea, byte xn)
+        protected uint ReadAddressForEffectiveAddress(EffectiveAddressMode mode, uint ea, byte xn)
         {
             switch (mode)
             {
@@ -451,12 +463,16 @@
             }
         }
 
-        protected uint InterpretEffectiveAddress()
+        /// <summary>
+        /// Get the value from the location indicated by the effective address.
+        /// </summary>
+        /// <returns></returns>
+        protected uint ReadValueForEffectiveAddress()
         {
-            return InterpretEffectiveAddress(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
+            return ReadValueForEffectiveAddress(DecodeEffectiveAddressMode(), EffectiveAddress, GetXn());
         }
 
-        protected uint InterpretEffectiveAddress(EffectiveAddressMode mode, uint ea, byte xn)
+        protected uint ReadValueForEffectiveAddress(EffectiveAddressMode mode, uint ea, byte xn)
         {
             switch (mode)
             {
@@ -582,6 +598,12 @@
             }
         }
 
+        /// <summary>
+        /// Write the value to the location indicated by the effective address.
+        /// </summary>
+        /// <param name="ea"></param>
+        /// <param name="Xn"></param>
+        /// <param name="value"></param>
         protected void WriteValueToEffectiveAddress(EffectiveAddressMode ea, uint Xn, uint value)
         {
             this.WriteValueToEffectiveAddress(ea, this.EffectiveAddress, Xn, value);

@@ -19,6 +19,10 @@
             {
                 this.EffectiveAddress = this.FetchEffectiveAddress(EffectiveAddressMode.Immediate, 0x00);
             }
+            else
+            {
+                this.EffectiveAddress = this.GetImmediate();
+            }
 
             if (this.Size == Size.Word)
             {

@@ -72,7 +72,7 @@
 
                 this.DisplayOpCode(opcode);
 
-                //this.DisplayState(this.state);
+                this.DisplayState(this.state);
 
             } while (this.running);
 

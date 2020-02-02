@@ -3,6 +3,9 @@
     using System;
     using System.Text;
 
+    /// <summary>
+    /// Extension class.
+    /// </summary>
     public static class Extensions
     {
         public static string ToBinary(this ushort s)
@@ -10,7 +13,7 @@
             StringBuilder builder = new StringBuilder();
             for (ushort u = 32768; u > 0; u = (ushort)(u / 2))
             {
-                builder.AppendFormat("{0}", (s & u) == u ? 1 : 0);
+                builder.Append($"{((s & u) == u ? 1 : 0)}");
             }
 
             return builder.ToString();

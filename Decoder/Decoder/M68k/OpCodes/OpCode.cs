@@ -348,8 +348,8 @@
                             throw new NotImplementedException();
                     }
 
-                //case EffectiveAddressMode.AbsoluteWord:
-                //    return string.Format("0x{0:X4}", ea);
+                case EffectiveAddressMode.AbsoluteWord:
+                    return $"0x{ea:X4}";
 
                 case EffectiveAddressMode.AbsoluteLong:
                     return $"${ea:X8}";
@@ -553,6 +553,18 @@
 
                 // get the value from memory using the provided long address
                 case EffectiveAddressMode.AbsoluteLong:
+                    switch (this.Size)
+                    {
+                        case Size.Long:
+                            return this.state.ReadLong(ea);
+                        case Size.Word:
+                            return this.state.ReadWord(ea);
+                        default:
+                            throw new InvalidStateException();
+                    }
+
+                // get the value from memory using the provided long address
+                case EffectiveAddressMode.AbsoluteWord:
                     switch (this.Size)
                     {
                         case Size.Long:

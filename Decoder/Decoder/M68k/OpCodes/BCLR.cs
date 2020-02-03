@@ -5,17 +5,17 @@
     using Decoder.M68k.Enums;
 
     /// <summary>
-    /// BTST OpCode.
+    /// BCLR OpCode.
     /// </summary>
-    public class BTST : OpCode
+    public class BCLR : OpCode
     {
         private readonly Size size;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BTST"/> class.
+        /// Initializes a new instance of the <see cref="BCLR"/> class.
         /// </summary>
         /// <param name="state">machine state.</param>
-        public BTST(MegadriveState state)
+        public BCLR(MegadriveState state)
             : base("0000ddd___mmmxxx", state)
         {
             this.EffectiveAddress = this.FetchEffectiveAddress();
@@ -39,6 +39,8 @@
 
                 mask = (uint)(mask << (int)bitnumber);
                 this.state.Condition_Z = (this.ReadValueForEffectiveAddress() & mask) == 0;
+
+                throw new NotImplementedException("Needs to clear bit in destination");
             }
 
             if (this.GetBits('_') == 0x0)
@@ -51,29 +53,29 @@
         }
 
         /// <inheritdoc/>
-        public override string Name => "BTST";
+        public override string Name => "BCLR";
 
         /// <inheritdoc/>
-        public override string Description => "Test a Bit";
+        public override string Description => "Test a Bit and Clear";
 
         /// <inheritdoc/>
-        public override string Operation => "TEST (<bitnumber> of destination) -> Z";
+        public override string Operation => "TEST (<bitnumber> of Destination) -> Z; 0 -> <bitnumber> of Destination";
 
         /// <inheritdoc/>
-        public override string Syntax => "BTST Dn,<ea>\r\nBTST #<data>,<Ea>";
+        public override string Syntax => $"{this.Name} Dn,<ea>\r\n{this.Name} #<data>,<ea>";
 
         /// <inheritdoc/>
         public override string Assembly
         {
             get
             {
-                if (this.GetBits('_') == 0x4)
+                if (this.GetBits('_') == 0x6)
                 {
                     // bit number dynamic
                     return $"{this.Name} {this.GetDn()},{this.GetAssemblyForEffectiveAddress()}";
                 }
 
-                if (this.GetBits('_') == 0x0)
+                if (this.GetBits('_') == 0x2)
                 {
                     // bit number static
                     throw new NotImplementedException();

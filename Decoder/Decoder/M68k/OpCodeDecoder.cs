@@ -85,7 +85,7 @@
                     case 0x01:
                         throw new NotImplementedException("BCHG");
                     case 0x02:
-                        throw new NotImplementedException("BCLR");
+                        return new BCLR(state);
                     case 0x03:
                         throw new NotImplementedException("BSET");
                 }

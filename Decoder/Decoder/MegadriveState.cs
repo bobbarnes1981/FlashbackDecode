@@ -71,6 +71,10 @@
         private uint ROM_MIN = 0x000000;
         private uint ROM_MAX = 0x3FFFFF;
 
+        // also used for 32x
+        private uint CD_MIN = 0x400000;
+        private uint CD_MAX = 0x7FFFFF;
+
         private uint RAM_MIN = 0xFF0000;
         private uint RAM_MAX = 0xFFFFFF;
 
@@ -138,6 +142,12 @@
             if (address <= this.ROM_MAX)
             {
                 return this.rom.ReadByte(address);
+            }
+
+            if (address >= this.CD_MIN && address <= this.CD_MAX)
+            {
+                Writer.Write("Reading from MegaCD/32x", ConsoleColor.Yellow);
+                return 0x00;
             }
 
             if (address >= this.RAM_MIN && address <= this.RAM_MAX)

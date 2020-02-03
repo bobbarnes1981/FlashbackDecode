@@ -20,36 +20,38 @@
         {
             this.EffectiveAddress = this.FetchEffectiveAddress();
 
-            if (this.GetBits('_') == 0x4)
+            switch (this.GetBits('_'))
             {
-                // bit number dynamic
-                var dn = this.GetDn();
-                var bitnumber = this.state.ReadDReg((byte)dn);
-                uint mask = 0x00000001;
-                if (this.DecodeEffectiveAddressMode() == EffectiveAddressMode.DataRegister)
-                {
-                    this.size = Size.Long;
-                    bitnumber = bitnumber % 32;
-                }
-                else
-                {
-                    this.size = Size.Byte;
-                    bitnumber = bitnumber % 8;
-                }
+                case 0x6:
 
-                mask = (uint)(mask << (int)bitnumber);
-                this.state.Condition_Z = (this.ReadValueForEffectiveAddress() & mask) == 0;
+                    // bit number dynamic
+                    var dn = this.GetDn();
+                    var bitnumber = this.state.ReadDReg((byte)dn);
+                    uint mask = 0x00000001;
+                    if (this.DecodeEffectiveAddressMode() == EffectiveAddressMode.DataRegister)
+                    {
+                        this.size = Size.Long;
+                        bitnumber = bitnumber % 32;
+                    }
+                    else
+                    {
+                        this.size = Size.Byte;
+                        bitnumber = bitnumber % 8;
+                    }
 
-                throw new NotImplementedException("Needs to clear bit in destination");
+                    mask = (uint)(mask << (int)bitnumber);
+                    this.state.Condition_Z = (this.ReadValueForEffectiveAddress() & mask) == 0;
+
+                    throw new NotImplementedException("Needs to clear bit in destination");
+
+                case 0x2:
+
+                    // bit number static
+                    throw new NotImplementedException();
+
+                default:
+                    throw new InvalidStateException();
             }
-
-            if (this.GetBits('_') == 0x0)
-            {
-                // bit number static
-                throw new NotImplementedException();
-            }
-
-            throw new NotImplementedException();
         }
 
         /// <inheritdoc/>

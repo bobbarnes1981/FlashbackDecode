@@ -29,12 +29,12 @@
             {
                 if (this.Size == Size.Word)
                 {
-                    this.state.PC += this.EffectiveAddress - 2;
+                    this.state.PC += (uint)((short)this.EffectiveAddress - 2);
                 }
 
                 if (this.Size == Size.Byte)
                 {
-                    this.state.PC += this.EffectiveAddress;
+                    this.state.PC += (uint)((sbyte)this.EffectiveAddress);
                 }
             }
         }

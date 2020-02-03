@@ -1,33 +1,54 @@
 ﻿namespace Decoder.M68k.OpCodes
 {
-    //class ADDQ : OpCode
-    //{
-    //    protected override string definition => "0101bbb0ssmmmxxx";
+    using Decoder.M68k.Enums;
 
-    //    public override string Name => "ADDQ";
+    /// <summary>
+    /// ADDQ OpCode.
+    /// </summary>
+    public class ADDQ : OpCode
+    {
+        private ushort immediate;
 
-    //    public override string Description => "Add Quick";
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ADDQ"/> class.
+        /// </summary>
+        /// <param name="state">machine state.</param>
+        public ADDQ(MegadriveState state)
+            : base("0101bbb0ssmmmxxx", state)
+        {
+            this.EffectiveAddress = this.FetchEffectiveAddress();
+            this.immediate = this.GetImmediate();
 
-    //    public override string Operation => "Immediate Data + Destination -> Destination";
+            var val = this.ReadValueForEffectiveAddress();
+            uint result = val + this.immediate;
+            this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), result);
 
-    //    public override string Syntax => string.Format("{0} #<data>, <ea>", Name);
+            if (this.DecodeEffectiveAddressMode() != EffectiveAddressMode.AddressRegister)
+            {
+                this.state.Condition_X = this.IsCarry(result);
+                this.state.Condition_N = this.IsNegative(result);
+                this.state.Condition_Z = this.IsZero(result);
+                this.state.Condition_V = this.IsOverflow(result);
+                this.state.Condition_C = this.IsCarry(result);
+            }
+        }
 
-    //    public override string Assembly => string.Format("{0} #{1}, {2}", FullName, getImmediate(), getEAString(decodeEAMode(), EA));
+        /// <inheritdoc/>
+        public override string Name => "ADDQ";
 
-    //    public ADDQ(MachineState state)
-    //        : base(state)
-    //    {
-    //        EA = readEA(decodeEAMode());
+        /// <inheritdoc/>
+        public override string Description => "Add Quick";
 
-    //        // TODO: flags
+        /// <inheritdoc/>
+        public override string Operation => "Immediate Data + Destination -> Destination";
 
-    //        var dstVal = getEAValue(decodeEAMode(), EA);
-    //        setEAValue(decodeEAMode(), getImmediate() + dstVal);
-    //    }
+        /// <inheritdoc/>
+        public override string Syntax => $"{this.Name} #<data>, <ea>";
 
-    //    protected override Size getSize()
-    //    {
-    //        return (Size)getBits('s');
-    //    }
-    //}
+        /// <inheritdoc/>
+        public override string Assembly => $"{this.Name} #{this.immediate}, {this.GetAssemblyForEffectiveAddress()}";
+
+        /// <inheritdoc/>
+        public override Size Size => (Size)this.GetBits('s');
+    }
 }

@@ -230,7 +230,7 @@
 
             if (state.OpCode.CheckBits("0101xxx0xxxxxxxx"))
             {
-                throw new NotImplementedException("ADDQ");
+                return new ADDQ(state);
             }
 
             if (state.OpCode.CheckBits("0101xxx1xxxxxxxx"))

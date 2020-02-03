@@ -194,6 +194,12 @@
                 case Condition.F:
                     return false;
 
+                case Condition.GT:
+                    return
+                        (!this.state.Condition_Z && !this.state.Condition_N && !this.state.Condition_V)
+                        ||
+                        (!this.state.Condition_Z && this.state.Condition_N && this.state.Condition_V);
+
                 default:
                     throw new InvalidStateException();
             }
@@ -404,8 +410,8 @@
                 //            throw new NotImplementedException();
                 //    }
 
-                //case EffectiveAddressMode.AbsoluteWord:
-                //    return string.Format("0x{0:X4}", ea);
+                case EffectiveAddressMode.AbsoluteWord:
+                    return $"0x{ea:X4}";
 
                 //case EffectiveAddressMode.AbsoluteLong:
                 //    return string.Format("0x{0:X8}", ea);
@@ -457,6 +463,9 @@
                 // get the address stored in the program counter plus the displacement
                 case EffectiveAddressMode.ProgramCounterWithDisplacement:
                     return this.state.PC + ea - 2;
+
+                case EffectiveAddressMode.AbsoluteWord:
+                    return (uint)this.ReadDataUsingPC(this.Size);
 
                 default:
                     throw new InvalidStateException();
@@ -552,6 +561,7 @@
                     return this.state.ReadDReg(xn);
 
                 // get the value from memory using the provided long address
+                // TODO: should this return only LONG?
                 case EffectiveAddressMode.AbsoluteLong:
                     switch (this.Size)
                     {
@@ -564,6 +574,7 @@
                     }
 
                 // get the value from memory using the provided long address
+                // TODO: should this return only WORD?
                 case EffectiveAddressMode.AbsoluteWord:
                     switch (this.Size)
                     {

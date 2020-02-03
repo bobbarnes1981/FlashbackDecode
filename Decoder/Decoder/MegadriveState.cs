@@ -209,6 +209,12 @@
                 return this.rom.ReadWord(address);
             }
 
+            if (address >= this.CD_MIN && address <= this.CD_MAX)
+            {
+                Writer.Write("Reading from MegaCD/32x", ConsoleColor.Yellow);
+                return 0x0000;
+            }
+
             if (address == 0x00A1000C)
             {
                 Writer.Write("Reading Expansion Port Control", ConsoleColor.Yellow);

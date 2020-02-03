@@ -40,9 +40,12 @@
                     }
 
                     mask = (uint)(mask << (int)bitnumber);
-                    this.state.Condition_Z = (this.ReadValueForEffectiveAddress() & mask) == 0;
+                    var val = this.ReadValueForEffectiveAddress();
+                    this.state.Condition_Z = (val & mask) == 0;
 
-                    throw new NotImplementedException("Needs to clear bit in destination");
+                    this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), val & ~mask);
+
+                    break;
 
                 case 0x2:
 

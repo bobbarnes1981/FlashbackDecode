@@ -178,6 +178,10 @@
             {
                 throw new InvalidStateException();
             }
+            else if (address >= this.CD_MIN && address <= this.CD_MAX)
+            {
+                Writer.Write("Writing to MegaCD/32x", ConsoleColor.Yellow);
+            }
             else if (address >= this.Z80_MEM_MIN && address <= this.Z80_MEM_MAX)
             {
                 Writer.Write("Writing to Z80 Memory", ConsoleColor.Yellow);
@@ -266,6 +270,12 @@
             if (address <= this.ROM_MAX)
             {
                 return this.rom.ReadLong(address);
+            }
+
+            if (address >= this.CD_MIN && address <= this.CD_MAX)
+            {
+                Writer.Write("Reading from MegaCD/32x", ConsoleColor.Yellow);
+                return 0x00000000;
             }
 
             if (address == 0xA10008)

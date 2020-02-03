@@ -55,6 +55,19 @@
 
         public ushort SR { get; set; }
 
+        public byte CCR
+        {
+            get
+            {
+                return (byte)(this.SR & 0xFF);
+            }
+
+            set
+            {
+                this.SR = (ushort)((this.SR & 0xFF00) | value);
+            }
+        }
+
         private uint ROM_MIN = 0x000000;
         private uint ROM_MAX = 0x3FFFFF;
 

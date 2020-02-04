@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="M68k\OpCodeDecoderTests.cs" />
+    <Compile Include="M68k\OpCodes\ADDDnToByteTests.cs" />
     <Compile Include="M68k\OpCodes\ADDByteToDnTests.cs" />
     <Compile Include="M68k\OpCodes\ANDIByteTests.cs" />
     <Compile Include="M68k\OpCodes\BccTests.cs" />

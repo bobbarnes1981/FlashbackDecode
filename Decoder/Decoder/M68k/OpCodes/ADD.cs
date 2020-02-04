@@ -29,23 +29,45 @@
             {
                 // <ea> + Dn -> Dn
                 case MoveDirection.RegisterToMemory:
-                    var val = this.ReadValueForEffectiveAddress();
-                    var dn = this.state.ReadDReg((byte)this.register);
-                    result = val + dn;
-                    switch (this.Size)
                     {
-                        case Size.Word:
-                            this.state.WriteDReg((byte)this.register, (ushort)result);
-                            break;
-                        default:
-                            throw new InvalidStateException();
+                        var val = this.ReadValueForEffectiveAddress();
+                        var dn = this.state.ReadDReg((byte)this.register);
+                        result = val + dn;
+                        switch (this.Size)
+                        {
+                            case Size.Word:
+                                this.state.WriteDReg((byte)this.register, (ushort)result);
+                                break;
+                            case Size.Byte:
+                                this.state.WriteDReg((byte)this.register, (byte)result);
+                                break;
+                            default:
+                                throw new InvalidStateException();
+                        }
                     }
 
                     break;
 
                 // Dn + <ea> -> <ea>
                 case MoveDirection.MemoryToRegister:
-                    throw new NotImplementedException();
+                    {
+                        var val = this.ReadValueForEffectiveAddress();
+                        var dn = this.state.ReadDReg((byte)this.register);
+                        result = val + dn;
+                        switch (this.Size)
+                        {
+                            case Size.Word:
+                                this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), (ushort)result);
+                                break;
+                            case Size.Byte:
+                                this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), (byte)result);
+                                break;
+                            default:
+                                throw new InvalidStateException();
+                        }
+                    }
+
+                    break;
 
                 default:
                     throw new InvalidStateException();
@@ -68,7 +90,7 @@
         public override string Operation => "Source + Destination -> Destination";
 
         /// <inheritdoc/>
-        public override string Syntax => $"{this.Name} <ea>,Dn\r\n{this.Name} Dn,<ea>";
+        public override string Syntax => $"{this.Name}.{this.Size.ToString()[0]} <ea>,Dn\r\n{this.Name} Dn,<ea>";
 
         /// <inheritdoc/>
         public override string Assembly
@@ -78,9 +100,9 @@
                 switch (this.direction)
                 {
                     case MoveDirection.RegisterToMemory:
-                        return $"{this.Name} {this.GetAssemblyForEffectiveAddress()},{this.register}";
+                        return $"{this.Name}.{this.Size.ToString()[0]} {this.GetAssemblyForEffectiveAddress()},{this.register}";
                     case MoveDirection.MemoryToRegister:
-                        return $"{this.Name} {this.register},{this.GetAssemblyForEffectiveAddress()}";
+                        return $"{this.Name}.{this.Size.ToString()[0]} {this.register},{this.GetAssemblyForEffectiveAddress()}";
                     default:
                         throw new InvalidStateException();
                 }

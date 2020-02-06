@@ -19,7 +19,7 @@
             this.DstEA = this.FetchEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.GetDstXn());
 
             var srcVal = this.ReadValueForEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetSrcM(), this.GetSrcXn()), this.SrcEA, this.GetSrcXn());
-            this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.DstEA, this.GetDstXn(), srcVal);
+            this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(this.GetDstM(), this.GetDstXn()), this.DstEA, this.GetDstXn(), srcVal, false);
 
             this.state.Condition_N = this.IsNegative(srcVal);
             this.state.Condition_Z = this.IsZero(srcVal);

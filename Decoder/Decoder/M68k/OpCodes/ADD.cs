@@ -58,11 +58,11 @@
                         switch (this.Size)
                         {
                             case Size.Word:
-                                this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), (ushort)result);
+                                this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.EffectiveAddress, this.GetXn(), (ushort)result, true);
                                 break;
                             case Size.Byte:
                                 // decerements here for -(An) !!!
-                                this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), (byte)result);
+                                this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.EffectiveAddress, this.GetXn(), (byte)result, true);
                                 break;
                             default:
                                 throw new InvalidStateException();

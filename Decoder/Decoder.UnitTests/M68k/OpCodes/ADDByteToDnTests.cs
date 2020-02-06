@@ -55,7 +55,7 @@ namespace Decoder.UnitTests.M68k.OpCodes
         }
 
         [Test(Description = "ADD.B (A0),D1")]
-        public void CheckAdd_A1_ToD1()
+        public void CheckAdd_A0_ToD1()
         {
             // ADD Dn,<ea>
             // 1101 dddD ssmm mxxx
@@ -76,6 +76,62 @@ namespace Decoder.UnitTests.M68k.OpCodes
             var opcode = new ADD(state);
 
             Assert.That(opcode.Assembly, Is.EqualTo("ADD.B (A0),D1"));
+            Assert.That(state.PC, Is.EqualTo(0x02));
+            Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x00FF0000));
+            Assert.That(state.ReadDReg(0x1), Is.EqualTo(0x00000033));
+            Assert.That(state.ReadByte(0x00FF0000), Is.EqualTo(0x22));
+        }
+
+        [Test(Description = "ADD.B (A0)+,D1")]
+        public void CheckAdd_A0i_ToD1()
+        {
+            // ADD Dn,<ea>
+            // 1101 dddD ssmm mxxx
+            // 1101 0010 0001 1000  0xD218
+            // ADD (A0)+,D1
+
+            byte[] data = new byte[]
+            {
+                0xD2, 0x18
+            };
+
+            MegadriveState state = new MegadriveState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
+            state.WriteDReg(0x1, 0x22221111);
+            state.WriteAReg(0x0, 0x00FF0000);
+            state.WriteByte(0x00FF0000, 0x22);
+            state.FetchOpCode();
+
+            var opcode = new ADD(state);
+
+            Assert.That(opcode.Assembly, Is.EqualTo("ADD.B (A0)+,D1"));
+            Assert.That(state.PC, Is.EqualTo(0x02));
+            Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x00FF0001));
+            Assert.That(state.ReadDReg(0x1), Is.EqualTo(0x00000033));
+            Assert.That(state.ReadByte(0x00FF0000), Is.EqualTo(0x22));
+        }
+
+        [Test(Description = "ADD.B -(A0),D1")]
+        public void CheckAdd_dA0_ToD1()
+        {
+            // ADD Dn,<ea>
+            // 1101 dddD ssmm mxxx
+            // 1101 0010 0010 0000  0xD220
+            // ADD -(A0),D1
+
+            byte[] data = new byte[]
+            {
+                0xD2, 0x20
+            };
+
+            MegadriveState state = new MegadriveState(new Data(data), 0x00000000, 0x00000000, 0x000000, 0x3FFFFF, 0x0FF0000, 0xFFFFFF);
+            state.WriteDReg(0x1, 0x22221111);
+            state.WriteAReg(0x0, 0x00FF0001);
+            state.WriteByte(0x00FF0000, 0x22);
+            state.FetchOpCode();
+
+            var opcode = new ADD(state);
+
+            Assert.That(opcode.Assembly, Is.EqualTo("ADD.B -(A0),D1"));
             Assert.That(state.PC, Is.EqualTo(0x02));
             Assert.That(state.ReadAReg(0x0), Is.EqualTo(0x00FF0000));
             Assert.That(state.ReadDReg(0x1), Is.EqualTo(0x00000033));

@@ -51,6 +51,7 @@
                 // Dn + <ea> -> <ea>
                 case MoveDirection.MemoryToRegister:
                     {
+                        // decerements here for -(An) !!!
                         var val = this.ReadValueForEffectiveAddress();
                         var dn = this.state.ReadDReg((byte)this.register);
                         result = val + dn;
@@ -60,6 +61,7 @@
                                 this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), (ushort)result);
                                 break;
                             case Size.Byte:
+                                // decerements here for -(An) !!!
                                 this.WriteValueToEffectiveAddress(this.DecodeEffectiveAddressMode(), this.GetXn(), (byte)result);
                                 break;
                             default:
